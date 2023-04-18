@@ -1,6 +1,7 @@
 import json
 
 import firebase_admin
+import redis as redis_client
 import telebot
 from firebase_admin import credentials, storage, db as firebase_db
 from telebot import types
@@ -16,6 +17,8 @@ I can help you create and manage your Tebots.
 hashed = {}
 
 position_dict = {}
+
+redis = redis_client.Redis(host='localhost', port=6379, decode_responses=True)
 
 cred = credentials.Certificate("telegram-bot-1-c1cfe-firebase-adminsdk-yef1j-ca269c84ad.json")
 firebase_admin.initialize_app(
@@ -41,17 +44,18 @@ class Position:
 
 
 def action(action_name, **kwargs):
-    if action_name == 'manageposition':
-        pass
-    if kwargs:
-        key = hex(hash(json.dumps(kwargs)))
-        hashed[key] = kwargs
-    data = json.dumps({'action': action_name, **kwargs})
-    return data
+    data = {"action": action_name, **kwargs}
+    key = hex(hash(json.dumps(data)))
+    redis.hset(key, mapping=data)
+    return key
+
+
+def get_hashed_data(call):
+    return redis.hgetall(call.data) or {}
 
 
 def check_action(call, action):
-    data = json.loads(call.data)
+    data = get_hashed_data(call)
     return data.get('action') == action
 
 
@@ -135,7 +139,7 @@ def mybots(call):
 
 @bot.callback_query_handler(func=lambda call: check_action(call, 'managebot'))
 def manage_bot(call):
-    data = json.loads(call.data)
+    data = get_hashed_data(call)
     manage_menu = [
         [InlineKeyboardButton('Positions', callback_data=action('positions_list', bot_id=data['bot_id']))],
         [InlineKeyboardButton('Remove TeBot', callback_data=action('deletebot', bot_id=data['bot_id']))],
@@ -146,8 +150,8 @@ def manage_bot(call):
 
 
 @bot.callback_query_handler(func=lambda call: check_action(call, 'positions_list'))
-def positions_list(call):
-    data = json.loads(call.data)
+def positions_list(call, message=None):
+    data = get_hashed_data(call)
     bot_id = data.get('bot_id')
     username = call.from_user.username
     positions = db.child(f'bots/{username}/{bot_id}/positions').get() or {}
@@ -163,31 +167,89 @@ def positions_list(call):
         back_menu_option('managebot', bot_id=bot_id)
     ]
     markup = InlineKeyboardMarkup(positions_menu)
-    bot.edit_message_text('Select Position', call.from_user.id, message_id=call.message.id, reply_markup=markup)
+    bot.edit_message_text(message or 'Select Position', call.from_user.id, message_id=call.message.id, reply_markup=markup)
 
 
 @bot.callback_query_handler(func=lambda call: check_action(call, 'manageposition'))
 def manage_position(call):
-    data = json.loads(call.data)
+    data = get_hashed_data(call)
     username = call.from_user.username
     bot_id = data.get('bot_id')
     position_key = data.get('position_key')
     position = db.child(f'bots/{username}/{bot_id}/positions/{position_key}').get()
-    pass
+    img = bucket.blob(position["image"]).download_as_bytes()
+    caption = f"""*Name:* _{position['name']}\n_*Price:* _${position['price']}_"""
+    positions_menu = [
+        *[[
+            InlineKeyboardButton(
+                f'{index + 1}. Edit {key}',
+                callback_data=action(
+                    f'editposition',
+                    bot_id=data['bot_id'],
+                    position_key=position_key,
+                    edit_action=key
+                )
+            )] for index, key in enumerate(position.keys())],
+        [InlineKeyboardButton(
+            'Remove position',
+            callback_data=action(
+                'removeposition',
+                bot_id=data['bot_id'],
+                position_key=position_key,
+            ))],
+        back_menu_option('positions_list', bot_id=bot_id)
+    ]
+    markup = InlineKeyboardMarkup(positions_menu)
+    bot.send_photo(
+        call.from_user.id,
+        img,
+        caption=caption,
+        parse_mode="Markdown",
+        reply_markup=markup
+    )
+
+
+@bot.callback_query_handler(func=lambda call: check_action(call, 'editposition'))
+def edit_position(call):
+    data = get_hashed_data(call)
+    username = call.from_user.username
+    bot_id = data.get('bot_id')
+    position_key = data.get('position_key')
+    key_to_edit = data.get('edit_action')
+    path = f'bots/{username}/{bot_id}/positions/{position_key}'
+
+    msg = bot.send_message(call.from_user.id, f'Send me new {key_to_edit}')
+    match key_to_edit:
+        case 'image':
+            bot.register_next_step_handler(msg, process_image_step, path=path)
+        case 'price':
+            bot.register_next_step_handler(msg, process_price_step, path=path)
+        case 'name':
+            bot.register_next_step_handler(msg, process_name_step, path=path)
+
+
+@bot.callback_query_handler(func=lambda call: check_action(call, 'removeposition'))
+def remove_position(call):
+    data = get_hashed_data(call)
+    bot_id = data.get('bot_id')
+    position_key = data.get('position_key')
+    username = call.from_user.username
+    db.child(f'bots/{username}/{bot_id}/positions/{position_key}').delete()
+    bot.send_message(call.from_user.id, 'Success')
 
 
 @bot.callback_query_handler(func=lambda call: check_action(call, 'deletebot'))
 def delete_bot(call):
-    data = json.loads(call.data)
+    data = get_hashed_data(call)
     bot_id = data.get('bot_id')
     username = call.from_user.username
-    db.child(f'bots/{username}/{bot_id}').set({})
+    db.child(f'bots/{username}/{bot_id}').delete()
     bot.send_message(call.from_user.id, 'Success')
 
 
 @bot.callback_query_handler(func=lambda call: check_action(call, 'newitem'))
 def newitem(call):
-    data = json.loads(call.data)
+    data = get_hashed_data(call)
     bot_id = data.get('bot_id')
     chat_id = call.from_user.id
     position = Position(bot_id=bot_id)
@@ -196,43 +258,60 @@ def newitem(call):
     bot.register_next_step_handler(msg, process_name_step)
 
 
-def process_name_step(message):
+def process_name_step(message, path=None):
     chat_id = message.chat.id
     name = message.text
-    position = position_dict[chat_id]
-    position.name = name
-    msg = bot.reply_to(message, 'Now set the price')
-    bot.register_next_step_handler(msg, process_price_step)
+    if path:
+        db.child(path).update({'name': name})
+        bot.send_message(message.from_user.id, 'success')
+    else:
+        position = position_dict[chat_id]
+        position.name = name
+        msg = bot.reply_to(message, 'Now set the price')
+        bot.register_next_step_handler(msg, process_price_step)
 
 
-def process_price_step(message):
+def process_price_step(message, path=None):
     try:
         price = float(message.text)
     except Exception:
         msg = bot.reply_to(message, 'oops')
         bot.register_next_step_handler(msg, process_price_step)
         return
-    chat_id = message.chat.id
-    position = position_dict[chat_id]
-    position.price = price
-    msg = bot.reply_to(message, 'Now send me position image')
-    bot.register_next_step_handler(msg, process_image_step)
+    if path:
+        db.child(path).update({'price': price})
+        bot.send_message(message.from_user.id, 'success')
+    else:
+        chat_id = message.chat.id
+        position = position_dict[chat_id]
+        position.price = price
+        msg = bot.reply_to(message, 'Now send me position image')
+        bot.register_next_step_handler(msg, process_image_step)
 
 
-def process_image_step(message):
+def process_image_step(message, path=None):
     chat_id = message.chat.id
-    position = position_dict[chat_id]
     if message.content_type == 'document':
         file_id = message.document.file_id
     elif message.content_type == 'photo':
         file_id = message.photo[-1].file_id
     file_info = bot.get_file(file_id)
-    print('getting photo...')
     photo = bot.download_file(file_info.file_path)
+
     format = file_info.file_path.split('.')[-1]
+
+    if path:
+        name = db.child(path).get()['name']
+        bucket_path = f'{message.chat.username}/{name}.{format}'
+        blob = bucket.blob(bucket_path)
+        blob.upload_from_string(photo)
+        db.child(path).update({'image': bucket_path})
+        bot.send_message(message.from_user.id, 'success')
+        return
+
+    position = position_dict[chat_id]
     bucket_path = f'{message.chat.username}/{position.name}.{format}'
     blob = bucket.blob(bucket_path)
-    print('uploading')
     blob.upload_from_string(photo)
     position.image = bucket_path
     db.child(f'bots/{message.chat.username}/{position.bot_id}/positions').push(position.to_dict())
