@@ -1,19 +1,37 @@
 import settings
-from telebot import TeleBot
+from telebot.async_telebot import AsyncTeleBot
+from telebot import asyncio_filters
+from telebot.asyncio_storage import StateRedisStorage
+from settings import REDIS_HOST, REDIS_PORT
 from src.routers.callbacks import callback_router
 from src.routers.commands import command_router
+from src.routers.steps import steps_router
+from src.states import PositionStates
 
-bot = TeleBot(settings.BOT_TOKEN)
+storage = StateRedisStorage(REDIS_HOST, REDIS_PORT)
+bot = AsyncTeleBot(settings.BOT_TOKEN, state_storage=storage)
+bot.add_custom_filter(asyncio_filters.StateFilter(bot))
+# bot.set_chat_menu_button(menu_button=MyButton(type='commands'))
 
 
 @bot.callback_query_handler(func=lambda call: True)
-def callback_handler(call):
-    return callback_router(bot, call)
+async def callback_handler(call):
+    return await callback_router(bot, call)
 
 
 @bot.message_handler(func=lambda msg: msg.text.startswith('/'))
-def command_handler(message):
-    return command_router(bot, message)
+async def command_handler(message):
+    return await command_router(bot, message)
 
 
-bot.polling(none_stop=True, interval=0)
+@bot.message_handler(state='*', content_types=['photo', 'document', 'text'])
+async def step_handler(message):
+    return await steps_router(bot, message)
+
+
+# @bot.message_handler(func=lambda msg: True)
+# def message_handler(message):
+#     return message_router(bot, message)
+
+import asyncio
+asyncio.run(bot.polling())

@@ -1,65 +1,86 @@
-import telebot
-from telebot import types, TeleBot
-from telebot.types import KeyboardButton
+import telebot.apihelper
+from telebot import TeleBot
+from telebot.async_telebot import types, AsyncTeleBot
 
-from src.handlers.commands import start
-from src.utils import with_db, with_callback_data, edit_or_resend
+from src.exceptions import BotAlreadyExistsException
+from src.utils import with_db, with_callback_data, send_message_with_cancel_markup, step_handler
 from src.markups.bots import bots_list_markup, bot_manage_markup
+from src.states import BotStates
 
 
-def bot_create(bot: TeleBot, call: types.CallbackQuery):
-    cancel_btn = KeyboardButton('cancel')
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-    markup.add(cancel_btn)
-    msg = edit_or_resend(
+async def bot_create(bot: AsyncTeleBot, call: types.CallbackQuery):
+    await bot.set_state(call.from_user.id, BotStates.token, call.message.chat.id)
+    await send_message_with_cancel_markup(
         bot,
-        call.message,
-        'Create a new bot via BotFather and send me a token',
-        markup
+        call.message.chat.id,
+        'Create a new bot via BotFather and send me a token'
     )
-    bot.register_next_step_handler(msg, create_bot_step, bot=bot)
 
 
 @with_db
-def bot_list(bot: TeleBot, call: types.CallbackQuery, db):
+async def bot_list(bot: AsyncTeleBot, call: types.CallbackQuery, db):
     username = call.from_user.username
     bots = db.child('bots').child(username).get() or {}
     markup = bots_list_markup(bots)
-    bot.edit_message_text('Select TeBot to manage', call.message.chat.id, message_id=call.message.id, reply_markup=markup)
+    await bot.edit_message_text('Select TeBot to manage', call.message.chat.id, message_id=call.message.id, reply_markup=markup)
 
 
 @with_callback_data
-def bot_manage(bot: TeleBot, call: types.CallbackQuery, data: dict):
+async def bot_manage(bot: AsyncTeleBot, call: types.CallbackQuery, data: dict):
     markup = bot_manage_markup(data['bot_id'])
-    bot.edit_message_text('Select Action', call.message.chat.id, message_id=call.message.id, reply_markup=markup)
+    await bot.edit_message_text('Select Action', call.message.chat.id, message_id=call.message.id, reply_markup=markup)
 
 
 @with_db
 @with_callback_data
-def bot_delete(bot: TeleBot, call: types.CallbackQuery, db, data):
+async def bot_delete(bot: AsyncTeleBot, call: types.CallbackQuery, db, data):
     bot_id = data.get('bot_id')
     username = call.from_user.username
     db.child(f'bots/{username}/{bot_id}').delete()
-    bot.send_message(call.message.chat.id, 'Success')
+    await bot.send_message(call.message.chat.id, 'Success')
 
 
-@with_db
-def create_bot_step(message: types.Message, bot: TeleBot, db):
+@step_handler
+async def bot_token_step(message: types.Message, bot: AsyncTeleBot):
     token = message.text
-    if token == 'cancel':
-        start(bot=bot, message=message, edit=True)
-        return
     newbot = TeleBot(token)
     try:
         username = newbot.user.username
         fullname = newbot.user.full_name
         bot_id = newbot.user.id
-    except telebot.apihelper.ApiException:
-        msg = bot.send_message(message.from_user.id, 'Invalid bot token')
-        bot.register_next_step_handler(msg, create_bot_step, bot=bot)
+    except telebot.apihelper.ApiException as e:
+        await bot.send_message(message.from_user.id, 'Invalid bot token. Send the token again.')
     else:
-        db.child('bots').child(message.from_user.username).child(str(bot_id)).update(
-            {'username': username, 'fullname': fullname, 'token': token}
-        )
-        success_msg = f'Tebot {fullname} was created successfully'
-        start(bot=bot, message=message, msg_text=success_msg, edit=True)
+        async with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
+            data['bot_id'] = str(bot_id)
+            data['token'] = token
+            data['username'] = username
+            data['fullname'] = fullname
+
+        try:
+            await bot_save(bot=bot, message=message)
+        except Exception as e:
+            await bot.send_message(
+                message.chat.id,
+                f'Ooops. {e}. Try to input another token'
+            )
+        else:
+            await bot.send_message(
+                message.chat.id,
+                f'Tebot {data.get("fullname")} was created successfully'
+            )
+            await bot.delete_state(message.from_user.id, message.chat.id)
+
+
+@with_db
+async def bot_save(bot: AsyncTeleBot, message: types.Message, db):
+    async with bot.retrieve_data(message.from_user.id, message.chat.id) as bot_data:
+        data = bot_data
+
+    if data.get('bot_id') in db.child('bots').child(message.from_user.username).get().keys():
+        raise BotAlreadyExistsException
+
+    db.child('bots').child(message.from_user.username).child(data.get('bot_id')).update(
+        {'username': data.get('username'), 'fullname': data.get('fullname'), 'token': data.get('token')}
+    )
+

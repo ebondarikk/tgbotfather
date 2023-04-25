@@ -1,10 +1,11 @@
-from telebot import TeleBot, types
+from telebot.async_telebot import AsyncTeleBot, types
 from src.markups.commands import start_markup
 from src.messages import START
+from src.states import states
 
 
-def start(
-        bot: TeleBot,
+async def start(
+        bot: AsyncTeleBot,
         message: types.Message = None,
         call: types.CallbackQuery = None,
         msg_text: str = START,
@@ -16,17 +17,42 @@ def start(
     markup = start_markup()
 
     try:
-        return bot.edit_message_text(
+        return await bot.edit_message_text(
             msg_text,
             message.from_user.id,
             message_id=message.id,
             reply_markup=markup
         )
     except Exception:
-        bot.send_message(
+        await bot.send_message(
                 message.chat.id,
                 msg_text,
                 reply_markup=markup
         )
         if message.from_user.id == bot.user.id:
-            bot.delete_message(message.chat.id, message_id=message.id)
+            await bot.delete_message(message.chat.id, message_id=message.id)
+
+
+async def cancel(
+        bot: AsyncTeleBot,
+        message: types.Message
+):
+    state = await bot.get_state(message.from_user.id, message.chat.id)
+    if not state:
+        return await bot.send_message(
+            message.chat.id,
+            'No any active command was found.'
+        )
+    state = state.split(':')[0]
+    command = ''
+
+    for st in states:
+        if state == st.__name__:
+            command = str(st())
+            break
+
+    await bot.delete_state(message.from_user.id, message.chat.id)
+    return await bot.send_message(
+        message.chat.id,
+        f'The command {command} has been canceled'
+    )

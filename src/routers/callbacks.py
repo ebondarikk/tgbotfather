@@ -41,8 +41,8 @@ def get_action(call):
     return action.split('/'), data
 
 
-def callback_router(bot, call):
+async def callback_router(bot, call):
     action, data = get_action(call)
     if len(action) > 1 and action[0] in ACTIONS.keys():
-        return ACTIONS[action[0]][action[1]](bot=bot, call=call)
+        return await ACTIONS[action[0]][action[1]](bot=bot, call=call)
 
