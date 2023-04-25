@@ -14,8 +14,9 @@ from src.markups.positions import positions_list_markup, position_manage_markup
 async def position_list(bot: AsyncTeleBot, call: CallbackQuery, db, data, message: str = None):
     bot_id = data.get('bot_id')
     username = call.from_user.username
-    positions = db.child(f'bots/{username}/{bot_id}/positions').get() or {}
-    markup = positions_list_markup(bot_id, positions)
+    bot_data = db.child(f'bots/{username}/{bot_id}').get()
+    positions = bot_data['positions']
+    markup = positions_list_markup(bot_id, bot_data.get('username'), positions)
     await edit_or_resend(bot, call.message, message or 'Select Position', markup)
 
 

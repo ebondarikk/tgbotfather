@@ -22,13 +22,23 @@ async def bot_list(bot: AsyncTeleBot, call: types.CallbackQuery, db):
     username = call.from_user.username
     bots = db.child('bots').child(username).get() or {}
     markup = bots_list_markup(bots)
-    await bot.edit_message_text('Select TeBot to manage', call.message.chat.id, message_id=call.message.id, reply_markup=markup)
+    await bot.edit_message_text(
+        'Select TeBot to manage',
+        call.message.chat.id,
+        message_id=call.message.id,
+        reply_markup=markup
+    )
 
 
 @with_callback_data
 async def bot_manage(bot: AsyncTeleBot, call: types.CallbackQuery, data: dict):
     markup = bot_manage_markup(data['bot_id'])
-    await bot.edit_message_text('Select Action', call.message.chat.id, message_id=call.message.id, reply_markup=markup)
+    await bot.edit_message_text(
+        f'This is @{data["username"]}. Select Action',
+        call.message.chat.id,
+        message_id=call.message.id,
+        reply_markup=markup
+    )
 
 
 @with_db

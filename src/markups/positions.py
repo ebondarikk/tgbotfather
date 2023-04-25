@@ -9,7 +9,7 @@ def back_menu_option(back_to, **kwargs):
     return [InlineKeyboardButton('<< Back', callback_data=action(back_to, **kwargs))]
 
 
-def positions_list_markup(bot_id: Any, positions: dict) -> InlineKeyboardMarkup:
+def positions_list_markup(bot_id: Any, bot_username, positions: dict) -> InlineKeyboardMarkup:
     menu = [
         [InlineKeyboardButton('Create a new position', callback_data=position_action('create', bot_id=bot_id))],
         *[
@@ -19,7 +19,7 @@ def positions_list_markup(bot_id: Any, positions: dict) -> InlineKeyboardMarkup:
             )
                 for index, (position_key, position_data) in enumerate(positions.items())]
         ],
-        back_menu_option('bot/manage', bot_id=bot_id)
+        back_menu_option('bot/manage', bot_id=bot_id, username=bot_username)
     ]
     markup = InlineKeyboardMarkup(menu)
     return markup

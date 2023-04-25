@@ -14,7 +14,7 @@ def bots_list_markup(bots: dict) -> InlineKeyboardMarkup:
         [InlineKeyboardButton('Create new TeBot', callback_data=bot_action('create'))],
         *[
             [InlineKeyboardButton(f'{index + 1}. {bot_data["fullname"]}',
-                                  callback_data=bot_action('manage', bot_id=bot_id))
+                                  callback_data=bot_action('manage', bot_id=bot_id, username=bot_data['username']))
              for index, (bot_id, bot_data) in enumerate(bots.items())]
         ],
         back_menu_option('command/start')
