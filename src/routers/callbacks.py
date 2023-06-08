@@ -2,7 +2,9 @@ from src.handlers.bots import (
     bot_list,
     bot_create,
     bot_manage,
-    bot_delete
+    bot_delete,
+    bot_deploy,
+    # bot_change_currency
 )
 from src.handlers.positions import (
     position_list,
@@ -20,6 +22,8 @@ ACTIONS = {
         'list': bot_list,
         'create': bot_create,
         'manage': bot_manage,
+        # 'change_currency': bot_change_currency,
+        'deploy': bot_deploy,
         'delete': bot_delete
     },
     'position': {

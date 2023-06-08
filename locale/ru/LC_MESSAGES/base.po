@@ -1,0 +1,165 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2023-05-20 17:18+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+
+
+#: src/exceptions.py:5
+msgid "Bot with this token is already exists"
+msgstr "Бот с таким токеном уже существует"
+
+#: src/exceptions.py:10
+msgid "Position with this name is already exists"
+msgstr "Товар с таким именем уже существует"
+
+#: src/handlers/bots.py:22
+msgid "Create a new bot via @BotFather and send me a token"
+msgstr "Создайте нового бота с помощью @BotFather и отправьте мне полученный токен"
+
+#: src/handlers/bots.py:32
+msgid "Select TeBot to manage"
+msgstr "Выберите бота для управления"
+
+#: src/handlers/bots.py:43
+msgid "This is @{bot_username}. Select Action"
+msgstr "Это @{bot_username}. Выберите действие"
+
+#: src/handlers/bots.py:56 src/handlers/positions.py:96
+msgid "Success"
+msgstr "Успешно"
+
+#: src/handlers/bots.py:69
+msgid "The bot doesn't have any position yet. Create positions, then launch deploy"
+msgstr "У этого бота еще нет товаров. Создайте товары, после этого запустите сборку"
+
+#: src/handlers/bots.py:87
+msgid "Success. Try your bot @{bot_username}"
+msgstr "Успешно. Попробуйте вашего бота @{bot_username}"
+
+#: src/handlers/bots.py:89
+msgid "Start building your bot. Please, wait..."
+msgstr "Начинаю собирать вашего бота. Это может занять некоторое время. Пожалуйста, подождите"
+
+#: src/handlers/bots.py:105 src/handlers/bots.py:110
+msgid "Ooops. Something went wrong ({error})"
+msgstr "Ой. Что-то пошло не так ({error})"
+
+#: src/handlers/bots.py:124
+msgid "Invalid bot token. Send the token again."
+msgstr "Некорректный токен. Попробуйте еще раз."
+
+#: src/handlers/bots.py:137
+msgid "Ooops. {e}. Try to input another token"
+msgstr "Ой. {e}. Попробуйте еще раз"
+
+#: src/handlers/bots.py:142
+msgid "Tebot {fullname} was created successfully"
+msgstr "Бот {fullname} успешно создан"
+
+#: src/handlers/commands.py:45
+msgid "No any active command was found."
+msgstr "Такой команды не существует."
+
+#: src/handlers/commands.py:58
+msgid "The command {command} has been canceled"
+msgstr "Команда {command} отменена"
+
+#: src/handlers/positions.py:19
+msgid "Select Position"
+msgstr "Выберите товар"
+
+#: src/handlers/positions.py:33
+msgid "Set the name for new position"
+msgstr "Задайте имя новому товару"
+
+#: src/handlers/positions.py:46
+msgid ""
+"*Name:* _{name}\n"
+"_*Price:* _${price}_"
+msgstr ""
+"*Имя:* _{name}\n"
+"_*Стоимость:* _${price}_"
+
+#: src/handlers/positions.py:86
+msgid "Send me new {key_to_edit}"
+msgstr "Отправьте мне новый {key_to_edit}"
+
+#: src/handlers/positions.py:113
+msgid "Now set the price"
+msgstr "Теперь задайте стоимость"
+
+#: src/handlers/positions.py:124
+msgid "please, send me a valid price"
+msgstr "некорректная стоимость. Попробуйте еще раз"
+
+#: src/handlers/positions.py:135
+msgid "Now send me position image"
+msgstr "Теперь отправьте мне изображение товара"
+
+#: src/handlers/positions.py:152
+msgid "This is not an image"
+msgstr "Похоже, это не изображение"
+
+#: src/handlers/positions.py:195
+msgid "Ooops. Position with this name is already exists"
+msgstr "Ой. Товар с таким именем уже существует"
+
+#: src/handlers/positions.py:199
+msgid "Position was edited successfully"
+msgstr "Товар усешно обновлен"
+
+#: src/handlers/positions.py:202
+msgid "Position was created successfully"
+msgstr "Товар успешно создан"
+
+#: src/markups/bots.py:9 src/markups/positions.py:9
+msgid "<< Back"
+msgstr "<< Назад"
+
+#: src/markups/bots.py:14
+msgid "Create new TeBot"
+msgstr "Добавить нового бота"
+
+#: src/markups/bots.py:28
+msgid "Positions"
+msgstr "Товары"
+
+#: src/markups/bots.py:29
+msgid "Deploy"
+msgstr "Собрать бота"
+
+#: src/markups/bots.py:30
+msgid "Remove TeBot"
+msgstr "Удалить бота"
+
+#: src/markups/commands.py:8
+msgid "My Bots"
+msgstr "Мои боты"
+
+#: src/markups/positions.py:14
+msgid "Create a new position"
+msgstr "Добавить товар"
+
+#: src/markups/positions.py:32
+msgid "{index}. Edit {key}"
+msgstr "{index}. Изменить {key}"
+
+#: src/markups/positions.py:41
+msgid "Remove position"
+msgstr "Удалить товар"
+
+#: src/messages.py:2
+msgid "I can help you create and manage your Tebots."
+msgstr "Я могу помочь вам добавить и управлять вашими ботами."
+

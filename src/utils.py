@@ -1,11 +1,24 @@
 import json
+import urllib.parse
+import gettext as gtext
 from functools import wraps
 from typing import Any
 
+from google.cloud import api_keys_v2
+from google.cloud.functions_v1 import CloudFunctionsServiceClient
+from google.iam.v1.iam_policy_pb2 import SetIamPolicyRequest
+from google.iam.v1.policy_pb2 import Policy, Binding
+from google.oauth2 import service_account
 from telebot.async_telebot import AsyncTeleBot, types
 from telebot.types import KeyboardButton
 
+import settings
 from settings import redis, db, bucket
+
+ru = gtext.translation('base', localedir='locale', languages=['ru'])
+ru.install()
+
+gettext = ru.gettext
 
 
 def action(action_name, **kwargs):
@@ -84,3 +97,34 @@ async def edit_or_resend(bot: AsyncTeleBot, message: types.Message, text: str, m
         if message.from_user.id == bot.user.id:
             await bot.delete_message(message.chat.id, message_id=message.id)
         return msg
+
+
+def get_image_url(image_path):
+    image_path = urllib.parse.quote(image_path).replace('/', '%2F')
+    return f'https://firebasestorage.googleapis.com/v0/b/telegram-bot-1-c1cfe.appspot.com/o/{image_path}?alt=media'
+
+
+def create_api_key():
+    cred_file = settings.FIREBASE_CERTIFICATE
+    credentials = service_account.Credentials.from_service_account_file(cred_file)
+    client = api_keys_v2.ApiKeysClient(credentials=credentials)
+    key = api_keys_v2.Key()
+    request = api_keys_v2.CreateKeyRequest()
+    request.parent = f"projects/{settings.PROJECT_ID}/locations/global"
+    request.key = key
+    response = client.create_key(request=request).result()
+    return response
+
+
+def make_function_public(function_name):
+    cred_file = settings.FIREBASE_CERTIFICATE
+    credentials = service_account.Credentials.from_service_account_file(cred_file)
+
+    resource = f'projects/{settings.PROJECT_ID}/locations/us-central1/functions/{function_name}'
+    policy = Policy(bindings=[Binding(role="roles/cloudfunctions.invoker", members=["allUsers"])])
+
+    client = CloudFunctionsServiceClient(credentials=credentials)
+    request = SetIamPolicyRequest(resource=resource, policy=policy)
+    response = client.set_iam_policy(request=request)
+
+    return response

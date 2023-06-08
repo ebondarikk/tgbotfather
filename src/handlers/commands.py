@@ -2,6 +2,7 @@ from telebot.async_telebot import AsyncTeleBot, types
 from src.markups.commands import start_markup
 from src.messages import START
 from src.states import states
+from src.utils import gettext as _
 
 
 async def start(
@@ -41,7 +42,7 @@ async def cancel(
     if not state:
         return await bot.send_message(
             message.chat.id,
-            'No any active command was found.'
+            _('No any active command was found.')
         )
     state = state.split(':')[0]
     command = ''
@@ -54,5 +55,5 @@ async def cancel(
     await bot.delete_state(message.from_user.id, message.chat.id)
     return await bot.send_message(
         message.chat.id,
-        f'The command {command} has been canceled'
+        _('The command {command} has been canceled').format(command=command)
     )
