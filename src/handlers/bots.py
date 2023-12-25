@@ -234,9 +234,9 @@ async def bot_currency_update(bot: AsyncTeleBot, call: types.CallbackQuery, data
 @with_bucket
 async def bot_deploy(bot: AsyncTeleBot, call: types.CallbackQuery, db, data, bucket):
     bot_id = data.get('bot_id')
-    paid = data.get('paid')
     username = call.from_user.username
     positions = db.child(f'bots/{username}/{bot_id}/positions').get()
+    paid = db.child(f'bots/{username}/{bot_id}/paid').get()
 
     if not positions:
         return await bot.send_message(
