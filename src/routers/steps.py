@@ -1,15 +1,23 @@
 from telebot.async_telebot import AsyncTeleBot, types
-from src.handlers.bots import bot_token_step
-from src.handlers.positions import position_name_step, position_price_step, position_image_step
+from src.handlers.bots import bot_token_step, bot_welcome_text_updated
+from src.handlers.mail import mail_create_step
+from src.handlers.positions import position_name_step, position_price_step, position_image_step, \
+    position_full_create_step, position_description_step
 
 STEPS = {
     'BotStates': {
-        'token': bot_token_step
+        'token': bot_token_step,
+        'welcome_text': bot_welcome_text_updated
     },
     'PositionStates': {
+        'full': position_full_create_step,
         'name': position_name_step,
         'price': position_price_step,
-        'image': position_image_step
+        'image': position_image_step,
+        'description': position_description_step
+    },
+    'MailStates': {
+        'create': mail_create_step
     }
 }
 

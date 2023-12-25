@@ -7,7 +7,7 @@ from src.utils import action, position_action, gettext as _
 
 
 def back_menu_option(back_to, **kwargs):
-    return [InlineKeyboardButton(_('<< Back'), callback_data=action(back_to, **kwargs))]
+    return [InlineKeyboardButton('⬅️ ' + _('Back'), callback_data=action(back_to, **kwargs))]
 
 
 def positions_list_markup(bot_id: Any, bot_username, positions: dict) -> InlineKeyboardMarkup:
@@ -18,12 +18,14 @@ def positions_list_markup(bot_id: Any, bot_username, positions: dict) -> InlineK
         )
         for index, (position_key, position_data) in enumerate(positions.items())
     ]
+    columns = max(len(position_btns), 2)
     positions_array = numpy.array_split(
         position_btns,
-        len(position_btns) // 2
+        columns // 2
     )
+
     menu = [
-        [InlineKeyboardButton(_('Create a new position'), callback_data=position_action('create', bot_id=bot_id))],
+        [InlineKeyboardButton('➕' + _('Create a new position'), callback_data=position_action('create', bot_id=bot_id))],
         *[list(btns) for btns in positions_array],
         back_menu_option('bot/manage', bot_id=bot_id, username=bot_username)
     ]
@@ -35,7 +37,7 @@ def position_manage_markup(bot_id: Any, position_key: str, position: dict) -> In
     menu = [
         *[[
             InlineKeyboardButton(
-                _('{index}. Edit {key}').format(index=index+1, key=key),
+                '✏️' + _('{index}. Edit {key}').format(index=index+1, key=key),
                 callback_data=position_action(
                     'edit',
                     bot_id=bot_id,
@@ -44,7 +46,7 @@ def position_manage_markup(bot_id: Any, position_key: str, position: dict) -> In
                 )
             )] for index, key in enumerate(position.keys())],
         [InlineKeyboardButton(
-            _('Remove position'),
+            '🗑 ' + _('Remove position'),
             callback_data=position_action(
                 'delete',
                 bot_id=bot_id,

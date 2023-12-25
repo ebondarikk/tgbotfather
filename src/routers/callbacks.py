@@ -4,7 +4,10 @@ from src.handlers.bots import (
     bot_manage,
     bot_delete,
     bot_deploy,
-    # bot_change_currency
+    bot_schedule_get,
+    bot_welcome_text,
+    bot_currency_update,
+    bot_welcome_text_update
 )
 from src.handlers.positions import (
     position_list,
@@ -14,7 +17,22 @@ from src.handlers.positions import (
     position_delete
 )
 
-from src.handlers.commands import start
+from src.handlers.statistic import (
+    statistic_list,
+    statistic_revenue,
+    statistic_number_of_orders,
+    statistic_avg_bill,
+    statistic_conversion
+)
+
+from src.handlers.mail import (
+    mail_list,
+    mail_create,
+    mail_manage,
+    mail_publish
+)
+
+from src.handlers.commands import start, help_command
 from src.utils import get_hashed_data
 
 ACTIONS = {
@@ -22,7 +40,10 @@ ACTIONS = {
         'list': bot_list,
         'create': bot_create,
         'manage': bot_manage,
-        # 'change_currency': bot_change_currency,
+        'welcome_text': bot_welcome_text,
+        'welcome_text_update': bot_welcome_text_update,
+        'currency': bot_currency_update,
+        'schedule': bot_schedule_get,
         'deploy': bot_deploy,
         'delete': bot_delete
     },
@@ -33,8 +54,24 @@ ACTIONS = {
         'edit': position_edit,
         'delete': position_delete
     },
+    'statistic': {
+        'list': statistic_list,
+        'revenue': statistic_revenue,
+        'orders_number': statistic_number_of_orders,
+        'avg_bill': statistic_avg_bill,
+        'conversion': statistic_conversion
+    },
+    'mail': {
+        'list': mail_list,
+        'create': mail_create,
+        'manage': mail_manage,
+        'publish': mail_publish
+    },
     'command': {
         'start': start
+    },
+    'general': {
+        'help': help_command
     }
 }
 

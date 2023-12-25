@@ -1,11 +1,12 @@
 from telebot.async_telebot import AsyncTeleBot, types
 
-from src.handlers.commands import start, cancel
+from src.handlers.commands import start, cancel, payment
 
 COMMANDS = {
     '/start': start,
     '/help': start,
-    '/cancel': cancel
+    '/cancel': cancel,
+    '/payment': payment,
 }
 
 

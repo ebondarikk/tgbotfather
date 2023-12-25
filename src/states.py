@@ -1,26 +1,39 @@
 from telebot.handler_backends import State, StatesGroup
+from src.utils import gettext as _
 
 
 class BotStates(StatesGroup):
     token = State()
+    currency = State()
+    welcome_text = State()
 
     def __str__(self):
-        return 'Bot creating'
+        return _('Bot updating')
 
 
 class PositionStates(StatesGroup):
+    full = State()
     edit = State()
     bot_id = State()
     name = State()
     price = State()
     image = State()
+    description = State()
 
     def __str__(self):
-        return 'Position creating'
+        return _('Position creating')
+
+
+class MailStates(StatesGroup):
+    create = State()
+
+    def __str__(self):
+        return _('Mail creating')
 
 
 states = [
     BotStates,
-    PositionStates
+    PositionStates,
+    MailStates
 ]
 

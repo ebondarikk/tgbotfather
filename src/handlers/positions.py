@@ -1,3 +1,6 @@
+import datetime
+import re
+
 from telebot import types
 from telebot.async_telebot import AsyncTeleBot
 from telebot.types import CallbackQuery
@@ -9,28 +12,36 @@ from src.markups.positions import positions_list_markup, position_manage_markup
 
 
 @with_db
-@with_callback_data
-async def position_list(bot: AsyncTeleBot, call: CallbackQuery, db, data, message: str = None):
-    bot_id = data.get('bot_id')
-    username = call.from_user.username
+async def get_position_list(bot, bot_id, username, message: types.Message, text, db):
     bot_data = db.child(f'bots/{username}/{bot_id}').get()
     positions = bot_data.get('positions', {})
     markup = positions_list_markup(bot_id, bot_data.get('username'), positions)
-    await edit_or_resend(bot, call.message, message or _('Select Position'), markup)
+    await edit_or_resend(bot, message, text or _('Select a good to customize or create a new one'), markup)
+
+
+@with_callback_data
+async def position_list(bot: AsyncTeleBot, call: CallbackQuery, data, message: str = None):
+    bot_id = data.get('bot_id')
+    return await get_position_list(bot, bot_id, call.from_user.username, call.message, message)
 
 
 @with_callback_data
 async def position_create(bot: AsyncTeleBot, call: CallbackQuery, data):
     bot_id = data.get('bot_id')
-    await bot.set_state(call.from_user.id, PositionStates.name, call.message.chat.id)
+    await bot.set_state(call.from_user.id, PositionStates.full, call.message.chat.id)
 
     async with bot.retrieve_data(call.from_user.id, call.message.chat.id) as data:
         data['bot_id'] = bot_id
 
+    await bot.send_video(
+        call.message.chat.id,
+        video=open('instructions/good_create.mov', 'rb'),
+        supports_streaming=True
+    )
     await send_message_with_cancel_markup(
         bot,
         call.message.chat.id,
-        _('Set the name for new position')
+        _('Send me a new good with image in next format:\nName\n*Price*\n#Description#')
     )
 
 
@@ -43,9 +54,10 @@ async def position_manage(bot: AsyncTeleBot, call: CallbackQuery, db, data, buck
     position_key = data.get('position_key')
     position = db.child(f'bots/{username}/{bot_id}/positions/{position_key}').get()
     img = bucket.blob(position["image"]).download_as_bytes()
-    caption = _("""*Name:* _{name}\n_*Price:* _${price}_""").format(
+    caption = _("""*Name:* _{name}\n_*Price:* _${price}_\n*Description*: _{description}_""").format(
         name=position['name'],
         price=position['price'],
+        description=position.get('description', '')
     )
     markup = position_manage_markup(bot_id, position_key, position)
     await bot.send_photo(
@@ -75,6 +87,8 @@ async def position_edit(bot: AsyncTeleBot, call: CallbackQuery, data):
             state = PositionStates.price
         case 'name':
             state = PositionStates.name
+        case 'description':
+            state = PositionStates.description
 
     if state:
         await bot.set_state(call.from_user.id, state, call.message.chat.id)
@@ -83,7 +97,7 @@ async def position_edit(bot: AsyncTeleBot, call: CallbackQuery, data):
             state_data['path'] = path
             state_data['edit'] = True
 
-    await bot.send_message(call.message.chat.id, _('Send me new {key_to_edit}')).format(key_to_edit=key_to_edit)
+    await bot.send_message(call.message.chat.id, _('Send me new {key_to_edit}').format(key_to_edit=key_to_edit))
 
 
 @with_db
@@ -94,6 +108,81 @@ async def position_delete(bot: AsyncTeleBot, call: CallbackQuery, db, data):
     username = call.from_user.username
     db.child(f'bots/{username}/{bot_id}/positions/{position_key}').delete()
     await bot.send_message(call.message.chat.id, _('Success'))
+
+
+@step_handler
+@with_bucket
+async def position_full_create_step(message, bot, bucket):
+    if message.content_type == 'document' and message.document.mime_type.startswith('image'):
+        mime_type = message.document.mime_type
+        file_id = message.document.file_id
+    elif message.content_type == 'photo':
+        mime_type = 'image/jpeg'
+        file_id = message.photo[-1].file_id
+    else:
+        await bot.send_message(
+            message.chat.id,
+            _('Seems like you forgot attach an image. Try again')
+        )
+        return
+
+    if not message.caption:
+        await bot.send_message(
+            message.chat.id,
+            _('Seems like you forgot send name and price in description. Try again')
+        )
+        return
+
+    price_pattern = '\*(\d+\.?\d{1,2}?)\*'
+
+    price_res = re.findall(price_pattern, message.caption)
+
+    if not price_res:
+        await bot.send_message(
+            message.chat.id,
+            _('Seems like price is absent or incorrect. Try like this: *15* or *7.90*')
+        )
+        return
+
+    price = float(price_res[0])
+
+    name = message.caption.split(f'*{price_res[0]}*')[0].strip().capitalize()
+
+    if not name:
+        await bot.send_message(
+            message.chat.id,
+            _('Seems like you forgot send a name. Try again')
+        )
+        return
+
+    description = ''
+    description_pattern = '#(.*)#'
+
+    description_res = re.findall(description_pattern, message.caption)
+
+    if description_res:
+        description = description_res[0]
+        if len(description) > 256:
+            await bot.send_message(
+                message.chat.id,
+                _('Description is too large. Max size is 256 symbols')
+            )
+            return
+
+    file_info = await bot.get_file(file_id)
+    photo = await bot.download_file(file_info.file_path)
+
+    format = file_info.file_path.split('.')[-1]
+    bucket_path = f'{message.chat.username}/{name}.{format}'
+    blob = bucket.blob(bucket_path)
+    blob.upload_from_string(photo, content_type=mime_type)
+
+    async with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
+        bot_id = data['bot_id']
+
+    data = {'bot_id': bot_id, 'name': name, 'price': price, 'image': bucket_path, 'description': description}
+
+    return await position_save(bot, message, data=data)
 
 
 @step_handler
@@ -135,6 +224,20 @@ async def position_price_step(message, bot):
         await bot.send_message(message.chat.id, _('Now send me position image'))
 
 
+@step_handler
+async def position_description_step(message, bot):
+    if message.content_type != 'text':
+        return
+    description = message.text
+
+    async with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
+        edit = data.get('edit')
+        data['description'] = description
+
+    if edit:
+        await position_save(bot, message)
+
+
 @with_db
 @with_bucket
 @step_handler
@@ -174,9 +277,10 @@ async def position_image_step(message, db, bot, bucket):
 
 
 @with_db
-async def position_save(bot: AsyncTeleBot, message: types.Message, db):
-    async with bot.retrieve_data(message.from_user.id, message.chat.id) as position_data:
-        data = position_data
+async def position_save(bot: AsyncTeleBot, message: types.Message, db, data=None):
+    if not data:
+        async with bot.retrieve_data(message.from_user.id, message.chat.id) as position_data:
+            data = position_data
 
     await bot.delete_state(message.from_user.id, message.chat.id)
 
@@ -199,4 +303,7 @@ async def position_save(bot: AsyncTeleBot, message: types.Message, db):
         return await bot.send_message(message.chat.id, _('Position was edited successfully'))
 
     db.child(f'bots/{message.chat.username}/{bot_id}/positions').push(data)
-    return await bot.send_message(message.chat.id, _('Position was created successfully'))
+    db.child(f'bots/{message.chat.username}/{bot_id}').update({'last_updates': str(datetime.datetime.now())})
+    return await get_position_list(
+        bot, bot_id, message.from_user.username, message, text=_('Position was created successfully. What\'s next?')
+    )

@@ -2,6 +2,7 @@ import firebase_admin
 import redis as redis_client
 from firebase_admin import credentials, storage, db as firebase_db
 from decouple import config
+from telebot.types import LabeledPrice, ShippingOption
 
 BOT_TOKEN = config('BOT_TOKEN')
 DATABASE_URL = config('DATABASE_URL')
@@ -10,6 +11,13 @@ REDIS_HOST = config('REDIS_HOST')
 REDIS_PORT = config('REDIS_PORT')
 STORAGE_BUCKET = config('STORAGE_BUCKET')
 PROJECT_ID = 'telegram-bot-1-c1cfe'
+
+
+prices = [LabeledPrice(label='Working Time Machine', amount=5750), LabeledPrice('Gift wrapping', 500)]
+
+shipping_options = [
+    ShippingOption(id='instant', title='WorldWide Teleporter').add_price(LabeledPrice('Teleporter', 1000)),
+    ShippingOption(id='pickup', title='Local pickup').add_price(LabeledPrice('Pickup', 300))]
 
 redis = redis_client.Redis(host=REDIS_HOST, port=REDIS_PORT, decode_responses=True)
 

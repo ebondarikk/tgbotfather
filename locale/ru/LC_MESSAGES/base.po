@@ -232,7 +232,7 @@ msgstr "Выберите тип аналитики:"
 #: src/handlers/statistic.py:57 src/handlers/statistic.py:58
 #: src/handlers/statistic.py:85 src/handlers/statistic.py:88
 msgid "No data"
-msgstr "Нет юанных."
+msgstr "Нет данных."
 
 #: src/handlers/statistic.py:38 src/handlers/statistic.py:64
 #: src/handlers/statistic.py:95
@@ -360,4 +360,85 @@ msgstr "Обновление товара"
 #: src/states.py:31
 msgid "Mail creating"
 msgstr "Обновление рассылки"
+
+#: src/enums.py:6
+msgid "Day"
+msgstr "День"
+
+#: src/enums.py:7
+msgid "3 days"
+msgstr "3 дня"
+
+#: src/enums.py:8
+msgid "Week"
+msgstr "Неделя"
+
+#: src/enums.py:9
+msgid "2 weeks"
+msgstr "2 недели"
+
+#: src/enums.py:10
+msgid "Month"
+msgstr "Месяц"
+
+#: src/enums.py:11
+msgid "2 months"
+msgstr "2 месяца"
+
+#: src/enums.py:12
+msgid "3 months"
+msgstr "3 месяца"
+
+#: src/enums.py:13
+msgid "Half-year"
+msgstr "Полгода"
+
+#: src/enums.py:14
+msgid "Year"
+msgstr "Год"
+
+#: src/handlers/bots.py:91
+msgid "Update Schedule"
+msgstr "Обновить расписание"
+
+#: src/handlers/bots.py:105
+msgid ""
+"That's schedule of your Bot. You can update it by clicking on \"Update Schedule\" button \n"
+"\n"
+msgstr ""
+"Это расписание вашего бота. Вы можете обновить его, нажав на кнопку \"Обновить расписание\".\n"
+"\n"
+
+#: src/handlers/bots.py:108
+msgid "Monday"
+msgstr "Понедельник"
+
+#: src/handlers/bots.py:109
+msgid "Tuesday"
+msgstr "Вторник"
+
+#: src/handlers/bots.py:110
+msgid "Wednesday"
+msgstr "Среда"
+
+#: src/handlers/bots.py:111
+msgid "Thursday"
+msgstr "Четверг"
+
+#: src/handlers/bots.py:112
+msgid "Friday"
+msgstr "Пятница"
+
+#: src/handlers/bots.py:113
+msgid "Saturday"
+msgstr "Суббота"
+
+#: src/handlers/bots.py:114
+msgid "Sunday"
+msgstr "Воскресенье"
+
+#: src/handlers/bots.py:120
+msgid "off-day"
+msgstr "выходной"
+
 

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-12-25 16:33+0300\n"
+"POT-Creation-Date: 2023-12-25 17:25+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -14,6 +14,42 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: pygettext.py 1.5\n"
 
+
+#: src/enums.py:6
+msgid "Day"
+msgstr ""
+
+#: src/enums.py:7
+msgid "3 days"
+msgstr ""
+
+#: src/enums.py:8
+msgid "Week"
+msgstr ""
+
+#: src/enums.py:9
+msgid "2 weeks"
+msgstr ""
+
+#: src/enums.py:10
+msgid "Month"
+msgstr ""
+
+#: src/enums.py:11
+msgid "2 months"
+msgstr ""
+
+#: src/enums.py:12
+msgid "3 months"
+msgstr ""
+
+#: src/enums.py:13
+msgid "Half-year"
+msgstr ""
+
+#: src/enums.py:14
+msgid "Year"
+msgstr ""
 
 #: src/exceptions.py:5
 msgid "Bot with this token is already exists"
@@ -43,59 +79,101 @@ msgstr ""
 msgid "Bot was deleted successfully. What's next?"
 msgstr ""
 
-#: src/handlers/bots.py:128
+#: src/handlers/bots.py:91
+msgid "Update Schedule"
+msgstr ""
+
+#: src/handlers/bots.py:105
+msgid ""
+"That's schedule of your Bot. You can update it by clicking on \"Update Schedule\" button \n"
+"\n"
+msgstr ""
+
+#: src/handlers/bots.py:108
+msgid "Monday"
+msgstr ""
+
+#: src/handlers/bots.py:109
+msgid "Tuesday"
+msgstr ""
+
+#: src/handlers/bots.py:110
+msgid "Wednesday"
+msgstr ""
+
+#: src/handlers/bots.py:111
+msgid "Thursday"
+msgstr ""
+
+#: src/handlers/bots.py:112
+msgid "Friday"
+msgstr ""
+
+#: src/handlers/bots.py:113
+msgid "Saturday"
+msgstr ""
+
+#: src/handlers/bots.py:114
+msgid "Sunday"
+msgstr ""
+
+#: src/handlers/bots.py:120
+msgid "off-day"
+msgstr ""
+
+#: src/handlers/bots.py:138
 msgid "<i>This is your welcome message:</i>"
 msgstr ""
 
-#: src/handlers/bots.py:143
+#: src/handlers/bots.py:153
 msgid "Send me a new welcome message"
 msgstr ""
 
-#: src/handlers/bots.py:152
+#: src/handlers/bots.py:162
 msgid "Message undefined. Try again"
 msgstr ""
 
-#: src/handlers/bots.py:166
+#: src/handlers/bots.py:176
 msgid "Welcome text was updated. What's next?"
 msgstr ""
 
-#: src/handlers/bots.py:207
+#: src/handlers/bots.py:217
 msgid "Currency was successfully updated to {currency}. What's next?"
 msgstr ""
 
-#: src/handlers/bots.py:211
+#: src/handlers/bots.py:221
 msgid "Your current currency is {currency}. Please, choose a new currency"
 msgstr ""
 
-#: src/handlers/bots.py:234
+#: src/handlers/bots.py:244
 msgid "The bot doesn't have any position yet. Create positions, then launch deploy"
 msgstr ""
 
-#: src/handlers/bots.py:240
+#: src/handlers/bots.py:250
 msgid "The bot is not paid. Contact @botly_support to pay or get a trial period"
 msgstr ""
 
-#: src/handlers/bots.py:247
+#: src/handlers/bots.py:257
 msgid "Success. Try your bot @{bot_username}"
 msgstr ""
 
-#: src/handlers/bots.py:249
+#: src/handlers/bots.py:259
 msgid "Start building your bot. Please, wait..."
 msgstr ""
 
-#: src/handlers/bots.py:266 src/handlers/bots.py:272
+#: src/handlers/bots.py:276 src/handlers/bots.py:282
 msgid "Ooops. Something went wrong ({error})"
 msgstr ""
 
-#: src/handlers/bots.py:286
+#: src/handlers/bots.py:296
 msgid "Invalid bot token. Send the token again."
 msgstr ""
 
-#: src/handlers/bots.py:304
+#: src/handlers/bots.py:314
 msgid "Ooops. {e}. Try to input another token"
 msgstr ""
 
-#: src/handlers/bots.py:310
+#: src/handlers/bots.py:320
 msgid "Bot {fullname} was created successfully. Default currency is {default_currency}. You can change it by clicking on \"Currency\" button"
 msgstr ""
 
