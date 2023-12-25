@@ -198,7 +198,7 @@ async def bot_schedule_save(bot: AsyncTeleBot, message: types.Message, db):
 
     return await bot.send_message(
         message.chat.id,
-        'Schedule was updated.',
+        'Расписание успешно обновлено.', #TODO: translate
         reply_markup=bot_manage_markup(bot_id, bot_username)
     )
 
