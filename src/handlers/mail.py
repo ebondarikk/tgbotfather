@@ -105,7 +105,7 @@ async def mail_publish(bot: AsyncTeleBot, call: CallbackQuery, data, db, bucket)
                 call.message.chat.id,
                 _('Oops. The next mailing can be sent in {period} minutes').format(period=math.ceil((range - delta) / 60))
             )
-        return
+            return
 
     img = None
     user_bot = AsyncTeleBot(bot_token)
