@@ -120,20 +120,23 @@ async def mail_publish(bot: AsyncTeleBot, call: CallbackQuery, data, db, bucket)
         return await bot.send_message(call.message.chat.id, _('No users to send'))
 
     for user in users:
-        if images:
-            await user_bot.send_photo(
-                user,
-                img,
-                caption=content,
-                parse_mode='HTML',
-            )
-        else:
-            await user_bot.send_message(
-                user,
-                content,
-                parse_mode='HTML',
-            )
-        sent_count += 1
+        try:
+            if images:
+                await user_bot.send_photo(
+                    user,
+                    img,
+                    caption=content,
+                    parse_mode='HTML',
+                )
+            else:
+                await user_bot.send_message(
+                    user,
+                    content,
+                    parse_mode='HTML',
+                )
+            sent_count += 1
+        except Exception:
+            continue
 
     db.child(
         f'bots/{username}/{bot_id}/mailings/{mail_key}'
