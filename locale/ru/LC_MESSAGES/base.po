@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-05-20 17:18+0300\n"
+"POT-Creation-Date: 2023-12-25 16:33+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,129 +17,291 @@ msgstr ""
 
 #: src/exceptions.py:5
 msgid "Bot with this token is already exists"
-msgstr "Бот с таким токеном уже существует"
+msgstr "Бот с таким токеном уже существует."
 
 #: src/exceptions.py:10
 msgid "Position with this name is already exists"
-msgstr "Товар с таким именем уже существует"
+msgstr "Товар с таким именем уже существует."
 
-#: src/handlers/bots.py:22
-msgid "Create a new bot via @BotFather and send me a token"
-msgstr "Создайте нового бота с помощью @BotFather и отправьте мне полученный токен"
+#: src/handlers/bots.py:24
+msgid "Uploading video-instruction. Please, wait"
+msgstr "Загружаю видеоинструкцию. Пожалуйста, подождите."
 
-#: src/handlers/bots.py:32
-msgid "Select TeBot to manage"
-msgstr "Выберите бота для управления"
+#: src/handlers/bots.py:34
+msgid "Create a new bot via @BotFather and send me a token. Use the video instructions to make it more clear"
+msgstr "Создайте нового бота с помощью @BotFather и отправьте мне токен. Воспользуйтесь видеоинструкцией для помощи."
 
-#: src/handlers/bots.py:43
+#: src/handlers/bots.py:45
+msgid "Select a bot to view and customize or Create a new one."
+msgstr "Выберите бота для просмотра и настроки или Создайте нового."
+
+#: src/handlers/bots.py:64
 msgid "This is @{bot_username}. Select Action"
-msgstr "Это @{bot_username}. Выберите действие"
+msgstr "Это @{bot_username}. Выберите действие."
 
-#: src/handlers/bots.py:56 src/handlers/positions.py:96
+#: src/handlers/bots.py:81
+msgid "Bot was deleted successfully. What's next?"
+msgstr "Бот успешно удален. Что дальше?"
+
+#: src/handlers/bots.py:128
+msgid "<i>This is your welcome message:</i>"
+msgstr "<i>Это ваше текущее приветственное сообщение:</i>"
+
+#: src/handlers/bots.py:143
+msgid "Send me a new welcome message"
+msgstr "Отправьте мне новое приветственное сообщение."
+
+#: src/handlers/bots.py:152
+msgid "Message undefined. Try again"
+msgstr "Сообщение не определно. Повторите попытку."
+
+#: src/handlers/bots.py:166
+msgid "Welcome text was updated. What's next?"
+msgstr "Приветственное сообщение успешно обновлено. Что дальше?"
+
+#: src/handlers/bots.py:207
+msgid "Currency was successfully updated to {currency}. What's next?"
+msgstr "Валюта успешно обновлена на {currency}. Что дальше?"
+
+#: src/handlers/bots.py:211
+msgid "Your current currency is {currency}. Please, choose a new currency"
+msgstr "Ваша текущая валюта - {currency}. Пожалуйста, выберите новую валюту."
+
+#: src/handlers/bots.py:234
+msgid "The bot doesn't have any position yet. Create positions, then launch deploy"
+msgstr "У вашего бота пока нет товаров. Добавьте товары, затем запустите сборку."
+
+#: src/handlers/bots.py:240
+msgid "The bot is not paid. Contact @botly_support to pay or get a trial period"
+msgstr "Бот не оплачен. Свяжитесь с @botly_support для оплаты или получения триал периода."
+
+#: src/handlers/bots.py:247
+msgid "Success. Try your bot @{bot_username}"
+msgstr "Успешно. Вы можете опробовать вашего бота @{bot_username}."
+
+#: src/handlers/bots.py:249
+msgid "Start building your bot. Please, wait..."
+msgstr "Собираю вашего бота. Пожалуйста, подождите..."
+
+#: src/handlers/bots.py:266 src/handlers/bots.py:272
+msgid "Ooops. Something went wrong ({error})"
+msgstr "Ой. Что-то пошло не так. Свяжитесь с поддержкой @botly_support."
+
+#: src/handlers/bots.py:286
+msgid "Invalid bot token. Send the token again."
+msgstr "Некорректный токен. Повторите попытку."
+
+#: src/handlers/bots.py:304
+msgid "Ooops. {e}. Try to input another token"
+msgstr "Ой. Что-то пошло не так. Попробуйте другой токен или свяжитесь с поддержкой @botly_support."
+
+#: src/handlers/bots.py:310
+msgid "Bot {fullname} was created successfully. Default currency is {default_currency}. You can change it by clicking on \"Currency\" button"
+msgstr "Бот {fullname} успешно создан. Валюта по умолчанию - {default_currency}. Вы можете изменить ее, нажав на кнопку \"Валюта\"."
+
+#: src/handlers/commands.py:47
+msgid "To get help, contact with our support @botly_support."
+msgstr "Чтобы получить помощь, свяжитесь с поддержкой @botly_support."
+
+#: src/handlers/commands.py:58
+msgid "No any active command was found."
+msgstr "Активных комманд не найдено."
+
+#: src/handlers/commands.py:71
+msgid "The command {command} has been canceled"
+msgstr "Команда {command} была отменена."
+
+#: src/handlers/mail.py:21
+msgid "Select a mail to customize or create a new one"
+msgstr "Выберите рассылку для настрйоки или создайте новую."
+
+#: src/handlers/mail.py:43
+msgid "Send a text for mailing or photos with text for mailing"
+msgstr "Отправьте мне текст рассылки, или фотографию, или фотографию с описанием для рассылки (не допустимо использовать более 1 фотографии)."
+
+#: src/handlers/mail.py:106
+msgid "Oops. The next mailing can be sent in {period} minutes"
+msgstr "Ой, Следующая рассылка может быть отправлена через {period} минут."
+
+#: src/handlers/mail.py:120
+msgid "No users to send"
+msgstr "Нет активных пользователей для отправки рассылки."
+
+#: src/handlers/mail.py:147
+msgid "Success sent to {cnt} users"
+msgstr "Рассылка успешно отправлена {cnt} пользователям."
+
+#: src/handlers/mail.py:163
+msgid "It is allowed to use no more than one photo. Try again"
+msgstr "Не допустимо использовать более 1 фотографии. Повторите попытку."
+
+#: src/handlers/mail.py:186
+msgid "Unsupported message format. Please, send me image or text or both."
+msgstr "Неподдерживаемый формат сообщения. Пожалуйста, отправьте мне текст, или фотографию, или фотографию с описанием."
+
+#: src/handlers/mail.py:243
+msgid "Mailing was created successfully. You can publish it by selecting it below. "
+msgstr "Рассылка успешно создана. Вы можете опубликовать ее, выбрав в списке ниже."
+
+#: src/handlers/positions.py:19
+msgid "Select a good to customize or create a new one"
+msgstr "Выберите товар для настройки или создайте новый."
+
+#: src/handlers/positions.py:44
+msgid ""
+"Send me a new good with image in next format:\n"
+"Name\n"
+"*Price*\n"
+"#Description#"
+msgstr "Отправьте мне фотографию товара с описанием в следующем формате:\n"
+"Название\n"
+"*Стоимость*\n"
+"#Описание#"
+
+#: src/handlers/positions.py:57
+msgid ""
+"*Name:* _{name}\n"
+"_*Price:* _${price}_\n"
+"*Description*: _{description}_"
+msgstr ""
+"*Название:* _{name}\n"
+"_*Стоимость:* _${price}_\n"
+"*Описание*: _{description}_"
+
+#: src/handlers/positions.py:100
+msgid "Send me new {key_to_edit}"
+msgstr "Отправьте мне новое {key_to_edit}."
+
+#: src/handlers/positions.py:110
 msgid "Success"
 msgstr "Успешно"
 
-#: src/handlers/bots.py:69
-msgid "The bot doesn't have any position yet. Create positions, then launch deploy"
-msgstr "У этого бота еще нет товаров. Создайте товары, после этого запустите сборку"
+#: src/handlers/positions.py:125
+msgid "Seems like you forgot attach an image. Try again"
+msgstr "Ой, похоже, вы забыли прикрепить изображение. Повторите попытку или свяжитесь с поддержкой @botly_support."
 
-#: src/handlers/bots.py:87
-msgid "Success. Try your bot @{bot_username}"
-msgstr "Успешно. Попробуйте вашего бота @{bot_username}"
+#: src/handlers/positions.py:132
+msgid "Seems like you forgot send name and price in description. Try again"
+msgstr "Ой, похоже, вы забыли отправить Название и Стоимость в описании. Повторите попытку или свяжитесь с поддержкой @botly_support."
 
-#: src/handlers/bots.py:89
-msgid "Start building your bot. Please, wait..."
-msgstr "Начинаю собирать вашего бота. Это может занять некоторое время. Пожалуйста, подождите"
+#: src/handlers/positions.py:143
+msgid "Seems like price is absent or incorrect. Try like this: *15* or *7.90*"
+msgstr "Ой, похоже, стоимость отсутствует или введена некорректно. Повторите попытку в следующем формате: *15* или *7.90* или свяжитесь с поддержкой @botly_support."
 
-#: src/handlers/bots.py:105 src/handlers/bots.py:110
-msgid "Ooops. Something went wrong ({error})"
-msgstr "Ой. Что-то пошло не так ({error})"
+#: src/handlers/positions.py:154
+msgid "Seems like you forgot send a name. Try again"
+msgstr "Ой, похоже, вы забыли отправить название. Повторите попытку или свяжитесь с поддержкой @botly_support."
 
-#: src/handlers/bots.py:124
-msgid "Invalid bot token. Send the token again."
-msgstr "Некорректный токен. Попробуйте еще раз."
-
-#: src/handlers/bots.py:137
-msgid "Ooops. {e}. Try to input another token"
-msgstr "Ой. {e}. Попробуйте еще раз"
-
-#: src/handlers/bots.py:142
-msgid "Tebot {fullname} was created successfully"
-msgstr "Бот {fullname} успешно создан"
-
-#: src/handlers/commands.py:45
-msgid "No any active command was found."
-msgstr "Такой команды не существует."
-
-#: src/handlers/commands.py:58
-msgid "The command {command} has been canceled"
-msgstr "Команда {command} отменена"
-
-#: src/handlers/positions.py:19
-msgid "Select Position"
-msgstr "Выберите товар"
-
-#: src/handlers/positions.py:33
-msgid "Set the name for new position"
-msgstr "Задайте имя новому товару"
-
-#: src/handlers/positions.py:46
-msgid ""
-"*Name:* _{name}\n"
-"_*Price:* _${price}_"
-msgstr ""
-"*Имя:* _{name}\n"
-"_*Стоимость:* _${price}_"
-
-#: src/handlers/positions.py:86
-msgid "Send me new {key_to_edit}"
-msgstr "Отправьте мне новый {key_to_edit}"
-
-#: src/handlers/positions.py:113
-msgid "Now set the price"
-msgstr "Теперь задайте стоимость"
-
-#: src/handlers/positions.py:124
-msgid "please, send me a valid price"
-msgstr "некорректная стоимость. Попробуйте еще раз"
-
-#: src/handlers/positions.py:135
-msgid "Now send me position image"
-msgstr "Теперь отправьте мне изображение товара"
-
-#: src/handlers/positions.py:152
-msgid "This is not an image"
-msgstr "Похоже, это не изображение"
-
-#: src/handlers/positions.py:195
-msgid "Ooops. Position with this name is already exists"
-msgstr "Ой. Товар с таким именем уже существует"
-
-#: src/handlers/positions.py:199
-msgid "Position was edited successfully"
-msgstr "Товар усешно обновлен"
+#: src/handlers/positions.py:168
+msgid "Description is too large. Max size is 256 symbols"
+msgstr "Описание слишком длинное. Максимальная длина - 256 символов."
 
 #: src/handlers/positions.py:202
-msgid "Position was created successfully"
-msgstr "Товар успешно создан"
+msgid "Now set the price"
+msgstr "Теперь укажите стоимость."
 
-#: src/markups/bots.py:9 src/markups/positions.py:9
-msgid "<< Back"
-msgstr "<< Назад"
+#: src/handlers/positions.py:213
+msgid "please, send me a valid price"
+msgstr "Пожалуйста, отпавьте корректную стоимость."
 
-#: src/markups/bots.py:14
+#: src/handlers/positions.py:224
+msgid "Now send me position image"
+msgstr "Теперь отправьте мне изображение товара."
+
+#: src/handlers/positions.py:255
+msgid "This is not an image"
+msgstr "Похоже, это не изображение. Повторите попытку или свяжитесь с поддержкой @botly_support."
+
+#: src/handlers/positions.py:299
+msgid "Ooops. Position with this name is already exists"
+msgstr "Ой, товар с таким именем уже существует."
+
+#: src/handlers/positions.py:303
+msgid "Position was edited successfully"
+msgstr "Товар был успешно обновлен."
+
+#: src/handlers/positions.py:308
+msgid "Position was created successfully. What's next?"
+msgstr "Товар успешно создан. Что дальше?"
+
+#: src/handlers/statistic.py:11
+msgid "Select Statistic"
+msgstr "Выберите тип аналитики:"
+
+#: src/handlers/statistic.py:31 src/handlers/statistic.py:32
+#: src/handlers/statistic.py:57 src/handlers/statistic.py:58
+#: src/handlers/statistic.py:85 src/handlers/statistic.py:88
+msgid "No data"
+msgstr "Нет юанных."
+
+#: src/handlers/statistic.py:38 src/handlers/statistic.py:64
+#: src/handlers/statistic.py:95
+msgid ""
+"{title} for current {period}: {value}\n"
+msgstr "{title} за текущий период в {period}: {value}\n"
+
+#: src/handlers/statistic.py:39 src/handlers/statistic.py:42
+#: src/markups/statistic.py:29 src/markups/statistic.py:30
+msgid "Revenue"
+msgstr "Доход"
+
+#: src/handlers/statistic.py:41 src/handlers/statistic.py:67
+#: src/handlers/statistic.py:98
+msgid "{title} for previous {period}: {value}"
+msgstr "{title} за предыдущий период в {period}: {value}"
+
+#: src/handlers/statistic.py:65 src/handlers/statistic.py:68
+#: src/markups/statistic.py:34 src/markups/statistic.py:36
+msgid "Number of orders"
+msgstr "Количество заказов"
+
+#: src/handlers/statistic.py:96 src/handlers/statistic.py:99
+#: src/markups/statistic.py:40 src/markups/statistic.py:42
+msgid "Average bill"
+msgstr "Средний чек"
+
+#: src/handlers/statistic.py:118
+msgid "CR of your platform is {value}%"
+msgstr "CR вашей платформы - {value}%"
+
+#: src/markups/bots.py:10 src/markups/mail.py:11 src/markups/positions.py:10
+#: src/markups/statistic.py:10
+msgid "Back"
+msgstr "Назад"
+
+#: src/markups/bots.py:24
 msgid "Create new TeBot"
-msgstr "Добавить нового бота"
+msgstr "Создать нового бота"
 
-#: src/markups/bots.py:28
+#: src/markups/bots.py:38
 msgid "Positions"
 msgstr "Товары"
 
-#: src/markups/bots.py:29
+#: src/markups/bots.py:39
+msgid "Mailings"
+msgstr "Рассылки"
+
+#: src/markups/bots.py:41
+msgid "Statistic"
+msgstr "Аналитика"
+
+#: src/markups/bots.py:44
+msgid "Welcome message"
+msgstr "Приветственное сообщение"
+
+#: src/markups/bots.py:45
+msgid "Currency"
+msgstr "Валюта"
+
+#: src/markups/bots.py:46
+msgid "Schedule"
+msgstr "Расписание бота"
+
+#: src/markups/bots.py:47
 msgid "Deploy"
 msgstr "Собрать бота"
 
-#: src/markups/bots.py:30
+#: src/markups/bots.py:48
 msgid "Remove TeBot"
 msgstr "Удалить бота"
 
@@ -147,19 +309,55 @@ msgstr "Удалить бота"
 msgid "My Bots"
 msgstr "Мои боты"
 
-#: src/markups/positions.py:14
+#: src/markups/commands.py:9
+msgid "Help"
+msgstr "Помощь"
+
+#: src/markups/mail.py:45
+msgid "Create a new Mail"
+msgstr "Создать новую рассылку"
+
+#: src/markups/mail.py:56
+msgid "Publish"
+msgstr "Опубликовать"
+
+#: src/markups/positions.py:28
 msgid "Create a new position"
-msgstr "Добавить товар"
+msgstr "Создать новый товар"
 
-#: src/markups/positions.py:32
+#: src/markups/positions.py:40
 msgid "{index}. Edit {key}"
-msgstr "{index}. Изменить {key}"
+msgstr "{index}. Редактировать {key}"
 
-#: src/markups/positions.py:41
+#: src/markups/positions.py:49
 msgid "Remove position"
 msgstr "Удалить товар"
 
-#: src/messages.py:2
-msgid "I can help you create and manage your Tebots."
-msgstr "Я могу помочь вам добавить и управлять вашими ботами."
+#: src/markups/statistic.py:46
+msgid "CR, Conversion"
+msgstr "CR, Конверсия"
+
+#: src/messages.py:3
+msgid ""
+"\n"
+"Hi. I am <b>Botly</b>.\n"
+"The bot with which you can <i>easily and quickly launch your own bot</i> in a couple of clicks!\n"
+"To get started, select the \"<b>My bots</b>\" option, or \"<b>Help</b>\" to get help.\n"
+msgstr ""
+"\n"
+"Приветствую. Я – <b>Botly</b>.\n"
+"Бот, с помощью которого вы можете <i>легко и быстро запустить собственного бота</i> всего за пару кликов!\n"
+"Чтобы начать, выберите опцию \"<b>Мои боты</b>\" или \"<b>Помощь</b>\", чтобы получить помощь.\n"
+
+#: src/states.py:11
+msgid "Bot updating"
+msgstr "Обновление бота"
+
+#: src/states.py:24
+msgid "Position creating"
+msgstr "Обновление товара"
+
+#: src/states.py:31
+msgid "Mail creating"
+msgstr "Обновление рассылки"
 
