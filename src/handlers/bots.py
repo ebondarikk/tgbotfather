@@ -7,6 +7,7 @@ import telebot.apihelper
 from telebot import TeleBot
 from telebot.async_telebot import types, AsyncTeleBot
 
+from settings import GITHUB_ACCESS
 from src.exceptions import BotAlreadyExistsException
 from src.utils import with_db, with_callback_data, send_message_with_cancel_markup, step_handler, get_image_url, \
     with_bucket, make_function_public, gettext as _, edit_or_resend, get_default_schedule, get_default_welcome_text
@@ -259,7 +260,7 @@ async def bot_deploy(bot: AsyncTeleBot, call: types.CallbackQuery, db, data, buc
     await bot.send_message(call.message.chat.id, _('Start building your bot. Please, wait...'))
     print('...building...')
     result = await docker.images.build(
-        remote='https://ebondarikk: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@github.com/ebondarikk/tg-bot.git',
+        remote=f'https://{GITHUB_ACCESS}@github.com/ebondarikk/tg-bot.git',
         nocache=True,
         tag='bot_image',
         buildargs={
