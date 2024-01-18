@@ -245,11 +245,11 @@ async def bot_deploy(bot: AsyncTeleBot, call: types.CallbackQuery, db, data, buc
             _('The bot doesn\'t have any position yet. Create positions, then launch deploy')
         )
 
-    if not paid:
-        return await bot.send_message(
-            call.message.chat.id,
-            _('The bot is not paid. Contact @botly_support to pay or get a trial period')
-        )
+    # if not paid:
+    #     return await bot.send_message(
+    #         call.message.chat.id,
+    #         _('The bot is not paid. Contact @botly_support to pay or get a trial period')
+    #     )
 
 
     docker = aiodocker.Docker()
