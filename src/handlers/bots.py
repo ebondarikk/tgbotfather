@@ -275,12 +275,14 @@ async def bot_deploy(bot: AsyncTeleBot, call: types.CallbackQuery, db, data, buc
     )
     if 'error' in result[-1]:
         msg = _('Ooops. Something went wrong ({error})').format(error=str(result[-1]['error']))
+        print(str(result[-1]['error']))
     else:
         make_function_public(function_name)
         function_path = f'https://us-central1-telegram-bot-1-c1cfe.cloudfunctions.net/{function_name}'
         resp = requests.get(f'https://api.telegram.org/bot{bot_data["token"]}/setWebhook?url={function_path}')
         if not resp.ok:
             msg = _('Ooops. Something went wrong ({error})').format(error=resp.text)
+            print(resp.text)
 
     await bot.send_message(call.message.chat.id, msg)
 
