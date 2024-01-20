@@ -133,7 +133,10 @@ async def edit_or_resend(bot: AsyncTeleBot, message: types.Message, text: str, m
             reply_markup=markup
         )
         if message.from_user.id == bot.user.id:
-            await bot.delete_message(message.chat.id, message_id=message.id)
+            try:
+                await bot.delete_message(message.chat.id, message_id=message.id)
+            except Exception:
+                pass
         return msg
 
 

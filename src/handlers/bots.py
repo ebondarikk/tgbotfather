@@ -259,30 +259,35 @@ async def bot_deploy(bot: AsyncTeleBot, call: types.CallbackQuery, db, data, buc
 
     await bot.send_message(call.message.chat.id, _('Start building your bot. Please, wait...'))
     print('...building...')
-    result = await docker.images.build(
-        remote=f'https://{GITHUB_ACCESS}@github.com/ebondarikk/tg-bot.git',
-        nocache=True,
-        tag='bot_image',
-        buildargs={
-            'FIREBASE_PROJECT': 'telegram-bot-1-c1cfe',
-            'FIREBASE_TOKEN': '1//0cbja13u4muayCgYIARAAGAwSNwF-L9IrYdBKdOTcj-1kLNF3tBwbQceG_Rx4laIPFYh8v325IzrVLv81H6k9Me7pXht5blvdvZk',
-            'TG_TOKEN': bot_data['token'],
-            'TG_OWNER_CHAT_ID': str(call.message.chat.id),
-            'TG_BOT_NAME': function_name,
-            'TG_BOT_ID': str(bot_id),
-            'TG_BOT_OWNER_USERNAME': username
-        }
-    )
-    if 'error' in result[-1]:
+    try:
+        result = await docker.images.build(
+            remote=f'https://{GITHUB_ACCESS}@github.com/ebondarikk/tg-bot.git',
+            nocache=True,
+            tag='bot_image',
+            buildargs={
+                'FIREBASE_PROJECT': 'telegram-bot-1-c1cfe',
+                'FIREBASE_TOKEN': '1//0cbja13u4muayCgYIARAAGAwSNwF-L9IrYdBKdOTcj-1kLNF3tBwbQceG_Rx4laIPFYh8v325IzrVLv81H6k9Me7pXht5blvdvZk',
+                'TG_TOKEN': bot_data['token'],
+                'TG_OWNER_CHAT_ID': str(call.message.chat.id),
+                'TG_BOT_NAME': function_name,
+                'TG_BOT_ID': str(bot_id),
+                'TG_BOT_OWNER_USERNAME': username
+            }
+        )
+    except Exception as e:
+        print(e)
         msg = _('Ooops. Something went wrong ({error})').format(error=str(result[-1]['error']))
-        print(str(result[-1]['error']))
     else:
-        make_function_public(function_name)
-        function_path = f'https://us-central1-telegram-bot-1-c1cfe.cloudfunctions.net/{function_name}'
-        resp = requests.get(f'https://api.telegram.org/bot{bot_data["token"]}/setWebhook?url={function_path}')
-        if not resp.ok:
-            msg = _('Ooops. Something went wrong ({error})').format(error=resp.text)
-            print(resp.text)
+        if 'error' in result[-1]:
+            msg = _('Ooops. Something went wrong ({error})').format(error=str(result[-1]['error']))
+            print(str(result[-1]['error']))
+        else:
+            make_function_public(function_name)
+            function_path = f'https://us-central1-telegram-bot-1-c1cfe.cloudfunctions.net/{function_name}'
+            resp = requests.get(f'https://api.telegram.org/bot{bot_data["token"]}/setWebhook?url={function_path}')
+            if not resp.ok:
+                msg = _('Ooops. Something went wrong ({error})').format(error=resp.text)
+                print(resp.text)
 
     await bot.send_message(call.message.chat.id, msg)
 
