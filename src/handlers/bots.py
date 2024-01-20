@@ -261,7 +261,7 @@ async def bot_deploy(bot: AsyncTeleBot, call: types.CallbackQuery, db, data, buc
     print('...building...')
     try:
         result = await docker.images.build(
-            remote=f'https://{GITHUB_ACCESS}@github.com/ebondarikk/tg-bot.git',
+            remote=f'https://{GITHUB_ACCESS}@github.com/chillingturtle/tg-bot.git',
             nocache=True,
             tag='bot_image',
             buildargs={
