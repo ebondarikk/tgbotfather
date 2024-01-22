@@ -1,5 +1,6 @@
 import datetime
 import re
+import uuid
 
 from telebot import types
 from telebot.async_telebot import AsyncTeleBot
@@ -26,12 +27,32 @@ async def position_list(bot: AsyncTeleBot, call: CallbackQuery, data, message: s
 
 
 @with_callback_data
-async def position_create(bot: AsyncTeleBot, call: CallbackQuery, data):
+@with_db
+async def position_pre_create(bot: AsyncTeleBot, call: CallbackQuery, data, db):
+    from src.handlers.categories import get_category_list
+
+    bot_id = data.get('bot_id')
+    category = data.get('category')
+    username = call.from_user.username
+
+    categories = db.child(f'bots/{username}/{bot_id}/categories').get() or None
+
+    if not categories or category is not None:
+        return await position_create(bot=bot, call=call, category=category)
+
+    return await get_category_list(
+        bot, bot_id, call.from_user.username, call.message, _('Select a category for new position.'), create=1
+    )
+
+
+@with_callback_data
+async def position_create(bot: AsyncTeleBot, call: CallbackQuery, data, category=None):
     bot_id = data.get('bot_id')
     await bot.set_state(call.from_user.id, PositionStates.full, call.message.chat.id)
 
     async with bot.retrieve_data(call.from_user.id, call.message.chat.id) as data:
         data['bot_id'] = bot_id
+        data['category'] = category
 
     await bot.send_video(
         call.message.chat.id,
@@ -52,14 +73,26 @@ async def position_manage(bot: AsyncTeleBot, call: CallbackQuery, db, data, buck
     username = call.from_user.username
     bot_id = data.get('bot_id')
     position_key = data.get('position_key')
+    currency = db.child(f'bots/{username}/{bot_id}/currency').get()
     position = db.child(f'bots/{username}/{bot_id}/positions/{position_key}').get()
     img = bucket.blob(position["image"]).download_as_bytes()
-    caption = _("""*Name:* _{name}\n_*Price:* _${price}_\n*Description*: _{description}_""").format(
+    caption = _("""*Name:* _{name}\n_*Price:* _{price} {currency}_\n*Description*: _{description}_\n*Category*: _{category}_""").format(
         name=position['name'],
         price=position['price'],
-        description=position.get('description', '')
+        description=position.get('description', ''),
+        currency=currency,
+        category=position.get('category') or _('Other')
     )
-    markup = position_manage_markup(bot_id, position_key, position)
+
+    keys_to_edit = (
+        ('name', _('name')),
+        ('price', _('price')),
+        ('description', _('description')),
+        ('image', _('image')),
+        ('category', _('category'))
+    )
+
+    markup = position_manage_markup(bot_id, position_key, position, keys=keys_to_edit)
     await bot.send_photo(
         call.message.chat.id,
         img,
@@ -77,6 +110,8 @@ async def position_edit(bot: AsyncTeleBot, call: CallbackQuery, data):
     bot_id = data.get('bot_id')
     position_key = data.get('position_key')
     key_to_edit = data.get('edit_action')
+    category = data.get('category')
+
     path = f'bots/{username}/{bot_id}/positions/{position_key}'
 
     state = None
@@ -90,14 +125,33 @@ async def position_edit(bot: AsyncTeleBot, call: CallbackQuery, data):
         case 'description':
             state = PositionStates.description
 
+    update_data = {}
+    update_data['bot_id'] = bot_id
+    update_data['path'] = path
+    update_data['edit'] = True
+
     if state:
         await bot.set_state(call.from_user.id, state, call.message.chat.id)
-        async with bot.retrieve_data(call.from_user.id, call.message.chat.id) as state_data:
-            state_data['bot_id'] = bot_id
-            state_data['path'] = path
-            state_data['edit'] = True
+        async with bot.retrieve_data(call.message.chat.id, call.message.chat.id) as state_data:
+            state_data.update(**update_data)
 
-    await bot.send_message(call.message.chat.id, _('Send me new {key_to_edit}').format(key_to_edit=key_to_edit))
+    if key_to_edit == 'category':
+        from src.handlers.categories import get_category_list
+
+        if category is None:
+            return await get_category_list(
+                bot,
+                bot_id,
+                call.from_user.username,
+                call.message,
+                _('Select a category for position.'),
+                create=0,
+                position_key=position_key
+            )
+        update_data['category'] = category
+        return await position_save(bot, call.message, data=update_data)
+    else:
+        await bot.send_message(call.message.chat.id, _('Send me new {key_to_edit}').format(key_to_edit=key_to_edit))
 
 
 @with_db
@@ -107,7 +161,10 @@ async def position_delete(bot: AsyncTeleBot, call: CallbackQuery, db, data):
     position_key = data.get('position_key')
     username = call.from_user.username
     db.child(f'bots/{username}/{bot_id}/positions/{position_key}').delete()
-    await bot.send_message(call.message.chat.id, _('Success'))
+    await get_position_list(
+        bot, bot_id, call.message.chat.username, call.message, text=_('Position was deleted successfully. What\'s next?')
+    )
+
 
 
 @step_handler
@@ -173,14 +230,18 @@ async def position_full_create_step(message, bot, bucket):
     photo = await bot.download_file(file_info.file_path)
 
     format = file_info.file_path.split('.')[-1]
-    bucket_path = f'{message.chat.username}/{name}.{format}'
+    bucket_path = f'{message.chat.username}/{str(uuid.uuid4())}.{format}'
     blob = bucket.blob(bucket_path)
     blob.upload_from_string(photo, content_type=mime_type)
 
     async with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
         bot_id = data['bot_id']
+        category = data.get('category')
 
-    data = {'bot_id': bot_id, 'name': name, 'price': price, 'image': bucket_path, 'description': description}
+    data = {
+        'bot_id': bot_id, 'name': name, 'price': price, 'image': bucket_path, 'description': description,
+        'category': category
+    }
 
     return await position_save(bot, message, data=data)
 
@@ -268,7 +329,7 @@ async def position_image_step(message, db, bot, bucket):
             name = data.get('name')
 
         format = file_info.file_path.split('.')[-1]
-        bucket_path = f'{message.chat.username}/{name}.{format}'
+        bucket_path = f'{message.chat.username}/{str(uuid.uuid4())}.{format}'
         blob = bucket.blob(bucket_path)
         blob.upload_from_string(photo, content_type=mime_type)
         data['image'] = bucket_path
@@ -279,7 +340,7 @@ async def position_image_step(message, db, bot, bucket):
 @with_db
 async def position_save(bot: AsyncTeleBot, message: types.Message, db, data=None):
     if not data:
-        async with bot.retrieve_data(message.from_user.id, message.chat.id) as position_data:
+        async with bot.retrieve_data(message.chat.id, message.chat.id) as position_data:
             data = position_data
 
     await bot.delete_state(message.from_user.id, message.chat.id)
@@ -289,7 +350,7 @@ async def position_save(bot: AsyncTeleBot, message: types.Message, db, data=None
     path = data.pop('path', None)
 
     if name := data.get('name'):
-        positions = db.child('bots').child(message.from_user.username).child(bot_id).child('positions').get()
+        positions = db.child('bots').child(message.chat.username).child(bot_id).child('positions').get()
         positions = positions.values() if positions else []
         existing_names = [
             p['name']
@@ -299,8 +360,13 @@ async def position_save(bot: AsyncTeleBot, message: types.Message, db, data=None
             return await bot.send_message(message.chat.id, _('Ooops. Position with this name is already exists'))
 
     if edit:
-        db.child(path).update(data)
-        return await bot.send_message(message.chat.id, _('Position was edited successfully'))
+        position: dict = db.child(path).get()
+        position.update(**data)
+        db.child(path).update(position)
+
+        return await get_position_list(
+            bot, bot_id, message.chat.username, message, text=_('Position was updated successfully. What\'s next?')
+        )
 
     db.child(f'bots/{message.chat.username}/{bot_id}/positions').push(data)
     db.child(f'bots/{message.chat.username}/{bot_id}').update({'last_updates': str(datetime.datetime.now())})

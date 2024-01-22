@@ -45,6 +45,11 @@ def position_action(action_name, **kwargs):
     return action(action_name, **kwargs)
 
 
+def category_action(action_name, **kwargs):
+    action_name = f'category/{action_name}'
+    return action(action_name, **kwargs)
+
+
 def statistic_action(action_name, full_route=False, **kwargs):
     action_name = f'statistic/{action_name}' if not full_route else action_name
     return action(action_name, **kwargs)
@@ -118,19 +123,23 @@ def with_bucket(func):
     return wrapper
 
 
-async def edit_or_resend(bot: AsyncTeleBot, message: types.Message, text: str, markup: Any = None):
+async def edit_or_resend(
+        bot: AsyncTeleBot, message: types.Message, text: str, markup: Any = None, parse_mode: Any = None
+):
     try:
         return await bot.edit_message_text(
             text,
             message.chat.id,
             message_id=message.id,
             reply_markup=markup,
+            parse_mode=parse_mode
         )
     except Exception:
         msg = await bot.send_message(
             message.chat.id,
             text,
-            reply_markup=markup
+            reply_markup=markup,
+            parse_mode=parse_mode
         )
         if message.from_user.id == bot.user.id:
             try:

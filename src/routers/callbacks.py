@@ -9,9 +9,18 @@ from src.handlers.bots import (
     bot_currency_update,
     bot_welcome_text_update
 )
+
+from src.handlers.categories import (
+    category_list,
+    category_create,
+    category_manage,
+    category_edit,
+    category_delete,
+)
+
 from src.handlers.positions import (
     position_list,
-    position_create,
+    position_pre_create,
     position_manage,
     position_edit,
     position_delete
@@ -49,10 +58,17 @@ ACTIONS = {
     },
     'position': {
         'list': position_list,
-        'create': position_create,
+        'create': position_pre_create,
         'manage': position_manage,
         'edit': position_edit,
         'delete': position_delete
+    },
+    'category': {
+        'list': category_list,
+        'create': category_create,
+        'manage': category_manage,
+        'edit': category_edit,
+        'delete': category_delete
     },
     'statistic': {
         'list': statistic_list,

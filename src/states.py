@@ -19,6 +19,7 @@ class PositionStates(StatesGroup):
     price = State()
     image = State()
     description = State()
+    category = State()
 
     def __str__(self):
         return _('Position creating')
@@ -31,9 +32,19 @@ class MailStates(StatesGroup):
         return _('Mail creating')
 
 
+class CategoryStates(StatesGroup):
+    create = State()
+    edit = State()
+    name = State()
+
+    def __str__(self):
+        return _('Category creating')
+
+
 states = [
     BotStates,
     PositionStates,
-    MailStates
+    MailStates,
+    CategoryStates
 ]
 

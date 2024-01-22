@@ -33,18 +33,18 @@ def positions_list_markup(bot_id: Any, bot_username, positions: dict) -> InlineK
     return markup
 
 
-def position_manage_markup(bot_id: Any, position_key: str, position: dict) -> InlineKeyboardMarkup:
+def position_manage_markup(bot_id: Any, position_key: str, position: dict, keys: tuple) -> InlineKeyboardMarkup:
     menu = [
         *[[
             InlineKeyboardButton(
-                '✏️' + _('{index}. Edit {key}').format(index=index+1, key=key),
+                '✏️' + _('{index}. Edit {key}').format(index=index+1, key=key[1]),
                 callback_data=position_action(
                     'edit',
                     bot_id=bot_id,
                     position_key=position_key,
-                    edit_action=key
+                    edit_action=key[0]
                 )
-            )] for index, key in enumerate(position.keys())],
+            )] for index, key in enumerate(keys)],
         [InlineKeyboardButton(
             '🗑 ' + _('Remove position'),
             callback_data=position_action(
