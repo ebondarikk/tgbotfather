@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2023-12-25 17:25+0300\n"
+"POT-Creation-Date: 2024-01-22 09:22+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -59,133 +59,161 @@ msgstr ""
 msgid "Position with this name is already exists"
 msgstr ""
 
-#: src/handlers/bots.py:24
+#: src/handlers/bots.py:25
 msgid "Uploading video-instruction. Please, wait"
 msgstr ""
 
-#: src/handlers/bots.py:34
+#: src/handlers/bots.py:35
 msgid "Create a new bot via @BotFather and send me a token. Use the video instructions to make it more clear"
 msgstr ""
 
-#: src/handlers/bots.py:45
+#: src/handlers/bots.py:46
 msgid "Select a bot to view and customize or Create a new one."
 msgstr ""
 
-#: src/handlers/bots.py:64
+#: src/handlers/bots.py:65
 msgid "This is @{bot_username}. Select Action"
 msgstr ""
 
-#: src/handlers/bots.py:81
+#: src/handlers/bots.py:82
 msgid "Bot was deleted successfully. What's next?"
 msgstr ""
 
-#: src/handlers/bots.py:91
+#: src/handlers/bots.py:92
 msgid "Update Schedule"
 msgstr ""
 
-#: src/handlers/bots.py:105
+#: src/handlers/bots.py:106
 msgid ""
 "That's schedule of your Bot. You can update it by clicking on \"Update Schedule\" button \n"
 "\n"
 msgstr ""
 
-#: src/handlers/bots.py:108
+#: src/handlers/bots.py:109
 msgid "Monday"
 msgstr ""
 
-#: src/handlers/bots.py:109
+#: src/handlers/bots.py:110
 msgid "Tuesday"
 msgstr ""
 
-#: src/handlers/bots.py:110
+#: src/handlers/bots.py:111
 msgid "Wednesday"
 msgstr ""
 
-#: src/handlers/bots.py:111
+#: src/handlers/bots.py:112
 msgid "Thursday"
 msgstr ""
 
-#: src/handlers/bots.py:112
+#: src/handlers/bots.py:113
 msgid "Friday"
 msgstr ""
 
-#: src/handlers/bots.py:113
+#: src/handlers/bots.py:114
 msgid "Saturday"
 msgstr ""
 
-#: src/handlers/bots.py:114
+#: src/handlers/bots.py:115
 msgid "Sunday"
 msgstr ""
 
-#: src/handlers/bots.py:120
+#: src/handlers/bots.py:121
 msgid "off-day"
 msgstr ""
 
-#: src/handlers/bots.py:138
+#: src/handlers/bots.py:139
 msgid "<i>This is your welcome message:</i>"
 msgstr ""
 
-#: src/handlers/bots.py:153
+#: src/handlers/bots.py:154
 msgid "Send me a new welcome message"
 msgstr ""
 
-#: src/handlers/bots.py:162
+#: src/handlers/bots.py:163
 msgid "Message undefined. Try again"
 msgstr ""
 
-#: src/handlers/bots.py:176
+#: src/handlers/bots.py:177
 msgid "Welcome text was updated. What's next?"
 msgstr ""
 
-#: src/handlers/bots.py:217
+#: src/handlers/bots.py:218
 msgid "Currency was successfully updated to {currency}. What's next?"
 msgstr ""
 
-#: src/handlers/bots.py:221
+#: src/handlers/bots.py:222
 msgid "Your current currency is {currency}. Please, choose a new currency"
 msgstr ""
 
-#: src/handlers/bots.py:244
+#: src/handlers/bots.py:245
 msgid "The bot doesn't have any position yet. Create positions, then launch deploy"
 msgstr ""
 
-#: src/handlers/bots.py:250
-msgid "The bot is not paid. Contact @botly_support to pay or get a trial period"
-msgstr ""
-
-#: src/handlers/bots.py:257
+#: src/handlers/bots.py:258
 msgid "Success. Try your bot @{bot_username}"
 msgstr ""
 
-#: src/handlers/bots.py:259
+#: src/handlers/bots.py:260
 msgid "Start building your bot. Please, wait..."
 msgstr ""
 
-#: src/handlers/bots.py:276 src/handlers/bots.py:282
+#: src/handlers/bots.py:279 src/handlers/bots.py:283 src/handlers/bots.py:290
 msgid "Ooops. Something went wrong ({error})"
 msgstr ""
 
-#: src/handlers/bots.py:296
+#: src/handlers/bots.py:305
 msgid "Invalid bot token. Send the token again."
 msgstr ""
 
-#: src/handlers/bots.py:314
+#: src/handlers/bots.py:323
 msgid "Ooops. {e}. Try to input another token"
 msgstr ""
 
-#: src/handlers/bots.py:320
+#: src/handlers/bots.py:329
 msgid "Bot {fullname} was created successfully. Default currency is {default_currency}. You can change it by clicking on \"Currency\" button"
 msgstr ""
 
-#: src/handlers/commands.py:47
+#: src/handlers/categories.py:18
+msgid "Select a category to manage or create a new one"
+msgstr ""
+
+#: src/handlers/categories.py:48
+msgid "Send me a name of new category."
+msgstr ""
+
+#: src/handlers/categories.py:59
+msgid "*Name:* _{name}_"
+msgstr ""
+
+#: src/handlers/categories.py:86 src/handlers/positions.py:154
+msgid "Send me new {key_to_edit}"
+msgstr ""
+
+#: src/handlers/categories.py:103
+msgid "Category was updated successfully. What's next?"
+msgstr ""
+
+#: src/handlers/categories.py:105
+msgid "Category was created successfully. What's next?"
+msgstr ""
+
+#: src/handlers/categories.py:150
+msgid "Oops. This category can not be deleted, because it has goods."
+msgstr ""
+
+#: src/handlers/categories.py:160
+msgid "Category was successfully deleted. What's next?"
+msgstr ""
+
+#: src/handlers/commands.py:50
 msgid "To get help, contact with our support @botly_support."
 msgstr ""
 
-#: src/handlers/commands.py:58
+#: src/handlers/commands.py:61
 msgid "No any active command was found."
 msgstr ""
 
-#: src/handlers/commands.py:71
+#: src/handlers/commands.py:74
 msgid "The command {command} has been canceled"
 msgstr ""
 
@@ -205,27 +233,31 @@ msgstr ""
 msgid "No users to send"
 msgstr ""
 
-#: src/handlers/mail.py:147
+#: src/handlers/mail.py:150
 msgid "Success sent to {cnt} users"
 msgstr ""
 
-#: src/handlers/mail.py:163
+#: src/handlers/mail.py:166
 msgid "It is allowed to use no more than one photo. Try again"
 msgstr ""
 
-#: src/handlers/mail.py:186
+#: src/handlers/mail.py:189
 msgid "Unsupported message format. Please, send me image or text or both."
 msgstr ""
 
-#: src/handlers/mail.py:243
+#: src/handlers/mail.py:246
 msgid "Mailing was created successfully. You can publish it by selecting it below. "
 msgstr ""
 
-#: src/handlers/positions.py:19
+#: src/handlers/positions.py:20
 msgid "Select a good to customize or create a new one"
 msgstr ""
 
 #: src/handlers/positions.py:44
+msgid "Select a category for new position."
+msgstr ""
+
+#: src/handlers/positions.py:65
 msgid ""
 "Send me a new good with image in next format:\n"
 "Name\n"
@@ -233,66 +265,91 @@ msgid ""
 "#Description#"
 msgstr ""
 
-#: src/handlers/positions.py:57
+#: src/handlers/positions.py:79
 msgid ""
 "*Name:* _{name}\n"
-"_*Price:* _${price}_\n"
-"*Description*: _{description}_"
+"_*Price:* _{price} {currency}_\n"
+"*Description*: _{description}_\n"
+"*Category*: _{category}_"
 msgstr ""
 
-#: src/handlers/positions.py:100
-msgid "Send me new {key_to_edit}"
+#: src/handlers/positions.py:84 src/markups/categories.py:35
+msgid "Other"
 msgstr ""
 
-#: src/handlers/positions.py:110
-msgid "Success"
+#: src/handlers/positions.py:88
+msgid "name"
 msgstr ""
 
-#: src/handlers/positions.py:125
+#: src/handlers/positions.py:89
+msgid "price"
+msgstr ""
+
+#: src/handlers/positions.py:90
+msgid "description"
+msgstr ""
+
+#: src/handlers/positions.py:91
+msgid "image"
+msgstr ""
+
+#: src/handlers/positions.py:92
+msgid "category"
+msgstr ""
+
+#: src/handlers/positions.py:147
+msgid "Select a category for position."
+msgstr ""
+
+#: src/handlers/positions.py:165
+msgid "Position was deleted successfully. What's next?"
+msgstr ""
+
+#: src/handlers/positions.py:182
 msgid "Seems like you forgot attach an image. Try again"
 msgstr ""
 
-#: src/handlers/positions.py:132
+#: src/handlers/positions.py:189
 msgid "Seems like you forgot send name and price in description. Try again"
 msgstr ""
 
-#: src/handlers/positions.py:143
+#: src/handlers/positions.py:200
 msgid "Seems like price is absent or incorrect. Try like this: *15* or *7.90*"
 msgstr ""
 
-#: src/handlers/positions.py:154
+#: src/handlers/positions.py:211
 msgid "Seems like you forgot send a name. Try again"
 msgstr ""
 
-#: src/handlers/positions.py:168
+#: src/handlers/positions.py:225
 msgid "Description is too large. Max size is 256 symbols"
 msgstr ""
 
-#: src/handlers/positions.py:202
+#: src/handlers/positions.py:263
 msgid "Now set the price"
 msgstr ""
 
-#: src/handlers/positions.py:213
+#: src/handlers/positions.py:274
 msgid "please, send me a valid price"
 msgstr ""
 
-#: src/handlers/positions.py:224
+#: src/handlers/positions.py:285
 msgid "Now send me position image"
 msgstr ""
 
-#: src/handlers/positions.py:255
+#: src/handlers/positions.py:316
 msgid "This is not an image"
 msgstr ""
 
-#: src/handlers/positions.py:299
+#: src/handlers/positions.py:360
 msgid "Ooops. Position with this name is already exists"
 msgstr ""
 
-#: src/handlers/positions.py:303
-msgid "Position was edited successfully"
+#: src/handlers/positions.py:368
+msgid "Position was updated successfully. What's next?"
 msgstr ""
 
-#: src/handlers/positions.py:308
+#: src/handlers/positions.py:374
 msgid "Position was created successfully. What's next?"
 msgstr ""
 
@@ -336,8 +393,8 @@ msgstr ""
 msgid "CR of your platform is {value}%"
 msgstr ""
 
-#: src/markups/bots.py:10 src/markups/mail.py:11 src/markups/positions.py:10
-#: src/markups/statistic.py:10
+#: src/markups/bots.py:10 src/markups/categories.py:10 src/markups/mail.py:11
+#: src/markups/positions.py:10 src/markups/statistic.py:10
 msgid "Back"
 msgstr ""
 
@@ -350,31 +407,47 @@ msgid "Positions"
 msgstr ""
 
 #: src/markups/bots.py:39
+msgid "Categories"
+msgstr ""
+
+#: src/markups/bots.py:40
 msgid "Mailings"
 msgstr ""
 
-#: src/markups/bots.py:41
+#: src/markups/bots.py:42
 msgid "Statistic"
 msgstr ""
 
-#: src/markups/bots.py:44
+#: src/markups/bots.py:45
 msgid "Welcome message"
 msgstr ""
 
-#: src/markups/bots.py:45
+#: src/markups/bots.py:46
 msgid "Currency"
 msgstr ""
 
-#: src/markups/bots.py:46
+#: src/markups/bots.py:47
 msgid "Schedule"
 msgstr ""
 
-#: src/markups/bots.py:47
+#: src/markups/bots.py:48
 msgid "Deploy"
 msgstr ""
 
-#: src/markups/bots.py:48
+#: src/markups/bots.py:49
 msgid "Remove TeBot"
+msgstr ""
+
+#: src/markups/categories.py:64
+msgid "Create a new category"
+msgstr ""
+
+#: src/markups/categories.py:79 src/markups/positions.py:40
+msgid "{index}. Edit {key}"
+msgstr ""
+
+#: src/markups/categories.py:88
+msgid "Remove category"
 msgstr ""
 
 #: src/markups/commands.py:8
@@ -397,10 +470,6 @@ msgstr ""
 msgid "Create a new position"
 msgstr ""
 
-#: src/markups/positions.py:40
-msgid "{index}. Edit {key}"
-msgstr ""
-
 #: src/markups/positions.py:49
 msgid "Remove position"
 msgstr ""
@@ -421,11 +490,15 @@ msgstr ""
 msgid "Bot updating"
 msgstr ""
 
-#: src/states.py:24
+#: src/states.py:25
 msgid "Position creating"
 msgstr ""
 
-#: src/states.py:31
+#: src/states.py:32
 msgid "Mail creating"
+msgstr ""
+
+#: src/states.py:41
+msgid "Category creating"
 msgstr ""
 

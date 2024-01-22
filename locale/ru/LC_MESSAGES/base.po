@@ -441,4 +441,100 @@ msgstr "Воскресенье"
 msgid "off-day"
 msgstr "выходной"
 
+#: src/handlers/categories.py:18
+msgid "Select a category to manage or create a new one"
+msgstr "Выберите категорию для управление или создайте новую"
+
+#: src/handlers/categories.py:48
+msgid "Send me a name of new category."
+msgstr "Отправьте мне название новой категории"
+
+#: src/handlers/categories.py:59
+msgid "*Name:* _{name}_"
+msgstr "*Название:* _{name}_"
+
+#: src/handlers/categories.py:86 src/handlers/positions.py:154
+msgid "Send me new {key_to_edit}"
+msgstr "Отправьте мне новое {key_to_edit}"
+
+#: src/handlers/categories.py:103
+msgid "Category was updated successfully. What's next?"
+msgstr "Категория успешно обновлена. Что дальше?"
+
+#: src/handlers/categories.py:105
+msgid "Category was created successfully. What's next?"
+msgstr "Категория создана успешно. Что дальше?"
+
+#: src/handlers/categories.py:150
+msgid "Oops. This category can not be deleted, because it has goods."
+msgstr "Ой, эта категория не может быть удалена, в ней еще содержатся товары."
+
+#: src/handlers/categories.py:160
+msgid "Category was successfully deleted. What's next?"
+msgstr "Категория успешно удалена. Что дальше?"
+
+msgid "Select a category for new position."
+msgstr "Выберите категорию для нового товара."
+
+
+msgid ""
+"*Name:* _{name}\n"
+"_*Price:* _{price} {currency}_\n"
+"*Description*: _{description}_\n"
+"*Category*: _{category}_"
+msgstr ""
+"*Название:* _{name}\n"
+"_*Стоимость:* _{price} {currency}_\n"
+"*Описание*: _{description}_\n"
+"*Категория*: _{category}_"
+
+msgid "Other"
+msgstr "Другое"
+
+
+#: src/handlers/positions.py:88
+msgid "name"
+msgstr "название"
+
+#: src/handlers/positions.py:89
+msgid "price"
+msgstr "стоимость"
+
+#: src/handlers/positions.py:90
+msgid "description"
+msgstr "описание"
+
+#: src/handlers/positions.py:91
+msgid "image"
+msgstr "изображение"
+
+#: src/handlers/positions.py:92
+msgid "category"
+msgstr "категория"
+
+#: src/handlers/positions.py:147
+msgid "Select a category for position."
+msgstr "Выберите категорию для товара."
+
+#: src/handlers/positions.py:165
+msgid "Position was deleted successfully. What's next?"
+msgstr "Товар успешно удален. Что дальше?"
+
+
+msgid "Categories"
+msgstr "Категории"
+
+
+#: src/markups/categories.py:64
+msgid "Create a new category"
+msgstr "Создать новую категорию"
+
+#: src/markups/categories.py:79 src/markups/positions.py:40
+msgid "{index}. Edit {key}"
+msgstr "{index}. Редактировать {key}"
+
+#: src/markups/categories.py:88
+msgid "Remove category"
+msgstr "Удалить категорию"
+
 
