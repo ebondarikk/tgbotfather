@@ -11,14 +11,14 @@ def back_menu_option(back_to, **kwargs):
 
 
 def categories_for_position_markup(
-        bot_id: Any, bot_username, categories: dict, create: bool, position_key: str = None
+        bot_id: Any, bot_username, categories: dict, create: bool, position_key: str = None, **kwargs
 ) -> InlineKeyboardMarkup:
     category_btns = [
         InlineKeyboardButton(
             f'{index + 1}. {category_data["name"]}',
             callback_data=position_action(
                 'create' if create else 'edit', bot_id=bot_id, category=category_data["name"], create=create,
-                edit_action='category', position_key=position_key or 0
+                edit_action='category', position_key=position_key or 0, **kwargs
             )
         )
         for index, (category_key, category_data) in enumerate(categories.items())
@@ -35,7 +35,7 @@ def categories_for_position_markup(
             f'{len(categories) + 1}. ' + _('Other'),
             callback_data=position_action(
                 'create' if create else 'edit', bot_id=bot_id, category='', create=create,
-                edit_action='category', position_key=position_key or 0
+                edit_action='category', position_key=position_key or 0, **kwargs
             )
         )],
         back_menu_option('bot/manage' if create else 'position/list', bot_id=bot_id, username=bot_username)

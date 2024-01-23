@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-01-22 09:22+0300\n"
+"POT-Creation-Date: 2024-01-24 00:46+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -181,11 +181,12 @@ msgstr ""
 msgid "Send me a name of new category."
 msgstr ""
 
-#: src/handlers/categories.py:59
+#: src/handlers/categories.py:59 src/handlers/positions.py:135
 msgid "*Name:* _{name}_"
 msgstr ""
 
-#: src/handlers/categories.py:86 src/handlers/positions.py:154
+#: src/handlers/categories.py:86 src/handlers/positions.py:235
+#: src/handlers/positions.py:285
 msgid "Send me new {key_to_edit}"
 msgstr ""
 
@@ -249,15 +250,36 @@ msgstr ""
 msgid "Mailing was created successfully. You can publish it by selecting it below. "
 msgstr ""
 
-#: src/handlers/positions.py:20
+#: src/handlers/positions.py:21
 msgid "Select a good to customize or create a new one"
 msgstr ""
 
-#: src/handlers/positions.py:44
+#: src/handlers/positions.py:34
+msgid "Select a sub item to customize or create a new one"
+msgstr ""
+
+#: src/handlers/positions.py:60
+msgid "Send me new a name of sub item"
+msgstr ""
+
+#: src/handlers/positions.py:79
 msgid "Select a category for new position."
 msgstr ""
 
-#: src/handlers/positions.py:65
+#: src/handlers/positions.py:90
+msgid "Which type of good do you want to create?"
+msgstr ""
+
+#: src/handlers/positions.py:104
+msgid ""
+"Send me a new good with image in next format:\n"
+"Name\n"
+"*Price*\n"
+"#Description#\n"
+"_Sub item 1; Sub item 2: Sub item 3_"
+msgstr ""
+
+#: src/handlers/positions.py:108
 msgid ""
 "Send me a new good with image in next format:\n"
 "Name\n"
@@ -265,91 +287,130 @@ msgid ""
 "#Description#"
 msgstr ""
 
-#: src/handlers/positions.py:79
-msgid ""
-"*Name:* _{name}\n"
-"_*Price:* _{price} {currency}_\n"
-"*Description*: _{description}_\n"
-"*Category*: _{category}_"
-msgstr ""
-
-#: src/handlers/positions.py:84 src/markups/categories.py:35
-msgid "Other"
-msgstr ""
-
-#: src/handlers/positions.py:88
+#: src/handlers/positions.py:132 src/handlers/positions.py:175
 msgid "name"
 msgstr ""
 
-#: src/handlers/positions.py:89
+#: src/handlers/positions.py:156
+msgid ""
+"*Name:* _{name}\n"
+"_*Price:* _{price} {currency}_\n"
+"*Description:* _{description}_\n"
+"*Category:* _{category}_\n"
+"*Type:* _{type}_"
+msgstr ""
+
+#: src/handlers/positions.py:170 src/markups/categories.py:35
+msgid "Other"
+msgstr ""
+
+#: src/handlers/positions.py:171
+msgid "Grouped"
+msgstr ""
+
+#: src/handlers/positions.py:171
+msgid "Simple"
+msgstr ""
+
+#: src/handlers/positions.py:176
 msgid "price"
 msgstr ""
 
-#: src/handlers/positions.py:90
+#: src/handlers/positions.py:177
 msgid "description"
 msgstr ""
 
-#: src/handlers/positions.py:91
+#: src/handlers/positions.py:178
 msgid "image"
 msgstr ""
 
-#: src/handlers/positions.py:92
+#: src/handlers/positions.py:179
 msgid "category"
 msgstr ""
 
-#: src/handlers/positions.py:147
+#: src/handlers/positions.py:185
+msgid ""
+"\n"
+"*Sub items:* _{subitems}_"
+msgstr ""
+
+#: src/handlers/positions.py:191
+msgid "sub items"
+msgstr ""
+
+#: src/handlers/positions.py:278
 msgid "Select a category for position."
 msgstr ""
 
-#: src/handlers/positions.py:165
+#: src/handlers/positions.py:296
 msgid "Position was deleted successfully. What's next?"
 msgstr ""
 
-#: src/handlers/positions.py:182
+#: src/handlers/positions.py:312
+msgid "Oops. Grouped good must contain at least 1 sub item."
+msgstr ""
+
+#: src/handlers/positions.py:318
+msgid "Sub item was deleted successfully. What's next?"
+msgstr ""
+
+#: src/handlers/positions.py:334
 msgid "Seems like you forgot attach an image. Try again"
 msgstr ""
 
-#: src/handlers/positions.py:189
+#: src/handlers/positions.py:341
 msgid "Seems like you forgot send name and price in description. Try again"
 msgstr ""
 
-#: src/handlers/positions.py:200
+#: src/handlers/positions.py:352
 msgid "Seems like price is absent or incorrect. Try like this: *15* or *7.90*"
 msgstr ""
 
-#: src/handlers/positions.py:211
+#: src/handlers/positions.py:363
 msgid "Seems like you forgot send a name. Try again"
 msgstr ""
 
-#: src/handlers/positions.py:225
+#: src/handlers/positions.py:377
 msgid "Description is too large. Max size is 256 symbols"
 msgstr ""
 
-#: src/handlers/positions.py:263
+#: src/handlers/positions.py:396 src/handlers/positions.py:409
+msgid "Seems like subitems are incorrect. Try like this: _raspberry flavor; chocolate flavor_"
+msgstr ""
+
+#: src/handlers/positions.py:456
 msgid "Now set the price"
 msgstr ""
 
-#: src/handlers/positions.py:274
+#: src/handlers/positions.py:467
 msgid "please, send me a valid price"
 msgstr ""
 
-#: src/handlers/positions.py:285
+#: src/handlers/positions.py:478
 msgid "Now send me position image"
 msgstr ""
 
-#: src/handlers/positions.py:316
+#: src/handlers/positions.py:509
 msgid "This is not an image"
 msgstr ""
 
-#: src/handlers/positions.py:360
+#: src/handlers/positions.py:552
+msgid "Sub item was updated successfully. What's next?"
+msgstr ""
+
+#: src/handlers/positions.py:558
+msgid "Sub item was created successfully. What's next?"
+msgstr ""
+
+#: src/handlers/positions.py:583
 msgid "Ooops. Position with this name is already exists"
 msgstr ""
 
-#: src/handlers/positions.py:368
+#: src/handlers/positions.py:593
 msgid "Position was updated successfully. What's next?"
 msgstr ""
 
-#: src/handlers/positions.py:374
+#: src/handlers/positions.py:605
 msgid "Position was created successfully. What's next?"
 msgstr ""
 
@@ -442,7 +503,8 @@ msgstr ""
 msgid "Create a new category"
 msgstr ""
 
-#: src/markups/categories.py:79 src/markups/positions.py:40
+#: src/markups/categories.py:79 src/markups/positions.py:86
+#: src/markups/positions.py:115
 msgid "{index}. Edit {key}"
 msgstr ""
 
@@ -470,7 +532,27 @@ msgstr ""
 msgid "Create a new position"
 msgstr ""
 
-#: src/markups/positions.py:49
+#: src/markups/positions.py:54
+msgid "Create a new sub item"
+msgstr ""
+
+#: src/markups/positions.py:68
+msgid "Simple good"
+msgstr ""
+
+#: src/markups/positions.py:71
+msgid "Grouped good"
+msgstr ""
+
+#: src/markups/positions.py:96
+msgid "Remove sub item"
+msgstr ""
+
+#: src/markups/positions.py:125
+msgid "Edit"
+msgstr ""
+
+#: src/markups/positions.py:129
 msgid "Remove position"
 msgstr ""
 
@@ -495,10 +577,14 @@ msgid "Position creating"
 msgstr ""
 
 #: src/states.py:32
+msgid "Sub item creating"
+msgstr ""
+
+#: src/states.py:39
 msgid "Mail creating"
 msgstr ""
 
-#: src/states.py:41
+#: src/states.py:48
 msgid "Category creating"
 msgstr ""
 

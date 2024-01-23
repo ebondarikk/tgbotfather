@@ -45,6 +45,11 @@ def position_action(action_name, **kwargs):
     return action(action_name, **kwargs)
 
 
+def subitem_action(action_name, **kwargs):
+    action_name = f'subitem/{action_name}'
+    return action(action_name, **kwargs)
+
+
 def category_action(action_name, **kwargs):
     action_name = f'category/{action_name}'
     return action(action_name, **kwargs)

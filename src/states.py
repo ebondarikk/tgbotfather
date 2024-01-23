@@ -25,6 +25,13 @@ class PositionStates(StatesGroup):
         return _('Position creating')
 
 
+class SubItemStates(StatesGroup):
+    name = State()
+
+    def __str__(self):
+        return _('Sub item creating')
+
+
 class MailStates(StatesGroup):
     create = State()
 
@@ -45,6 +52,7 @@ states = [
     BotStates,
     PositionStates,
     MailStates,
-    CategoryStates
+    CategoryStates,
+    SubItemStates,
 ]
 

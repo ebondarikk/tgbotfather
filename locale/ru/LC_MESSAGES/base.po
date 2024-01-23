@@ -538,3 +538,105 @@ msgid "Remove category"
 msgstr "Удалить категорию"
 
 
+msgid "Sub item creating"
+msgstr "Создание подтовара"
+
+#: src/markups/positions.py:54
+msgid "Create a new sub item"
+msgstr "Добавить новый подтовар"
+
+#: src/markups/positions.py:68
+msgid "Simple good"
+msgstr "Простой товар"
+
+#: src/markups/positions.py:71
+msgid "Grouped good"
+msgstr "Сгрупированный товар"
+
+#: src/markups/positions.py:96
+msgid "Remove sub item"
+msgstr "Удалить подтовар"
+
+#: src/markups/positions.py:125
+msgid "Edit"
+msgstr "Редактировать"
+
+#: src/handlers/positions.py:552
+msgid "Sub item was updated successfully. What's next?"
+msgstr "Подтовар успешно обновлен. Что дальше?"
+
+#: src/handlers/positions.py:558
+msgid "Sub item was created successfully. What's next?"
+msgstr "Подтовар успешно добавлен. Что дальше?"
+
+msgid "Seems like subitems are incorrect. Try like this: _raspberry flavor; chocolate flavor_"
+msgstr "Ой, похоже, подтовары добавлены неверно. Повторите попытку в следующем формате: _вкус клубники, вкус шоколада_ или свяжитесь с поддержкой @botly_support."
+
+msgid "Oops. Grouped good must contain at least 1 sub item."
+msgstr "Ой, Сгрупированный товар должен содержать хотя бы 1 подтовар."
+
+#: src/handlers/positions.py:318
+msgid "Sub item was deleted successfully. What's next?"
+msgstr "Подтовар успешно удален. Что дальше?"
+
+#: src/handlers/positions.py:185
+msgid ""
+"\n"
+"*Sub items:* _{subitems}_"
+msgstr ""
+"\n"
+"*Подтовары:* _{subitems}_"
+
+#: src/handlers/positions.py:191
+msgid "sub items"
+msgstr "подтовары"
+
+msgid "Grouped"
+msgstr "Сгрупированный"
+
+#: src/handlers/positions.py:171
+msgid "Simple"
+msgstr "Простой"
+
+#: src/handlers/positions.py:132 src/handlers/positions.py:175
+msgid "name"
+msgstr "название"
+
+#: src/handlers/positions.py:156
+msgid ""
+"*Name:* _{name}\n"
+"_*Price:* _{price} {currency}_\n"
+"*Description:* _{description}_\n"
+"*Category:* _{category}_\n"
+"*Type:* _{type}_"
+msgstr ""
+"*Название:* _{name}\n"
+"_*Стоимость:* _{price} {currency}_\n"
+"*Описание:* _{description}_\n"
+"*Категория:* _{category}_\n"
+"*Тип:* _{type}_"
+
+msgid "Which type of good do you want to create?"
+msgstr "Какой типа товара вы хотите создать?"
+
+#: src/handlers/positions.py:104
+msgid ""
+"Send me a new good with image in next format:\n"
+"Name\n"
+"*Price*\n"
+"#Description#\n"
+"_Sub item 1; Sub item 2: Sub item 3_"
+msgstr ""
+"Отправьте мне фотографию товара с описанием в следующем формате:\n"
+"Название\n"
+"*Стоимость*\n"
+"#Описание#\n"
+"_Подтовар 1; Подтовар 2; Подтовар 3_"
+
+msgid "Select a sub item to customize or create a new one"
+msgstr "Выберите подтовар для настройки или создайте новый"
+
+#: src/handlers/positions.py:60
+msgid "Send me new a name of sub item"
+msgstr "Отправьте мне новое название подтовара"
+

@@ -10,7 +10,7 @@ from src.utils import with_db, edit_or_resend, gettext as _, with_callback_data,
 
 @with_db
 async def get_category_list(
-        bot, bot_id, username, message: types.Message, text, db, create: any = None, position_key: str = None
+        bot, bot_id, username, message: types.Message, text, db, create: any = None, position_key: str = None, **kwargs
 ):
     bot_data = db.child(f'bots/{username}/{bot_id}').get()
     categories = bot_data.get('categories', {})
@@ -19,7 +19,7 @@ async def get_category_list(
 
     if create is not None:
         markup = categories_for_position_markup(
-            bot_id, bot_data.get('username'), categories, create=create, position_key=position_key
+            bot_id, bot_data.get('username'), categories, create=create, position_key=position_key, **kwargs
         )
     else:
         markup = categories_list_markup(bot_id, bot_data.get('username'), categories)
