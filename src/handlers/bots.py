@@ -290,7 +290,8 @@ async def bot_deploy(bot: AsyncTeleBot, call: types.CallbackQuery, db, data, buc
                 msg = _('Ooops. Something went wrong ({error})').format(error=resp.text)
                 print(resp.text)
     finally:
-        print(result)
+        delete_result = await docker.images.delete(name='bot_image', force=True)
+        print(delete_result)
 
     await bot.send_message(call.message.chat.id, msg)
 
