@@ -25,11 +25,13 @@ from src.handlers.positions import (
     position_manage,
     position_edit,
     position_delete,
+    position_freeze,
     subitem_list,
     subitem_create,
     subitem_manage,
     subitem_edit,
-    subitem_delete
+    subitem_delete,
+    subitem_freeze,
 )
 
 from src.handlers.statistic import (
@@ -68,14 +70,16 @@ ACTIONS = {
         'pre_create': position_pre_create,
         'manage': position_manage,
         'edit': position_edit,
-        'delete': position_delete
+        'delete': position_delete,
+        'freeze': position_freeze,
     },
     'subitem': {
         'list': subitem_list,
         'create': subitem_create,
         'manage': subitem_manage,
         'edit': subitem_edit,
-        'delete': subitem_delete
+        'delete': subitem_delete,
+        'freeze': subitem_freeze
     },
     'category': {
         'list': category_list,

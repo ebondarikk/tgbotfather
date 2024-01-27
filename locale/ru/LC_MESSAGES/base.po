@@ -589,7 +589,7 @@ msgstr ""
 
 #: src/handlers/positions.py:191
 msgid "sub items"
-msgstr "подтовары"
+msgstr "Подтовары"
 
 msgid "Grouped"
 msgstr "Сгрупированный"
@@ -639,4 +639,60 @@ msgstr "Выберите подтовар для настройки или со�
 #: src/handlers/positions.py:60
 msgid "Send me new a name of sub item"
 msgstr "Отправьте мне новое название подтовара"
+
+#: src/handlers/positions.py:135
+msgid ""
+"*Name:* _{name}_\n"
+"*Frozen:* _{frozen}_"
+msgstr ""
+"*Название:* _{name}_\n"
+"*Заморожен:* _{frozen}_"
+
+#: src/handlers/positions.py:141 src/handlers/positions.py:183
+msgid "No"
+msgstr "Нет"
+
+#: src/handlers/positions.py:141 src/handlers/positions.py:183
+msgid "Yes"
+msgstr "Да"
+
+msgid ""
+"*Name:* _{name}\n"
+"_*Price:* _{price} {currency}_\n"
+"*Description:* _{description}_\n"
+"*Category:* _{category}_\n"
+"*Type:* _{type}_\n"
+"*Frozen:* _{frozen}_"
+msgstr ""
+"*Название:* _{name}\n"
+"_*Стоимость:* _{price} {currency}_\n"
+"*Описание:* _{description}_\n"
+"*Категория:* _{category}_\n"
+"*Тип:* _{type}_\n"
+"*Заморожен:* _{frozen}_"
+
+#: src/handlers/positions.py:196 src/markups/positions.py:97
+msgid "Defrost"
+msgstr "Разморозить"
+
+#: src/handlers/positions.py:196 src/markups/positions.py:97
+msgid "Freeze"
+msgstr "Заморозить"
+
+
+#: src/handlers/positions.py:232
+msgid "Position was successfully defrosted and will begin to appear in the store. What's next?"
+msgstr "Товар успешно разморожен и будет отображаться в магазине. Что дальше?"
+
+#: src/handlers/positions.py:235
+msgid "Position was successfully frozen and will no longer appear in the store. What's next?"
+msgstr "Товар успешно заморожен и не будет отображаться в магазине. Что дальше?"
+
+#: src/handlers/positions.py:261
+msgid "Sub item was successfully defrosted and will begin to appear in the store. What's next?"
+msgstr "Подтовар успешно разморожен и будет отображаться в магазине. Что дальше?"
+
+#: src/handlers/positions.py:264
+msgid "Sub item was successfully frozen and will no longer appear in the store. What's next?"
+msgstr "Подтовар успешно заморожен и не будет отображаться в магазине. Что дальше?"
 

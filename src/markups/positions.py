@@ -13,7 +13,7 @@ def back_menu_option(back_to, **kwargs):
 def positions_list_markup(bot_id: Any, bot_username, positions: dict) -> InlineKeyboardMarkup:
     position_btns = [
         InlineKeyboardButton(
-            f'{index + 1}. {position_data["name"]}',
+            f'{index + 1}.{" 🛑 " if position_data.get("frozen") else ""} {position_data["name"]}',
             callback_data=position_action('manage', bot_id=bot_id, position_key=position_key)
         )
         for index, (position_key, position_data) in enumerate(positions.items())
@@ -38,7 +38,7 @@ def positions_list_markup(bot_id: Any, bot_username, positions: dict) -> InlineK
 def subitem_list_markup(bot_id: Any, position_key, subitems: dict) -> InlineKeyboardMarkup:
     subitem_btns = [
         InlineKeyboardButton(
-            f'{index + 1}. {subitem_data["name"]}',
+            f'{index + 1}.{" 🛑 " if subitem_data.get("frozen") else ""} {subitem_data["name"]}',
             callback_data=subitem_action('manage', bot_id=bot_id, position_key=position_key, subitem_key=subitem_key)
         )
         for index, (subitem_key, subitem_data) in enumerate(subitems.items())
@@ -78,7 +78,7 @@ def positions_create_markup(bot_id: Any):
 
 
 def subitem_manage_markup(
-        bot_id: Any, position_key: str, subitem_key: str, keys_to_edit: Iterable
+        bot_id: Any, position_key: str, subitem: dict, subitem_key: str, keys_to_edit: Iterable
 ) -> InlineKeyboardMarkup:
     menu = [
         *[[
@@ -92,14 +92,28 @@ def subitem_manage_markup(
                     edit_action=key[0]
                 )
             )] for index, key in enumerate(keys_to_edit)],
-        [InlineKeyboardButton(
+        [
+            InlineKeyboardButton(
+                _('Defrost') if subitem.get('frozen') else '🛑 ' + _('Freeze'),
+                callback_data=subitem_action(
+                    'freeze',
+                    bot_id=bot_id,
+                    position_key=position_key,
+                    subitem_key=subitem_key,
+                    frozen=int(subitem.get('frozen', False))
+                )
+            ),
+        ],
+        [
+            InlineKeyboardButton(
             '🗑 ' + _('Remove sub item'),
             callback_data=subitem_action(
                 'delete',
                 bot_id=bot_id,
                 position_key=position_key,
                 subitem_key=subitem_key
-            ))],
+            ))
+        ],
         back_menu_option('subitem/list', bot_id=bot_id, position_key=position_key)
     ]
     markup = InlineKeyboardMarkup(menu)
@@ -122,7 +136,7 @@ def position_manage_markup(
             )] for index, key in enumerate(keys_to_edit)],
         *[[
             InlineKeyboardButton(
-                _('Edit') + ' ' + callback[0],
+                callback[0],
                 callback_data=callback[1]
             )] for callback in inner_callbacks],
         [InlineKeyboardButton(

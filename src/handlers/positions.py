@@ -8,7 +8,7 @@ from telebot.types import CallbackQuery
 
 from src.states import PositionStates, SubItemStates
 from src.utils import with_callback_data, with_db, with_bucket, edit_or_resend, step_handler, \
-    send_message_with_cancel_markup, gettext as _, subitem_action
+    send_message_with_cancel_markup, gettext as _, subitem_action, position_action
 from src.markups.positions import positions_list_markup, position_manage_markup, positions_create_markup, \
     subitem_list_markup, subitem_manage_markup
 
@@ -132,10 +132,17 @@ async def subitem_manage(bot: AsyncTeleBot, call: CallbackQuery, db, data):
         ('name', _('name')),
     )
 
-    text = _("*Name:* _{name}_").format(name=subitem['name'])
+    text = _(
+        "*Name:* _{name}_"
+        "\n"
+        "*Frozen:* _{frozen}_"
+    ).format(
+        name=subitem['name'],
+        frozen=_('Yes') if subitem.get('frozen') else _('No')
+    )
 
     markup = subitem_manage_markup(
-        bot_id=bot_id, position_key=position_key, subitem_key=subitem_key, keys_to_edit=keys_to_edit
+        bot_id=bot_id, position_key=position_key, subitem=subitem, subitem_key=subitem_key, keys_to_edit=keys_to_edit
     )
     return await edit_or_resend(bot, call.message, text, markup=markup, parse_mode='Markdown')
 
@@ -152,6 +159,7 @@ async def position_manage(bot: AsyncTeleBot, call: CallbackQuery, db, data, buck
     img = bucket.blob(position["image"]).download_as_bytes()
 
     grouped = position.get('grouped')
+    frozen = bool(position.get('frozen'))
 
     caption = _(
         "*Name:* _{name}"
@@ -162,13 +170,17 @@ async def position_manage(bot: AsyncTeleBot, call: CallbackQuery, db, data, buck
         "\n"
         "*Category:* _{category}_"
         "\n"
-        "*Type:* _{type}_").format(
+        "*Type:* _{type}_"
+        "\n"
+        "*Frozen:* _{frozen}_"
+    ).format(
         name=position['name'],
         price=position['price'],
         description=position.get('description', ''),
         currency=currency,
         category=position.get('category') or _('Other'),
-        type=_('Grouped') if position.get('grouped') else _('Simple')
+        type=_('Grouped') if grouped else _('Simple'),
+        frozen=_('Yes') if frozen else _('No')
     )
 
     keys_to_edit = [
@@ -179,7 +191,12 @@ async def position_manage(bot: AsyncTeleBot, call: CallbackQuery, db, data, buck
         ('category', _('category')),
     ]
 
-    inner_callbacks = []
+    inner_callbacks = [
+        (
+            _('Defrost') if position.get('frozen') else '🛑 ' + _('Freeze'),
+            position_action('freeze', bot_id=bot_id, position_key=position_key, frozen=int(frozen))
+        ),
+    ]
 
     if grouped:
         caption += _(
@@ -189,7 +206,7 @@ async def position_manage(bot: AsyncTeleBot, call: CallbackQuery, db, data, buck
         inner_callbacks += [
             (
                 _('sub items'), subitem_action('list', bot_id=bot_id, position_key=position_key)
-            )
+            ),
         ]
 
     markup = position_manage_markup(
@@ -204,6 +221,62 @@ async def position_manage(bot: AsyncTeleBot, call: CallbackQuery, db, data, buck
     )
     if call.message.from_user.id == bot.user.id:
         await bot.delete_message(call.message.chat.id, message_id=call.message.id)
+
+
+@with_callback_data
+async def position_freeze(bot: AsyncTeleBot, call: CallbackQuery, data):
+    bot_id = data.get('bot_id')
+    position_key = data.get('position_key')
+    is_frozen = bool(int(data.get('frozen')))
+    text = (
+        _('Position was successfully defrosted and will begin to appear in the store. What\'s next?')
+        if is_frozen
+        else
+        _('Position was successfully frozen and will no longer appear in the store. What\'s next?')
+    )
+
+    data = {
+        'position_key': position_key,
+        'edit': True,
+        'bot_id': bot_id,
+        'path': f'bots/{call.from_user.username}/{bot_id}/positions/{position_key}',
+        'frozen': not is_frozen
+    }
+    return await position_save(
+        bot,
+        message=call.message,
+        data=data,
+        update_text=text
+    )
+
+
+@with_callback_data
+async def subitem_freeze(bot: AsyncTeleBot, call: CallbackQuery, data):
+    bot_id = data.get('bot_id')
+    position_key = data.get('position_key')
+    subitem_key = data.get('subitem_key')
+    is_frozen = bool(int(data.get('frozen')))
+
+    text = (
+        _('Sub item was successfully defrosted and will begin to appear in the store. What\'s next?')
+        if is_frozen
+        else
+        _('Sub item was successfully frozen and will no longer appear in the store. What\'s next?')
+    )
+
+    data = {
+        'position_key': position_key,
+        'edit': True,
+        'bot_id': bot_id,
+        'path': f'bots/{call.from_user.username}/{bot_id}/positions/{position_key}/subitems/{subitem_key}',
+        'frozen': not is_frozen
+    }
+    return await subitem_save(
+        bot,
+        message=call.message,
+        data=data,
+        update_text=text
+    )
 
 
 @with_callback_data
@@ -531,9 +604,16 @@ async def position_image_step(message, db, bot, bucket):
 
 
 @with_db
-async def subitem_save(bot: AsyncTeleBot, message: types.Message, db):
-    async with bot.retrieve_data(message.chat.id, message.chat.id) as subitem_data:
-        data = subitem_data
+async def subitem_save(
+        bot: AsyncTeleBot,
+        message: types.Message,
+        db,
+        data=None,
+        update_text=_('Sub item was updated successfully. What\'s next?')
+):
+    if not data:
+        async with bot.retrieve_data(message.chat.id, message.chat.id) as subitem_data:
+            data = subitem_data
 
     await bot.delete_state(message.from_user.id, message.chat.id)
 
@@ -549,8 +629,10 @@ async def subitem_save(bot: AsyncTeleBot, message: types.Message, db):
 
         return await get_subitem_list(
             bot, bot_id, position_key,
-            message.chat.username, message, text=_('Sub item was updated successfully. What\'s next?')
+            message.chat.username, message, text=update_text
         )
+
+    data['frozen'] = False
 
     db.child(f'bots/{message.chat.username}/{bot_id}/positions/{position_key}/subitems').push(data)
     return await get_subitem_list(
@@ -560,7 +642,12 @@ async def subitem_save(bot: AsyncTeleBot, message: types.Message, db):
 
 
 @with_db
-async def position_save(bot: AsyncTeleBot, message: types.Message, db, data=None):
+async def position_save(
+        bot: AsyncTeleBot,
+        message: types.Message,
+        db,
+        data=None,
+        update_text=_('Position was updated successfully. What\'s next?')):
     if not data:
         async with bot.retrieve_data(message.chat.id, message.chat.id) as position_data:
             data = position_data
@@ -570,7 +657,8 @@ async def position_save(bot: AsyncTeleBot, message: types.Message, db, data=None
     path = data.pop('path', None)
     subitems = data.pop('subitems', [])
 
-    data['grouped'] = bool(subitems)
+    if not edit:
+        data['grouped'] = bool(subitems)
 
     if name := data.get('name'):
         positions = db.child('bots').child(message.chat.username).child(bot_id).child('positions').get()
@@ -590,14 +678,16 @@ async def position_save(bot: AsyncTeleBot, message: types.Message, db, data=None
         db.child(path).update(position)
 
         return await get_position_list(
-            bot, bot_id, message.chat.username, message, text=_('Position was updated successfully. What\'s next?')
+            bot, bot_id, message.chat.username, message, text=update_text
         )
 
+    data['frozen'] = False
     result = db.child(f'bots/{message.chat.username}/{bot_id}/positions').push(data)
 
     if result:
         path = result.path[1:] + '/subitems'
         for subitem in subitems:
+            subitem['frozen'] = False
             db.child(path).push(subitem)
 
     db.child(f'bots/{message.chat.username}/{bot_id}').update({'last_updates': str(datetime.datetime.now())})
