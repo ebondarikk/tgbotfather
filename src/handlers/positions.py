@@ -674,6 +674,7 @@ async def position_save(
 
     if edit:
         position: dict = db.child(path).get()
+        data['grouped'] = bool(position.get('subitems'))
         position.update(**data)
         db.child(path).update(position)
 
