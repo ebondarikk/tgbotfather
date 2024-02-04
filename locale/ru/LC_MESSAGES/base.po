@@ -732,3 +732,91 @@ msgstr "Включено"
 #: src/handlers/bots.py:38 src/handlers/positions.py:128
 msgid "Video instruction available. To get it, go to the Instructions section and activate them."
 msgstr "Доступна видеоинструкция. Чтобы получить ее, активируйте инструкции в разделе \"Инструкции\"."
+
+
+#: src/handlers/managers.py:20
+msgid "Select a manager to manage or add a new one"
+msgstr "Выберите менеджера для управление или добавьте нового."
+
+#: src/handlers/managers.py:48
+msgid ""
+"Send me a username (@my_manager) or link (t.me/my_manager) of person to add.\n"
+"<b>Important: The person must be user of your bot</b> @{bot_username}"
+msgstr ""
+"Отправьте имя пользователя (@my_manager) или телеграм ссылку (t.me/my_manager) нового менеджера.\n"
+"<b>Важно: Менеджер должен быть пользователем бота</b> @{bot_username}"
+
+#: src/handlers/managers.py:74
+msgid "Oops. Invalid username format."
+msgstr "Ой, Некорректное имя пользователя."
+
+#: src/handlers/managers.py:85
+msgid "Oops. Could not find this user in users of your bot. Ask him to run the bot @{bot_username} and try again."
+msgstr "Ой, не удалось найти указанного пользователя среди пользователей вашего бота. Попросите его запустить бота @{bot_username} и повторите попытку."
+
+#: src/handlers/managers.py:94
+msgid "Oops. Seems like it is a bot. Bot can not be a manager."
+msgstr "Ой, похоже, это бот. Бот не может быть менеджером."
+
+#: src/handlers/managers.py:100
+msgid "Oops. This user is already manager."
+msgstr "Ой, этот пользователь уже является менеджером."
+
+#: src/handlers/managers.py:113
+msgid "Manager was added successfully. Now @{username} can accept orders. What's next?"
+msgstr "Менеджер успешно добавлен. Теперь @{username} может принимать заказы. Что дальше?"
+
+#: src/handlers/managers.py:130
+msgid "This is manager @{username}"
+msgstr "Это менеджер @{username}"
+
+#: src/handlers/managers.py:135
+msgid "Admin"
+msgstr "Администратор"
+
+#: src/handlers/managers.py:137
+msgid "Active"
+msgstr "Активный (принимает заказы)"
+
+#: src/handlers/managers.py:139
+msgid "Select action."
+msgstr "Выберите действие."
+
+#: src/handlers/managers.py:169
+msgid "Now @{username} accept orders. What's next?"
+msgstr "Теперь @{username} принимает заказы. Что дальше?"
+
+#: src/handlers/managers.py:185
+msgid "Oops. Admin cannot be removed."
+msgstr "Ой, администратор не может быть удален."
+
+#: src/handlers/managers.py:190
+msgid "Oops. Active manager cannot be removed."
+msgstr "Ой, Активный менеджер не может быть удален."
+
+#: src/handlers/managers.py:200
+msgid "Manager @{username} was deleted. What's next?"
+msgstr "Менеджер @{username} успешно удален. Что дальше?"
+
+#: src/markups/bots.py:42
+msgid "Managers"
+msgstr "Менеджеры"
+
+#: src/markups/managers.py:27
+msgid "Add manager"
+msgstr "Добавить менеджера"
+
+#: src/markups/managers.py:44
+msgid "Activate"
+msgstr "Активировать"
+
+#: src/markups/managers.py:51
+msgid "Remove manager"
+msgstr "Удалить менеджера"
+
+
+#: src/states.py:55
+msgid "Manager adding"
+msgstr "Добавление менеджера"
+
+

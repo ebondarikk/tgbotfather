@@ -65,6 +65,11 @@ def mail_action(action_name, **kwargs):
     return action(action_name, **kwargs)
 
 
+def manager_action(action_name, **kwargs):
+    action_name = f'manager/{action_name}'
+    return action(action_name, **kwargs)
+
+
 def get_hashed_data(call):
     return redis.hgetall(call.data) or {}
 

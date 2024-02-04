@@ -2,6 +2,7 @@ from telebot.async_telebot import AsyncTeleBot, types
 from src.handlers.bots import bot_token_step, bot_welcome_text_updated
 from src.handlers.categories import category_create_step
 from src.handlers.mail import mail_create_step
+from src.handlers.managers import manager_create_step
 from src.handlers.positions import position_name_step, position_price_step, position_image_step, \
     position_full_create_step, position_description_step, subitem_name_step
 
@@ -26,6 +27,9 @@ STEPS = {
     'CategoryStates': {
         'create': category_create_step,
         'name': category_create_step,
+    },
+    'ManagerStates': {
+        'create': manager_create_step
     }
 }
 

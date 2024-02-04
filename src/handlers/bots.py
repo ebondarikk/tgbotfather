@@ -372,7 +372,10 @@ async def bot_save(bot: AsyncTeleBot, message: types.Message, db):
 
     db.child(f'managers/{data.get("bot_id")}/{message.from_user.id}').update(
         {
+            'id': message.from_user.id,
             'username': message.from_user.username,
+            'first_name': message.from_user.first_name,
+            'is_active': True,
             'is_admin': True
         }
     )

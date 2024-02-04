@@ -48,11 +48,19 @@ class CategoryStates(StatesGroup):
         return _('Category creating')
 
 
+class ManagerStates(StatesGroup):
+    create = State()
+
+    def __str__(self):
+        return _('Manager adding')
+
+
 states = [
     BotStates,
     PositionStates,
     MailStates,
     CategoryStates,
     SubItemStates,
+    ManagerStates
 ]
 

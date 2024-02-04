@@ -49,6 +49,14 @@ from src.handlers.mail import (
     mail_publish
 )
 
+from src.handlers.managers import (
+    manager_list,
+    manager_create,
+    manager_manage,
+    manager_activate,
+    manager_delete
+)
+
 from src.handlers.commands import start, help_command, instructions_command, instruction_switch
 from src.utils import get_hashed_data
 
@@ -63,6 +71,13 @@ ACTIONS = {
         'schedule': bot_schedule_get,
         'deploy': bot_deploy,
         'delete': bot_delete
+    },
+    'manager': {
+        'list': manager_list,
+        'create': manager_create,
+        'manage': manager_manage,
+        'activate': manager_activate,
+        'delete': manager_delete,
     },
     'position': {
         'list': position_list,

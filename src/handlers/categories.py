@@ -141,7 +141,7 @@ async def category_delete(bot: AsyncTeleBot, call: CallbackQuery, db, data):
 
     category = db.child(f'bots/{username}/{bot_id}/categories/{category_key}').get()['name']
 
-    positions = db.child(f'bots/{username}/{bot_id}/positions/').get()
+    positions = db.child(f'bots/{username}/{bot_id}/positions/').get() or {}
 
     for position in positions.values():
         if position.get('category') == category:
