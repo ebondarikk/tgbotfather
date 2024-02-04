@@ -91,7 +91,8 @@ async def position_pre_create(bot: AsyncTeleBot, call: CallbackQuery, data):
 
 
 @with_callback_data
-async def position_create(bot: AsyncTeleBot, call: CallbackQuery, data, category=None, grouped: bool = False):
+@with_db
+async def position_create(bot: AsyncTeleBot, call: CallbackQuery, data, db, category=None, grouped: bool = False):
     bot_id = data.get('bot_id')
     await bot.set_state(call.from_user.id, PositionStates.full, call.message.chat.id)
 
@@ -100,17 +101,33 @@ async def position_create(bot: AsyncTeleBot, call: CallbackQuery, data, category
         data['category'] = category
         data['grouped'] = grouped
 
+    is_instructions_enabled = db.child(f'botly_users/{call.from_user.id}/instructions_enabled').get()
+
     if grouped:
         text = _('Send me a new good with image in next format:'
                  '\nName\n*Price*\n#Description#\n_Sub item 1; Sub item 2: Sub item 3_'
                  )
+        video = 'instructions/good_create_grouped.mov'
     else:
         text = _('Send me a new good with image in next format:\nName\n*Price*\n#Description#')
+        video = 'instructions/good_create.mov'
+
+    if is_instructions_enabled:
+        await bot.send_message(
+            call.message.chat.id,
+            _('Uploading video-instruction. Please, wait. You can disable instructions on Instructions sections')
+        )
         await bot.send_video(
             call.message.chat.id,
-            video=open('instructions/good_create.mov', 'rb'),
+            video=open(video, 'rb'),
             supports_streaming=True
         )
+    else:
+        await bot.send_message(
+            call.message.chat.id,
+            _('Video instruction available. To get it, go to the Instructions section and activate them.')
+        )
+
     await send_message_with_cancel_markup(
         bot,
         call.message.chat.id,

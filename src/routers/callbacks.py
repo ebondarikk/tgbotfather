@@ -49,7 +49,7 @@ from src.handlers.mail import (
     mail_publish
 )
 
-from src.handlers.commands import start, help_command
+from src.handlers.commands import start, help_command, instructions_command, instruction_switch
 from src.utils import get_hashed_data
 
 ACTIONS = {
@@ -105,7 +105,9 @@ ACTIONS = {
         'start': start
     },
     'general': {
-        'help': help_command
+        'help': help_command,
+        'instructions': instructions_command,
+        'instruction_switch': instruction_switch
     }
 }
 

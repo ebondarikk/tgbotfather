@@ -16,19 +16,27 @@ from src.states import BotStates
 
 
 @with_bucket
-async def bot_create(bot: AsyncTeleBot, call: types.CallbackQuery, bucket):
+@with_db
+async def bot_create(bot: AsyncTeleBot, call: types.CallbackQuery, bucket, db):
     await bot.set_state(call.from_user.id, BotStates.token, call.message.chat.id)
-    print('downloading')
-    print('sending')
-    await bot.send_message(
-        call.message.chat.id,
-        _('Uploading video-instruction. Please, wait')
-    )
-    await bot.send_video(
-        call.message.chat.id,
-        video=open('instructions/bot_create.mov', 'rb'),
-        supports_streaming=True
-    )
+
+    is_instructions_enabled = db.child(f'botly_users/{call.from_user.id}/instructions_enabled').get()
+
+    if is_instructions_enabled:
+        await bot.send_message(
+            call.message.chat.id,
+            _('Uploading video-instruction. Please, wait')
+        )
+        await bot.send_video(
+            call.message.chat.id,
+            video=open('instructions/bot_create.mov', 'rb'),
+            supports_streaming=True
+        )
+    else:
+        await bot.send_message(
+            call.message.chat.id,
+            _('Video instruction available. To get it, go to the Instructions section and activate them.')
+        )
     await send_message_with_cancel_markup(
         bot,
         call.message.chat.id,
@@ -359,5 +367,12 @@ async def bot_save(bot: AsyncTeleBot, message: types.Message, db):
             'token': data.get('token'),
             'currency': data.get('currency'),
             'schedule': get_default_schedule()
+        }
+    )
+
+    db.child(f'managers/{data.get("bot_id")}/{message.from_user.id}').update(
+        {
+            'username': message.from_user.username,
+            'is_admin': True
         }
     )

@@ -696,3 +696,39 @@ msgstr "Подтовар успешно разморожен и будет от�
 msgid "Sub item was successfully frozen and will no longer appear in the store. What's next?"
 msgstr "Подтовар успешно заморожен и не будет отображаться в магазине. Что дальше?"
 
+
+#: src/markups/commands.py:18
+msgid "Disable"
+msgstr "Отключить"
+
+#: src/markups/commands.py:18
+msgid "Enable"
+msgstr "Включить"
+
+#: src/markups/commands.py:10
+msgid "Instructions"
+msgstr "Инструкции"
+
+#: src/handlers/positions.py:118
+msgid "Uploading video-instruction. Please, wait. You can disable instructions on Instructions sections"
+msgstr "Загружаю видеоинструкцию. Пожалуйста, подождите. Вы можете отключить инструкции в разделе \"Инструкции\""
+
+
+#: src/handlers/commands.py:75
+msgid ""
+"If the Instructions are activated, you will receive video guidance while using the service. If you don't want to receive instructions, turn them off.\n"
+"Current state of instructions: {state}"
+msgstr "Если инструкции включены, вы будете получать видеоподсказки в процессе использования сервиса. Если вы не хотите получать инструкции, отключите их.\n"
+"Текущее состояние: {state}"
+
+#: src/handlers/commands.py:77
+msgid "Disabled"
+msgstr "Отключено"
+
+#: src/handlers/commands.py:77
+msgid "Enabled"
+msgstr "Включено"
+
+#: src/handlers/bots.py:38 src/handlers/positions.py:128
+msgid "Video instruction available. To get it, go to the Instructions section and activate them."
+msgstr "Доступна видеоинструкция. Чтобы получить ее, активируйте инструкции в разделе \"Инструкции\"."
