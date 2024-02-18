@@ -819,4 +819,7 @@ msgstr "Удалить менеджера"
 msgid "Manager adding"
 msgstr "Добавление менеджера"
 
+msgid "Please, set username to your profile for correctly work."
+msgstr "Пожалуйста, задайте имя пользователя (username) в настройках профиля для корректной работы сервиса."
+
 

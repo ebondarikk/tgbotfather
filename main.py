@@ -13,6 +13,7 @@ from src.routers.callbacks import callback_router
 from src.routers.commands import command_router
 from src.routers.steps import steps_router
 from src.routers.web_app import web_app_router
+from src.utils import gettext as _
 
 storage = StateRedisStorage(REDIS_HOST, REDIS_PORT)
 bot = AsyncTeleBot(settings.BOT_TOKEN, state_storage=storage)
@@ -31,7 +32,9 @@ async def callback_handler(call):
 
 @bot.message_handler(func=lambda msg: msg.text.startswith('/'))
 async def command_handler(message):
-    print('command')
+    if not message.from_user.username:
+        await bot.send_message(message.from_user.id, _('Please, set username to your profile for correctly work.'))
+        return
     return await command_router(bot, message)
 
 
