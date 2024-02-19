@@ -823,3 +823,135 @@ msgid "Please, set username to your profile for correctly work."
 msgstr "Пожалуйста, задайте имя пользователя (username) в настройках профиля для корректной работы сервиса."
 
 
+#: src/states.py:63
+msgid "Delivery updating"
+msgstr "Обновление доставки"
+
+
+#: src/markups/points.py:23
+msgid "Add pick-up point"
+msgstr "Добавить пункт выдачи"
+
+
+#: src/markups/delivery.py:14
+msgid "Activate delivery"
+msgstr "Активировать доставку"
+
+#: src/markups/delivery.py:14
+msgid "Deactivate delivery"
+msgstr "Деактивировать доставку"
+
+#: src/markups/delivery.py:20
+msgid "Cost of delivery"
+msgstr "Стоимость доставки"
+
+#: src/markups/delivery.py:27
+msgid "Minimum check"
+msgstr "Минимальный чек"
+
+#: src/markups/delivery.py:34
+msgid "Delivery condition"
+msgstr "Условие доставки"
+
+
+#: src/markups/bots.py:42
+msgid "Delivery"
+msgstr "Доставка"
+
+#: src/handlers/points.py:22
+msgid "Select a pick-up point to manage or add a new one"
+msgstr "Выберите пункт выдачи для управления или добавьте новый"
+
+#: src/handlers/points.py:59
+msgid "Firstly, choose a manager for new pick-up point."
+msgstr "Сначала укажите менеджера, который будет управлять пунктом выдачи"
+
+#: src/handlers/points.py:73 src/handlers/points.py:101
+msgid "Send me a name of a pick-up point."
+msgstr "Отправьте мне названия пункта выдачи."
+
+#: src/handlers/points.py:114
+msgid "Oops. Too short name."
+msgstr "Ой, слишком короткое название"
+
+#: src/handlers/points.py:122
+msgid "Pick-up point was added successfully. What's next?"
+msgstr "Пункт выдачи успешно добавлен. Что дальше?"
+
+#: src/handlers/delivery.py:9
+msgid "Always paid"
+msgstr "Всегда платная"
+
+#: src/handlers/delivery.py:10
+msgid "Paid if the minimum check is not reached, then free"
+msgstr "Платная, если минимальный чек не достигнут, иначе бесплатная"
+
+#: src/handlers/delivery.py:11
+msgid "Not available if the minimum check is not reached, then paid"
+msgstr "Не доступна, если минимальный чек не достигнут, иначе платная"
+
+#: src/handlers/delivery.py:12
+msgid "Not available if the minimum check is not reached, then free"
+msgstr "Не доступна, если минимальный чек не достигнут, иначе бесплатная"
+
+#: src/handlers/delivery.py:35
+msgid ""
+"*Delivery is active:* {is_active}\n"
+"*Cost of delivery:* {delivery_cost} {currency}\n"
+"*Minimum delivery receipt:* {min_check} {currency}\n"
+"*Delivery condition:* {condition_desc}\n"
+msgstr ""
+"*Доставка активна:* {is_active}\n"
+"*Стоимость доставки:* {delivery_cost} {currency}\n"
+"*Минимальный чек для доставки:* {min_check} {currency}\n"
+"*Условие доставки:* {condition_desc}\n"
+
+#: src/handlers/delivery.py:45 src/handlers/positions.py:158
+#: src/handlers/positions.py:200
+msgid "No"
+msgstr "Нет"
+
+#: src/handlers/delivery.py:45 src/handlers/positions.py:158
+#: src/handlers/positions.py:200
+msgid "Yes"
+msgstr "Да"
+
+#: src/handlers/delivery.py:79
+msgid ""
+"*Current condition:* _{cond_index}_ - {cond_desc}\n"
+"-----------\n"
+"*Possible conditions:*\n"
+"{conditions_desc}\n"
+"-----------\n"
+"Choose a condition of delivery below:"
+msgstr ""
+"*Текущее условие:* _{cond_index}_ - {cond_desc}\n"
+"-----------\n"
+"*Возможные условия:*\n"
+"{conditions_desc}\n"
+"-----------\n"
+"Выберите условие доставки ниже:"
+
+#: src/handlers/delivery.py:124
+msgid ""
+"Current cost of delivery: {cost} {currency}\n"
+"Send me a new cost (or send 0 to make delivery free)"
+msgstr ""
+"Текущая стоимость доставки: {cost} {currency}\n"
+"Отправьте новую стоимость (или отправьте 0, чтобы сделать доставку бесплатной)"
+
+#: src/handlers/delivery.py:146
+msgid ""
+"Current minimum receipt: {min_check} {currency}\n"
+"Send me a new minimum receipt"
+msgstr ""
+"Текущий минимальный чек: {min_check} {currency}\n"
+"Отправьте новый минимальный чек"
+
+#: src/handlers/delivery.py:169
+msgid "please, send me a valid cost"
+msgstr "Пожалуйста, отправьте корректную стоимость"
+
+#: src/handlers/delivery.py:192
+msgid "please, send me a valid minimum receipt"
+msgstr "Пожалуйста, отправьте корректную сумму минимального чека"

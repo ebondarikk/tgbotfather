@@ -57,6 +57,15 @@ from src.handlers.managers import (
     manager_delete
 )
 
+from src.handlers.delivery import (
+    delivery_manage,
+    delivery_condition_manage,
+    delivery_activate,
+    delivery_cost,
+    delivery_min_check,
+    delivery_condition
+)
+
 from src.handlers.commands import start, help_command, instructions_command, instruction_switch
 from src.utils import get_hashed_data
 
@@ -123,6 +132,14 @@ ACTIONS = {
         'help': help_command,
         'instructions': instructions_command,
         'instruction_switch': instruction_switch
+    },
+    'delivery': {
+        'manage': delivery_manage,
+        'condition': delivery_condition_manage,
+        'activate': delivery_activate,
+        'cost': delivery_cost,
+        'min_check': delivery_min_check,
+        'set_condition': delivery_condition
     }
 }
 

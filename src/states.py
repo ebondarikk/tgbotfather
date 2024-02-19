@@ -55,12 +55,21 @@ class ManagerStates(StatesGroup):
         return _('Manager adding')
 
 
+class DeliveryStates(StatesGroup):
+    cost = State()
+    min_check = State()
+
+    def __str__(self):
+        return _('Delivery updating')
+
+
 states = [
     BotStates,
     PositionStates,
     MailStates,
     CategoryStates,
     SubItemStates,
-    ManagerStates
+    ManagerStates,
+    DeliveryStates
 ]
 

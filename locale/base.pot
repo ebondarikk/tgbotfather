@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-02-18 21:05+0300\n"
+"POT-Creation-Date: 2024-02-18 23:01+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -236,6 +236,70 @@ msgstr ""
 msgid "The command {command} has been canceled"
 msgstr ""
 
+#: src/handlers/delivery.py:9
+msgid "Always paid"
+msgstr ""
+
+#: src/handlers/delivery.py:10
+msgid "Paid if the minimum check is not reached, then free"
+msgstr ""
+
+#: src/handlers/delivery.py:11
+msgid "Not available if the minimum check is not reached, then paid"
+msgstr ""
+
+#: src/handlers/delivery.py:12
+msgid "Not available if the minimum check is not reached, then free"
+msgstr ""
+
+#: src/handlers/delivery.py:35
+msgid ""
+"*Delivery is active:* {is_active}\n"
+"*Cost of delivery:* {delivery_cost} {currency}\n"
+"*Minimum delivery receipt:* {min_check} {currency}\n"
+"*Delivery condition:* {condition_desc}\n"
+msgstr ""
+
+#: src/handlers/delivery.py:45 src/handlers/positions.py:158
+#: src/handlers/positions.py:200
+msgid "No"
+msgstr ""
+
+#: src/handlers/delivery.py:45 src/handlers/positions.py:158
+#: src/handlers/positions.py:200
+msgid "Yes"
+msgstr ""
+
+#: src/handlers/delivery.py:79
+msgid ""
+"*Current condition:* _{cond_index}_ - {cond_desc}\n"
+"-----------\n"
+"*Possible conditions:*\n"
+"{conditions_desc}\n"
+"-----------\n"
+"Choose a condition of delivery below:"
+msgstr ""
+
+#: src/handlers/delivery.py:124
+msgid ""
+"Current cost of delivery: {cost} {currency}\n"
+"Send me a new cost (or send 0 to make delivery free)"
+msgstr ""
+
+#: src/handlers/delivery.py:146
+msgid ""
+"Current minimum receipt: {min_check} {currency}\n"
+"Send me a new minimum receipt"
+msgstr ""
+
+#: src/handlers/delivery.py:169
+msgid "please, send me a valid cost"
+msgstr ""
+
+#: src/handlers/delivery.py:192
+msgid "please, send me a valid minimum receipt"
+msgstr ""
+
 #: src/handlers/mail.py:21
 msgid "Select a mail to customize or create a new one"
 msgstr ""
@@ -298,36 +362,56 @@ msgstr ""
 msgid "Manager was added successfully. Now @{username} can accept orders. What's next?"
 msgstr ""
 
-#: src/handlers/managers.py:130
+#: src/handlers/managers.py:130 src/handlers/points.py:137
 msgid "This is manager @{username}"
 msgstr ""
 
-#: src/handlers/managers.py:135
+#: src/handlers/managers.py:135 src/handlers/points.py:142
 msgid "Admin"
 msgstr ""
 
-#: src/handlers/managers.py:137
+#: src/handlers/managers.py:137 src/handlers/points.py:144
 msgid "Active"
 msgstr ""
 
-#: src/handlers/managers.py:139
+#: src/handlers/managers.py:139 src/handlers/points.py:146
 msgid "Select action."
 msgstr ""
 
-#: src/handlers/managers.py:169
+#: src/handlers/managers.py:169 src/handlers/points.py:176
 msgid "Now @{username} accept orders. What's next?"
 msgstr ""
 
-#: src/handlers/managers.py:185
+#: src/handlers/managers.py:185 src/handlers/points.py:192
 msgid "Oops. Admin cannot be removed."
 msgstr ""
 
-#: src/handlers/managers.py:190
+#: src/handlers/managers.py:190 src/handlers/points.py:197
 msgid "Oops. Active manager cannot be removed."
 msgstr ""
 
-#: src/handlers/managers.py:200
+#: src/handlers/managers.py:200 src/handlers/points.py:207
 msgid "Manager @{username} was deleted. What's next?"
+msgstr ""
+
+#: src/handlers/points.py:22
+msgid "Select a pick-up point to manage or add a new one"
+msgstr ""
+
+#: src/handlers/points.py:59
+msgid "Firstly, choose a manager for new pick-up point."
+msgstr ""
+
+#: src/handlers/points.py:73 src/handlers/points.py:101
+msgid "Send me a name of a pick-up point."
+msgstr ""
+
+#: src/handlers/points.py:114
+msgid "Oops. Too short name."
+msgstr ""
+
+#: src/handlers/points.py:122
+msgid "Pick-up point was added successfully. What's next?"
 msgstr ""
 
 #: src/handlers/positions.py:21
@@ -379,14 +463,6 @@ msgstr ""
 msgid ""
 "*Name:* _{name}_\n"
 "*Frozen:* _{frozen}_"
-msgstr ""
-
-#: src/handlers/positions.py:158 src/handlers/positions.py:200
-msgid "No"
-msgstr ""
-
-#: src/handlers/positions.py:158 src/handlers/positions.py:200
-msgid "Yes"
 msgstr ""
 
 #: src/handlers/positions.py:181
@@ -577,8 +653,9 @@ msgstr ""
 msgid "CR of your platform is {value}%"
 msgstr ""
 
-#: src/markups/bots.py:11 src/markups/categories.py:10 src/markups/mail.py:11
-#: src/markups/managers.py:9 src/markups/positions.py:10
+#: src/markups/bots.py:11 src/markups/categories.py:10
+#: src/markups/delivery.py:8 src/markups/mail.py:11 src/markups/managers.py:9
+#: src/markups/points.py:9 src/markups/positions.py:10
 #: src/markups/statistic.py:10
 msgid "Back"
 msgstr ""
@@ -600,30 +677,34 @@ msgid "Mailings"
 msgstr ""
 
 #: src/markups/bots.py:42
+msgid "Delivery"
+msgstr ""
+
+#: src/markups/bots.py:43
 msgid "Managers"
 msgstr ""
 
-#: src/markups/bots.py:44
+#: src/markups/bots.py:45
 msgid "Statistic"
 msgstr ""
 
-#: src/markups/bots.py:47
+#: src/markups/bots.py:48
 msgid "Welcome message"
 msgstr ""
 
-#: src/markups/bots.py:48
+#: src/markups/bots.py:49
 msgid "Currency"
 msgstr ""
 
-#: src/markups/bots.py:49
+#: src/markups/bots.py:50
 msgid "Schedule"
 msgstr ""
 
-#: src/markups/bots.py:50
+#: src/markups/bots.py:51
 msgid "Deploy"
 msgstr ""
 
-#: src/markups/bots.py:51
+#: src/markups/bots.py:52
 msgid "Remove TeBot"
 msgstr ""
 
@@ -660,6 +741,26 @@ msgstr ""
 msgid "Enable"
 msgstr ""
 
+#: src/markups/delivery.py:14
+msgid "Activate delivery"
+msgstr ""
+
+#: src/markups/delivery.py:14
+msgid "Deactivate delivery"
+msgstr ""
+
+#: src/markups/delivery.py:20
+msgid "Cost of delivery"
+msgstr ""
+
+#: src/markups/delivery.py:27
+msgid "Minimum check"
+msgstr ""
+
+#: src/markups/delivery.py:34
+msgid "Delivery condition"
+msgstr ""
+
 #: src/markups/mail.py:45
 msgid "Create a new Mail"
 msgstr ""
@@ -678,6 +779,10 @@ msgstr ""
 
 #: src/markups/managers.py:51
 msgid "Remove manager"
+msgstr ""
+
+#: src/markups/points.py:23
+msgid "Add pick-up point"
 msgstr ""
 
 #: src/markups/positions.py:28
@@ -740,6 +845,7 @@ msgstr ""
 msgid "Manager adding"
 msgstr ""
 
-msgid "Please, set username to your profile for correctly work."
+#: src/states.py:63
+msgid "Delivery updating"
 msgstr ""
 

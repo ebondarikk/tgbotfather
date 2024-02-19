@@ -5,6 +5,7 @@ from src.handlers.mail import mail_create_step
 from src.handlers.managers import manager_create_step
 from src.handlers.positions import position_name_step, position_price_step, position_image_step, \
     position_full_create_step, position_description_step, subitem_name_step
+from src.handlers.delivery import delivery_cost_step, delivery_min_check_step
 
 STEPS = {
     'BotStates': {
@@ -30,6 +31,10 @@ STEPS = {
     },
     'ManagerStates': {
         'create': manager_create_step
+    },
+    'DeliveryStates': {
+        'cost': delivery_cost_step,
+        'min_check': delivery_min_check_step
     }
 }
 

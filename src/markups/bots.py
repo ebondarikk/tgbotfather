@@ -4,7 +4,7 @@ from typing import Any
 from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 from src.utils import action, bot_action, position_action, gettext as _, statistic_action, mail_action, category_action, \
-    manager_action
+    manager_action, delivery_action
 
 
 def back_menu_option(back_to, **kwargs):
@@ -39,6 +39,7 @@ def bot_manage_markup(bot_id: Any, bot_username: any = None) -> InlineKeyboardMa
         [InlineKeyboardButton('🛒 ' + _('Positions'), callback_data=position_action('list', bot_id=bot_id))],
         [InlineKeyboardButton('🏷 ' + _('Categories'), callback_data=category_action('list', bot_id=bot_id))],
         [InlineKeyboardButton('📣 ' + _('Mailings'), callback_data=mail_action('list', bot_id=bot_id))],
+        [InlineKeyboardButton('🚚 ' + _('Delivery'), callback_data=delivery_action('manage', bot_id=bot_id))],
         [InlineKeyboardButton('👨‍💼 ' + _('Managers'), callback_data=manager_action('list', bot_id=bot_id))],
         [InlineKeyboardButton(
             '📈 ' + _('Statistic'),

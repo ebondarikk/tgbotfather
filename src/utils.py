@@ -65,6 +65,11 @@ def mail_action(action_name, **kwargs):
     return action(action_name, **kwargs)
 
 
+def delivery_action(action_name, **kwargs):
+    action_name = f'delivery/{action_name}'
+    return action(action_name, **kwargs)
+
+
 def manager_action(action_name, **kwargs):
     action_name = f'manager/{action_name}'
     return action(action_name, **kwargs)
