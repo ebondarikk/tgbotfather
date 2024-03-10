@@ -277,20 +277,20 @@ def get_period_orders(period, orders):
         if value_type == list:
             first_period_orders += [
                 s['totalCost'] for s in value
-                if s and start_period >= s['created_at'] > middle_period
+                if s and start_period >= s['created_at'] > middle_period and s['status'] == 'rd'
             ]
             second_period_orders += [
                 s['totalCost'] for s in value
-                if s and middle_period >= s['created_at'] > end_period
+                if s and middle_period >= s['created_at'] > end_period and s['status'] == 'rd'
             ]
         if value_type == dict:
             first_period_orders += [
                 s['totalCost'] for s in value.values()
-                if s and start_period >= s['created_at'] > middle_period
+                if s and start_period >= s['created_at'] > middle_period and s['status'] == 'rd'
             ]
             second_period_orders += [
                 s['totalCost'] for s in value.values()
-                if s and middle_period >= s['created_at'] > end_period
+                if s and middle_period >= s['created_at'] > end_period and s['status'] == 'rd'
             ]
     return first_period_orders, second_period_orders
 
