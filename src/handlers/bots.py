@@ -283,11 +283,13 @@ async def bot_deploy(bot: AsyncTeleBot, call: types.CallbackQuery, db, data, buc
             }
         )
     except Exception as e:
+        print('exception')
         print(e)
         msg = _('Ooops. Something went wrong ({error})')
         return await bot.send_message(call.message.chat.id, msg)
     else:
         if 'error' in result[-1]:
+            print('error when building')
             msg = _('Ooops. Something went wrong ({error})').format(error=str(result[-1]['error']))
             print(str(result[-1]['error']))
         else:

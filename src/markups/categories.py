@@ -7,7 +7,7 @@ from src.utils import category_action, action, gettext as _, position_action
 
 
 def back_menu_option(back_to, **kwargs):
-    return [InlineKeyboardButton('⬅️ ' + _('Back'), callback_data=action(back_to, **kwargs))]
+    return [InlineKeyboardButton('↩️ ' + _('Back'), callback_data=action(back_to, **kwargs))]
 
 
 def categories_for_position_markup(

@@ -8,7 +8,7 @@ from src.utils import with_callback_data, mail_action, gettext as _, action
 
 
 def back_menu_option(back_to, **kwargs):
-    return [InlineKeyboardButton('⬅️ ' + _('Back'), callback_data=action(back_to, **kwargs))]
+    return [InlineKeyboardButton('↩️ ' + _('Back'), callback_data=action(back_to, **kwargs))]
 
 
 def mail_list_markup(bot_id: Any, bot_username, mails: dict) -> InlineKeyboardMarkup:

@@ -12,19 +12,24 @@ from src.utils import with_callback_data, with_db, with_bucket, edit_or_resend, 
 from src.markups.positions import positions_list_markup, position_manage_markup, positions_create_markup, \
     subitem_list_markup, subitem_manage_markup
 
+PAGE_SIZE = 20
 
 @with_db
-async def get_position_list(bot, bot_id, username, message: types.Message, text, db):
+async def get_position_list(bot, bot_id, username, message: types.Message, text, db, page=0, page_size=PAGE_SIZE):
     bot_data = db.child(f'bots/{username}/{bot_id}').get()
     positions = bot_data.get('positions', {})
-    markup = positions_list_markup(bot_id, bot_data.get('username'), positions)
+    markup = positions_list_markup(bot_id, bot_data.get('username'), positions, page=page, page_size=page_size)
     await edit_or_resend(bot, message, text or _('Select a good to customize or create a new one'), markup)
 
 
 @with_callback_data
 async def position_list(bot: AsyncTeleBot, call: CallbackQuery, data, message: str = None):
     bot_id = data.get('bot_id')
-    return await get_position_list(bot, bot_id, call.from_user.username, call.message, message)
+    page = data.get('page', 0)
+    page_size = data.get('page_size', PAGE_SIZE)
+    return await get_position_list(
+        bot, bot_id, call.from_user.username, call.message, message, page=page, page_size=page_size
+    )
 
 
 @with_db
@@ -380,10 +385,13 @@ async def position_edit(bot: AsyncTeleBot, call: CallbackQuery, data):
 async def position_delete(bot: AsyncTeleBot, call: CallbackQuery, db, data):
     bot_id = data.get('bot_id')
     position_key = data.get('position_key')
+    page = data.get('page', 0)
+    page_size = data.get('page_size', PAGE_SIZE)
     username = call.from_user.username
     db.child(f'bots/{username}/{bot_id}/positions/{position_key}').delete()
     await get_position_list(
-        bot, bot_id, call.message.chat.username, call.message, text=_('Position was deleted successfully. What\'s next?')
+        bot, bot_id, call.message.chat.username, call.message, text=_('Position was deleted successfully. What\'s next?'),
+        page=page, page_size=page_size
     )
 
 

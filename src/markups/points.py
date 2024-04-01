@@ -6,7 +6,7 @@ from src.utils import point_action, action, gettext as _
 
 
 def back_menu_option(back_to, **kwargs):
-    return [InlineKeyboardButton('⬅️ ' + _('Back'), callback_data=action(back_to, **kwargs))]
+    return [InlineKeyboardButton('↩️ ' + _('Back'), callback_data=action(back_to, **kwargs))]
 
 
 def point_list_markup(bot_id: Any, bot_username, points: dict) -> InlineKeyboardMarkup:

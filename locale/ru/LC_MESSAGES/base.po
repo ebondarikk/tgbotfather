@@ -955,3 +955,11 @@ msgstr "Пожалуйста, отправьте корректную стоим
 #: src/handlers/delivery.py:192
 msgid "please, send me a valid minimum receipt"
 msgstr "Пожалуйста, отправьте корректную сумму минимального чека"
+
+#: src/markups/positions.py:46 src/markups/positions.py:58
+msgid "Previous"
+msgstr "Пред."
+
+#: src/markups/positions.py:50 src/markups/positions.py:65
+msgid "Next"
+msgstr "След."

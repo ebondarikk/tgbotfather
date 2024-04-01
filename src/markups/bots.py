@@ -8,7 +8,7 @@ from src.utils import action, bot_action, position_action, gettext as _, statist
 
 
 def back_menu_option(back_to, **kwargs):
-    return [InlineKeyboardButton('⬅️ ' + _('Back'), callback_data=action(back_to, **kwargs))]
+    return [InlineKeyboardButton('↩️ ' + _('Back'), callback_data=action(back_to, **kwargs))]
 
 
 def is_need_update(bot_data):

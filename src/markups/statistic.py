@@ -7,7 +7,7 @@ from src.utils import action, statistic_action, gettext as _
 
 
 def back_menu_option(back_to, **kwargs):
-    return [InlineKeyboardButton('⬅️ ' + _('Back'), callback_data=action(back_to, **kwargs))]
+    return [InlineKeyboardButton('↩️ ' + _('Back'), callback_data=action(back_to, **kwargs))]
 
 
 def statistic_period_markup(bot_id: Any, bot_username: str, action: str) -> InlineKeyboardMarkup:

@@ -7,17 +7,26 @@ from src.utils import action, position_action, subitem_action, gettext as _
 
 
 def back_menu_option(back_to, **kwargs):
-    return [InlineKeyboardButton('⬅️ ' + _('Back'), callback_data=action(back_to, **kwargs))]
+    return [InlineKeyboardButton('↩️ ' + _('Back'), callback_data=action(back_to, **kwargs))]
 
 
-def positions_list_markup(bot_id: Any, bot_username, positions: dict) -> InlineKeyboardMarkup:
+def positions_list_markup(bot_id: Any, bot_username, positions: dict, page=0, page_size=20) -> InlineKeyboardMarkup:
+    if page:
+        page = int(page)
+    if page_size:
+        page_size = int(page_size)
+
     position_btns = [
         InlineKeyboardButton(
             f'{index + 1}.{" 🛑 " if position_data.get("frozen") else ""} {position_data["name"]}',
             callback_data=position_action('manage', bot_id=bot_id, position_key=position_key)
         )
-        for index, (position_key, position_data) in enumerate(positions.items())
+        for index, (position_key, position_data) in list(enumerate(positions.items()))[page*page_size:(page+1)*page_size]
     ]
+
+    has_previous = page > 0
+    has_next = len(positions) > (page + 1) * page_size
+
     columns = max(len(position_btns), 2)
     positions_array = numpy.array_split(
         position_btns,
@@ -29,8 +38,36 @@ def positions_list_markup(bot_id: Any, bot_username, positions: dict) -> InlineK
             'pre_create', bot_id=bot_id))
          ],
         *[list(btns) for btns in positions_array],
-        back_menu_option('bot/manage', bot_id=bot_id, username=bot_username)
     ]
+    if has_previous and has_next:
+        menu += [
+            [
+                InlineKeyboardButton(
+                    '⬅️ ' + _('Previous'),
+                    callback_data=position_action('list', bot_id=bot_id, page=page - 1, page_size=page_size)
+                ),
+                InlineKeyboardButton(
+                    _('Next') + ' ➡️',
+                    callback_data=position_action('list', bot_id=bot_id, page=page + 1, page_size=page_size)
+                ),
+            ]
+        ]
+    elif has_previous:
+        menu += [[
+            InlineKeyboardButton(
+                '⬅️ ' + _('Previous'),
+                callback_data=position_action('list', bot_id=bot_id, page=page - 1, page_size=page_size)
+            )
+        ]]
+    elif has_next:
+        menu += [[
+            InlineKeyboardButton(
+                _('Next') + ' ➡️',
+                callback_data=position_action('list', bot_id=bot_id, page=page + 1, page_size=page_size)
+            )
+        ]]
+
+    menu += [back_menu_option('bot/manage', bot_id=bot_id, username=bot_username)]
     markup = InlineKeyboardMarkup(menu)
     return markup
 
