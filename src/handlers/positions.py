@@ -220,8 +220,9 @@ async def position_manage(bot: AsyncTeleBot, call: CallbackQuery, db, data, buck
         ),
     ]
 
+    subitems_caption = ''
     if grouped:
-        caption += _(
+        subitems_caption = _(
             "\n*Sub items:* _{subitems}_"
         ).format(subitems='\n\t\t- ' + '\n\t\t- '.join(sub['name'] for sub in position.get('subitems', {}).values()))
 
@@ -234,6 +235,23 @@ async def position_manage(bot: AsyncTeleBot, call: CallbackQuery, db, data, buck
     markup = position_manage_markup(
         bot_id, position_key, position, keys_to_edit=keys_to_edit, inner_callbacks=inner_callbacks
     )
+
+    if subitems_caption and len(caption + subitems_caption) > 1024 and len(caption) < 800:
+        cutted = False
+        while len(caption + subitems_caption) > 1024:
+            lines = subitems_caption.split('\n')
+            center = int(len(lines) / 2)
+            if lines[center] == '\t\t...\t\t':
+                center -= 1
+            if not cutted:
+                cutted = True
+                lines[center] = '\t\t...\t\t'
+            else:
+                lines.pop(center)
+            subitems_caption = '\n'.join(lines)
+
+    caption = caption + subitems_caption
+
     await bot.send_photo(
         call.message.chat.id,
         img,
