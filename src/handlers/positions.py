@@ -1,10 +1,13 @@
 import datetime
+import io
 import re
 import uuid
 
 from telebot import types
 from telebot.async_telebot import AsyncTeleBot
 from telebot.types import CallbackQuery
+
+from PIL import Image
 
 from src.states import PositionStates, SubItemStates
 from src.utils import with_callback_data, with_db, with_bucket, edit_or_resend, step_handler, \
@@ -529,10 +532,20 @@ async def position_full_create_step(message, bot, bucket):
     file_info = await bot.get_file(file_id)
     photo = await bot.download_file(file_info.file_path)
 
+    image = Image.open(io.BytesIO(photo))
+
+    # Изменяем размер изображения
+    max_size = (800, 800)
+    image.thumbnail(max_size)
+
+    byte_arr = io.BytesIO()
+    image.save(byte_arr, format='JPEG')
+    compressed_photo = byte_arr.getvalue()
+
     format = file_info.file_path.split('.')[-1]
     bucket_path = f'{message.chat.username}/{str(uuid.uuid4())}.{format}'
     blob = bucket.blob(bucket_path)
-    blob.upload_from_string(photo, content_type=mime_type)
+    blob.upload_from_string(compressed_photo, content_type=mime_type)
 
     data = {
         'bot_id': bot_id, 'name': name, 'price': price, 'image': bucket_path, 'description': description,
@@ -629,6 +642,16 @@ async def position_image_step(message, db, bot, bucket):
     file_info = await bot.get_file(file_id)
     photo = await bot.download_file(file_info.file_path)
 
+    image = Image.open(io.BytesIO(photo))
+
+    # Изменяем размер изображения
+    max_size = (800, 800)
+    image.thumbnail(max_size)
+
+    byte_arr = io.BytesIO()
+    image.save(byte_arr, format='JPEG')
+    compressed_photo = byte_arr.getvalue()
+
     async with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
         edit = data.get('edit')
 
@@ -640,7 +663,7 @@ async def position_image_step(message, db, bot, bucket):
         format = file_info.file_path.split('.')[-1]
         bucket_path = f'{message.chat.username}/{name}.{format}'
         blob = bucket.blob(bucket_path)
-        blob.upload_from_string(photo, content_type=mime_type)
+        blob.upload_from_string(compressed_photo, content_type=mime_type)
         data['image'] = bucket_path
 
     await position_save(bot, message)

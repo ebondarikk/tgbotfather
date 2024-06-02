@@ -1,6 +1,9 @@
 #!/bin/bash
 
 cd ~/tg-bot
+#cd /Users/evgenybondarik/Downloads/botly/tg-bot
+
+git pull
 
 # Получите аргументы командной строки
 TG_TOKEN=$1

@@ -1,9 +1,13 @@
+import asyncio
 import datetime
 import json
 import urllib.parse
 import gettext as gtext
 from functools import wraps
 from typing import Any
+
+import subprocess
+
 
 from dateutil.relativedelta import relativedelta
 from google.cloud import api_keys_v2
@@ -311,3 +315,29 @@ def get_conversion(orders, users):
     all_users = len(users) or 1
 
     return (len(ordered_users) / all_users) * 100
+
+async def deploy_script(
+        tg_token, tg_owner_chat_id, tg_bot_name, tg_bot_id, tg_bot_owner_username, firebase_token, firebase_project
+):
+    script_path = "./build.sh"
+    process = subprocess.Popen([
+        script_path,
+        tg_token,
+        tg_owner_chat_id,
+        tg_bot_name,
+        tg_bot_id,
+        tg_bot_owner_username,
+        firebase_token,
+        firebase_project
+    ])
+
+    status = process.poll()
+
+    while status is None:
+        await asyncio.sleep(1)
+        status = process.poll()
+
+    if status != 0:
+        raise Exception(str(process.stderr))
+
+    return status

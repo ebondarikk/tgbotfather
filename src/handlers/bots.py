@@ -9,8 +9,11 @@ from telebot.async_telebot import types, AsyncTeleBot
 
 from settings import GITHUB_ACCESS
 from src.exceptions import BotAlreadyExistsException
-from src.utils import with_db, with_callback_data, send_message_with_cancel_markup, step_handler, get_image_url, \
-    with_bucket, make_function_public, gettext as _, edit_or_resend, get_default_schedule, get_default_welcome_text
+from src.utils import (
+    with_db, with_callback_data, send_message_with_cancel_markup, step_handler, get_image_url,
+    with_bucket, make_function_public, gettext as _, edit_or_resend, get_default_schedule, get_default_welcome_text,
+    deploy_script
+)
 from src.markups.bots import bots_list_markup, bot_manage_markup, bot_currency_markup, bot_welcome_text_markup
 from src.states import BotStates
 
@@ -241,7 +244,7 @@ async def bot_currency_update(bot: AsyncTeleBot, call: types.CallbackQuery, data
 @with_db
 @with_callback_data
 @with_bucket
-async def bot_deploy(bot: AsyncTeleBot, call: types.CallbackQuery, db, data, bucket):
+async def bot_deploy2(bot: AsyncTeleBot, call: types.CallbackQuery, db, data, bucket):
     bot_id = data.get('bot_id')
     username = call.from_user.username
     positions = db.child(f'bots/{username}/{bot_id}/positions').get()
@@ -252,13 +255,6 @@ async def bot_deploy(bot: AsyncTeleBot, call: types.CallbackQuery, db, data, buc
             call.message.chat.id,
             _('The bot doesn\'t have any position yet. Create positions, then launch deploy')
         )
-
-    # if not paid:
-    #     return await bot.send_message(
-    #         call.message.chat.id,
-    #         _('The bot is not paid. Contact @botly_support to pay or get a trial period')
-    #     )
-
 
     docker = aiodocker.Docker()
     bot_data = db.child(f'bots/{username}/{bot_id}').get()
@@ -302,6 +298,52 @@ async def bot_deploy(bot: AsyncTeleBot, call: types.CallbackQuery, db, data, buc
     finally:
         delete_result = await docker.images.delete(name='bot_image', force=True)
         print(delete_result)
+
+    await bot.send_message(call.message.chat.id, msg)
+
+
+@with_db
+@with_callback_data
+@with_bucket
+async def bot_deploy(bot: AsyncTeleBot, call: types.CallbackQuery, db, data, bucket):
+    bot_id = data.get('bot_id')
+    username = call.from_user.username
+    positions = db.child(f'bots/{username}/{bot_id}/positions').get()
+
+    if not positions:
+        return await bot.send_message(
+            call.message.chat.id,
+            _('The bot doesn\'t have any position yet. Create positions, then launch deploy')
+        )
+
+    docker = aiodocker.Docker()
+    bot_data = db.child(f'bots/{username}/{bot_id}').get()
+    function_name = bot_data['username']
+    msg = _('Success. Try your bot @{bot_username}').format(bot_username=bot_data["username"])
+
+    await bot.send_message(call.message.chat.id, _('Start deploying your bot. Please, wait...'))
+    print('...deploying...')
+
+    try:
+        await deploy_script(
+            tg_token=bot_data['token'],
+            tg_owner_chat_id=str(call.message.chat.id),
+            tg_bot_name=function_name,
+            tg_bot_id=str(bot_id),
+            tg_bot_owner_username=username,
+            firebase_project='telegram-bot-1-c1cfe',
+            firebase_token='1//0cbja13u4muayCgYIARAAGAwSNwF-L9IrYdBKdOTcj-1kLNF3tBwbQceG_Rx4laIPFYh8v325IzrVLv81H6k9Me7pXht5blvdvZk',
+        )
+    except Exception as e:
+        msg = _('Ooops. Something went wrong. Try again later')
+        print(e)
+    else:
+        make_function_public(function_name)
+        function_path = f'https://us-central1-telegram-bot-1-c1cfe.cloudfunctions.net/{function_name}'
+        resp = requests.get(f'https://api.telegram.org/bot{bot_data["token"]}/setWebhook?url={function_path}')
+        if not resp.ok:
+            msg = _('Ooops. Something went wrong ({error})').format(error=resp.text)
+            print(resp.text)
 
     await bot.send_message(call.message.chat.id, msg)
 
