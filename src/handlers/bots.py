@@ -316,7 +316,6 @@ async def bot_deploy(bot: AsyncTeleBot, call: types.CallbackQuery, db, data, buc
             _('The bot doesn\'t have any position yet. Create positions, then launch deploy')
         )
 
-    docker = aiodocker.Docker()
     bot_data = db.child(f'bots/{username}/{bot_id}').get()
     function_name = bot_data['username']
     msg = _('Success. Try your bot @{bot_username}').format(bot_username=bot_data["username"])
