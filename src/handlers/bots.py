@@ -48,8 +48,8 @@ async def bot_create(bot: AsyncTeleBot, call: types.CallbackQuery, bucket, db):
 
 
 @with_db
-async def get_bot_list(bot, username, message, text, db):
-    bots = db.child('bots').child(username).get() or {}
+async def get_bot_list(bot, user_id, message, text, db):
+    bots = db.child('bots').child(str(user_id)).get() or {}
     markup = bots_list_markup(bots)
     return await edit_or_resend(
         bot,
@@ -60,10 +60,10 @@ async def get_bot_list(bot, username, message, text, db):
 
 
 async def bot_list(bot: AsyncTeleBot, call: types.CallbackQuery):
-    username = call.from_user.username
+    user_id = call.from_user.id
     return await get_bot_list(
         bot,
-        username,
+        user_id,
         call.message,
         None
     )
@@ -84,11 +84,11 @@ async def bot_manage(bot: AsyncTeleBot, call: types.CallbackQuery, data: dict):
 @with_callback_data
 async def bot_delete(bot: AsyncTeleBot, call: types.CallbackQuery, db, data):
     bot_id = data.get('bot_id')
-    username = call.from_user.username
-    db.child(f'bots/{username}/{bot_id}').delete()
+    user_id = call.from_user.id
+    db.child(f'bots/{user_id}/{bot_id}').delete()
     await get_bot_list(
         bot,
-        call.from_user.username,
+        call.from_user.id,
         call.message,
         _('Bot was deleted successfully. What\'s next?').format(fullname=data.get('fullname'))
     )
@@ -110,9 +110,9 @@ def web_app_keyboard(schedule, bot_id, locale="ru"):
 @with_callback_data
 async def bot_schedule_get(bot: AsyncTeleBot, call: types.CallbackQuery, db, data):
     bot_id = data.get('bot_id')
-    username = call.from_user.username
+    user_id = call.from_user.id
 
-    schedule = db.child(f'bots/{username}/{bot_id}/schedule').get()
+    schedule = db.child(f'bots/{user_id}/{bot_id}/schedule').get()
 
     message = _('That\'s schedule of your Bot. You can update it by clicking on "Update Schedule" button \n\n')
 
@@ -145,10 +145,10 @@ async def bot_schedule_get(bot: AsyncTeleBot, call: types.CallbackQuery, db, dat
 @with_callback_data
 async def bot_welcome_text(bot: AsyncTeleBot, call: types.CallbackQuery, db, data):
     bot_id = data.get('bot_id')
-    username = call.from_user.username
-    welcome_text = db.child(f'bots/{username}/{bot_id}/welcome_text').get()
+    user_id = call.from_user.id
+    welcome_text = db.child(f'bots/{user_id}/{bot_id}/welcome_text').get()
     msg = _('<i>This is your welcome message:</i>') + '\n\n' + welcome_text
-    markup = bot_welcome_text_markup(bot_id, db.child(f'bots/{username}/{bot_id}/username').get())
+    markup = bot_welcome_text_markup(bot_id, db.child(f'bots/{user_id}/{bot_id}/username').get())
 
     return await bot.send_message(call.message.chat.id, msg, parse_mode='HTML', reply_markup=markup)
 
@@ -176,11 +176,11 @@ async def bot_welcome_text_updated(bot: AsyncTeleBot, message: types.Message, db
     async with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
         bot_id = data['bot_id']
 
-    db.child(f'bots/{message.from_user.username}/{bot_id}').update({'welcome_text': new_message})
+    db.child(f'bots/{message.from_user.id}/{bot_id}').update({'welcome_text': new_message})
 
     await bot.delete_state(message.from_user.id, message.chat.id)
 
-    markup = bot_manage_markup(bot_id, db.child(f'bots/{message.from_user.username}/{bot_id}/username').get())
+    markup = bot_manage_markup(bot_id, db.child(f'bots/{message.from_user.id}/{bot_id}/username').get())
 
     return await edit_or_resend(
         bot,
@@ -204,9 +204,9 @@ async def bot_schedule_save(bot: AsyncTeleBot, message: types.Message, db):
             'Incorrect data received',
         )
 
-    username = message.from_user.username
-    bot_username = db.child(f'bots/{username}/{bot_id}/username').get()
-    db.child(f'bots/{username}/{bot_id}/schedule').update(schedule)
+    user_id = message.from_user.id
+    bot_username = db.child(f'bots/{user_id}/{bot_id}/username').get()
+    db.child(f'bots/{user_id}/{bot_id}/schedule').update(schedule)
 
     return await bot.send_message(
         message.chat.id,
@@ -219,17 +219,17 @@ async def bot_schedule_save(bot: AsyncTeleBot, message: types.Message, db):
 @with_callback_data
 async def bot_currency_update(bot: AsyncTeleBot, call: types.CallbackQuery, data, db):
     bot_id = data.get('bot_id')
-    username = call.from_user.username
+    user_id = call.from_user.id
 
     new_currency = data.get('currency')
-    bot_username = db.child(f'bots/{username}/{bot_id}/username').get()
+    bot_username = db.child(f'bots/{user_id}/{bot_id}/username').get()
 
     if new_currency:
-        db.child(f'bots/{username}/{bot_id}/currency').set(new_currency)
+        db.child(f'bots/{user_id}/{bot_id}/currency').set(new_currency)
         msg = _('Currency was successfully updated to {currency}. What\'s next?').format(currency=new_currency)
         markup = bot_manage_markup(bot_id, bot_username)
     else:
-        current_currency = db.child(f'bots/{username}/{bot_id}/currency').get()
+        current_currency = db.child(f'bots/{user_id}/{bot_id}/currency').get()
         msg = _('Your current currency is {currency}. Please, choose a new currency').format(currency=current_currency)
         markup = bot_currency_markup(bot_id, bot_username)
 
@@ -246,9 +246,9 @@ async def bot_currency_update(bot: AsyncTeleBot, call: types.CallbackQuery, data
 @with_bucket
 async def bot_deploy2(bot: AsyncTeleBot, call: types.CallbackQuery, db, data, bucket):
     bot_id = data.get('bot_id')
-    username = call.from_user.username
-    positions = db.child(f'bots/{username}/{bot_id}/positions').get()
-    paid = db.child(f'bots/{username}/{bot_id}/paid').get()
+    user_id = call.from_user.id
+    positions = db.child(f'bots/{user_id}/{bot_id}/positions').get()
+    paid = db.child(f'bots/{user_id}/{bot_id}/paid').get()
 
     if not positions:
         return await bot.send_message(
@@ -257,7 +257,7 @@ async def bot_deploy2(bot: AsyncTeleBot, call: types.CallbackQuery, db, data, bu
         )
 
     docker = aiodocker.Docker()
-    bot_data = db.child(f'bots/{username}/{bot_id}').get()
+    bot_data = db.child(f'bots/{user_id}/{bot_id}').get()
     function_name = bot_data['username']
     msg = _('Success. Try your bot @{bot_username}').format(bot_username=bot_data["username"])
 
@@ -275,7 +275,7 @@ async def bot_deploy2(bot: AsyncTeleBot, call: types.CallbackQuery, db, data, bu
                 'TG_OWNER_CHAT_ID': str(call.message.chat.id),
                 'TG_BOT_NAME': function_name,
                 'TG_BOT_ID': str(bot_id),
-                'TG_BOT_OWNER_USERNAME': username
+                'TG_BOT_OWNER_USERNAME': user_id
             }
         )
     except Exception as e:
@@ -307,8 +307,8 @@ async def bot_deploy2(bot: AsyncTeleBot, call: types.CallbackQuery, db, data, bu
 @with_bucket
 async def bot_deploy(bot: AsyncTeleBot, call: types.CallbackQuery, db, data, bucket):
     bot_id = data.get('bot_id')
-    username = call.from_user.username
-    positions = db.child(f'bots/{username}/{bot_id}/positions').get()
+    user_id = call.from_user.id
+    positions = db.child(f'bots/{user_id}/{bot_id}/positions').get()
 
     if not positions:
         return await bot.send_message(
@@ -316,7 +316,7 @@ async def bot_deploy(bot: AsyncTeleBot, call: types.CallbackQuery, db, data, buc
             _('The bot doesn\'t have any position yet. Create positions, then launch deploy')
         )
 
-    bot_data = db.child(f'bots/{username}/{bot_id}').get()
+    bot_data = db.child(f'bots/{user_id}/{bot_id}').get()
     function_name = bot_data['username']
     msg = _('Success. Try your bot @{bot_username}').format(bot_username=bot_data["username"])
 
@@ -329,7 +329,7 @@ async def bot_deploy(bot: AsyncTeleBot, call: types.CallbackQuery, db, data, buc
             tg_owner_chat_id=str(call.message.chat.id),
             tg_bot_name=function_name,
             tg_bot_id=str(bot_id),
-            tg_bot_owner_username=username,
+            tg_bot_owner_user_id=user_id,
             firebase_project='telegram-bot-1-c1cfe',
             firebase_token='1//0cbja13u4muayCgYIARAAGAwSNwF-L9IrYdBKdOTcj-1kLNF3tBwbQceG_Rx4laIPFYh8v325IzrVLv81H6k9Me7pXht5blvdvZk',
         )
@@ -371,6 +371,11 @@ async def bot_token_step(message: types.Message, bot: AsyncTeleBot):
 
         try:
             await bot_save(bot=bot, message=message)
+        except BotAlreadyExistsException:
+            await bot.send_message(
+                message.chat.id,
+                _('Bot with this token already exists. Try to input another token')
+            )
         except Exception as e:
             await bot.send_message(
                 message.chat.id,
@@ -397,11 +402,11 @@ async def bot_save(bot: AsyncTeleBot, message: types.Message, db):
     async with bot.retrieve_data(message.from_user.id, message.chat.id) as bot_data:
         data = bot_data
 
-    user_bots = db.child('bots').child(message.from_user.username).get()
+    user_bots = db.child('bots').child(str(message.from_user.id)).get()
     if user_bots and data.get('bot_id') in user_bots.keys():
         raise BotAlreadyExistsException
 
-    db.child('bots').child(message.from_user.username).child(data.get('bot_id')).update(
+    db.child('bots').child(str(message.from_user.id)).child(data.get('bot_id')).update(
         {
             'username': data.get('username'),
             'fullname': data.get('fullname'),

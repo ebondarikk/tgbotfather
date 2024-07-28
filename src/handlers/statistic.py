@@ -25,7 +25,7 @@ async def statistic_revenue(bot: AsyncTeleBot, call: types.CallbackQuery, data, 
     bot_id = data.get('bot_id')
     period = data.get('period')
     orders = db.child(f'orders/{bot_id}').get() or {}
-    currency = db.child(f'bots/{call.from_user.username}/{bot_id}/currency').get()
+    currency = db.child(f'bots/{call.from_user.id}/{bot_id}/currency').get()
     first_period_orders, second_period_orders = get_period_orders(period, orders)
 
     current_revenue = str(round(sum(first_period_orders), 2)) + ' ' + str(currency) if first_period_orders else _('No data')
@@ -78,7 +78,7 @@ async def statistic_avg_bill(bot: AsyncTeleBot, call: types.CallbackQuery, data,
     bot_id = data.get('bot_id')
     period = data.get('period')
     orders = db.child(f'orders/{bot_id}').get() or {}
-    currency = db.child(f'bots/{call.from_user.username}/{bot_id}/currency').get()
+    currency = db.child(f'bots/{call.from_user.id}/{bot_id}/currency').get()
 
     first_period_orders, second_period_orders = get_period_orders(period, orders)
     first_period_value = (

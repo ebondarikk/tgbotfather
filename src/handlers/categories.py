@@ -10,9 +10,9 @@ from src.utils import with_db, edit_or_resend, gettext as _, with_callback_data,
 
 @with_db
 async def get_category_list(
-        bot, bot_id, username, message: types.Message, text, db, create: any = None, position_key: str = None, **kwargs
+        bot, bot_id, user_id, message: types.Message, text, db, create: any = None, position_key: str = None, **kwargs
 ):
-    bot_data = db.child(f'bots/{username}/{bot_id}').get()
+    bot_data = db.child(f'bots/{user_id}/{bot_id}').get()
     categories = bot_data.get('categories', {})
 
     text_to_send = text or _('Select a category to manage or create a new one')
@@ -30,7 +30,7 @@ async def get_category_list(
 @with_callback_data
 async def category_list(bot: AsyncTeleBot, call: CallbackQuery, data, message: str = None):
     bot_id = data.get('bot_id')
-    return await get_category_list(bot, bot_id, call.from_user.username, call.message, message)
+    return await get_category_list(bot, bot_id, call.from_user.id, call.message, message)
 
 
 @with_callback_data
@@ -52,10 +52,10 @@ async def category_create(bot: AsyncTeleBot, call: CallbackQuery, data):
 @with_db
 @with_callback_data
 async def category_manage(bot: AsyncTeleBot, call: CallbackQuery, db, data):
-    username = call.from_user.username
+    user_id = call.from_user.id
     bot_id = data.get('bot_id')
     category_key = data.get('category_key')
-    category = db.child(f'bots/{username}/{bot_id}/categories/{category_key}').get()
+    category = db.child(f'bots/{user_id}/{bot_id}/categories/{category_key}').get()
     caption = _("""*Name:* _{name}_""").format(
         name=category['name'],
     )
@@ -65,11 +65,11 @@ async def category_manage(bot: AsyncTeleBot, call: CallbackQuery, db, data):
 
 @with_callback_data
 async def category_edit(bot: AsyncTeleBot, call: CallbackQuery, data):
-    username = call.from_user.username
+    user_id = call.from_user.id
     bot_id = data.get('bot_id')
     category_key = data.get('category_key')
     key_to_edit = data.get('edit_action')
-    path = f'bots/{username}/{bot_id}/categories/{category_key}'
+    path = f'bots/{user_id}/{bot_id}/categories/{category_key}'
 
     state = None
     match key_to_edit:
@@ -104,7 +104,7 @@ async def category_create_step(message, bot):
     else:
         msg_text = _('Category was created successfully. What\'s next?')
 
-    return await get_category_list(bot, bot_id, message.from_user.username, message, msg_text)
+    return await get_category_list(bot, bot_id, message.from_user.id, message, msg_text)
 
 
 @with_db
@@ -120,14 +120,14 @@ async def category_save(bot: AsyncTeleBot, message: types.Message, data: dict, d
         db.child(path).update(data)
         name = data['name']
         positions = db.child(
-            f'bots/{message.chat.username}/{bot_id}/positions'
+            f'bots/{message.from_user.id}/{bot_id}/positions'
         ).get() or {}
 
         for position_key, position in positions.items():
             if position.get('category') == old_name:
-                db.child(f'bots/{message.chat.username}/{bot_id}/positions/{position_key}').update({'category': name})
+                db.child(f'bots/{message.from_user.id}/{bot_id}/positions/{position_key}').update({'category': name})
     else:
-        db.child(f'bots/{message.chat.username}/{bot_id}/categories').push(data)
+        db.child(f'bots/{message.from_user.id}/{bot_id}/categories').push(data)
 
     return True
 
@@ -137,11 +137,11 @@ async def category_save(bot: AsyncTeleBot, message: types.Message, data: dict, d
 async def category_delete(bot: AsyncTeleBot, call: CallbackQuery, db, data):
     bot_id = data.get('bot_id')
     category_key = data.get('category_key')
-    username = call.from_user.username
+    user_id = call.from_user.id
 
-    category = db.child(f'bots/{username}/{bot_id}/categories/{category_key}').get()['name']
+    category = db.child(f'bots/{user_id}/{bot_id}/categories/{category_key}').get()['name']
 
-    positions = db.child(f'bots/{username}/{bot_id}/positions/').get() or {}
+    positions = db.child(f'bots/{user_id}/{bot_id}/positions/').get() or {}
 
     for position in positions.values():
         if position.get('category') == category:
@@ -150,12 +150,12 @@ async def category_delete(bot: AsyncTeleBot, call: CallbackQuery, db, data):
                 _('Oops. This category can not be deleted, because it has goods.')
             )
 
-    db.child(f'bots/{username}/{bot_id}/categories/{category_key}').delete()
+    db.child(f'bots/{user_id}/{bot_id}/categories/{category_key}').delete()
 
     return await get_category_list(
         bot,
         bot_id,
-        call.message.chat.username,
+        call.message.from_user.id,
         call.message,
         _('Category was successfully deleted. What\'s next?')
     )

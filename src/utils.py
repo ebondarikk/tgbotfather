@@ -317,7 +317,7 @@ def get_conversion(orders, users):
     return (len(ordered_users) / all_users) * 100
 
 async def deploy_script(
-        tg_token, tg_owner_chat_id, tg_bot_name, tg_bot_id, tg_bot_owner_username, firebase_token, firebase_project
+        tg_token, tg_owner_chat_id, tg_bot_name, tg_bot_id, tg_bot_owner_user_id, firebase_token, firebase_project
 ):
     script_path = "./build.sh"
     process = subprocess.Popen([
@@ -326,7 +326,7 @@ async def deploy_script(
         tg_owner_chat_id,
         tg_bot_name,
         tg_bot_id,
-        tg_bot_owner_username,
+        str(tg_bot_owner_user_id),
         firebase_token,
         firebase_project
     ])

@@ -18,8 +18,8 @@ from src.markups.positions import positions_list_markup, position_manage_markup,
 PAGE_SIZE = 20
 
 @with_db
-async def get_position_list(bot, bot_id, username, message: types.Message, text, db, page=0, page_size=PAGE_SIZE):
-    bot_data = db.child(f'bots/{username}/{bot_id}').get()
+async def get_position_list(bot, bot_id, user_id, message: types.Message, text, db, page=0, page_size=PAGE_SIZE):
+    bot_data = db.child(f'bots/{user_id}/{bot_id}').get()
     positions = bot_data.get('positions', {})
     markup = positions_list_markup(bot_id, bot_data.get('username'), positions, page=page, page_size=page_size)
     await edit_or_resend(bot, message, text or _('Select a good to customize or create a new one'), markup)
@@ -31,13 +31,13 @@ async def position_list(bot: AsyncTeleBot, call: CallbackQuery, data, message: s
     page = data.get('page', 0)
     page_size = data.get('page_size', PAGE_SIZE)
     return await get_position_list(
-        bot, bot_id, call.from_user.username, call.message, message, page=page, page_size=page_size
+        bot, bot_id, call.from_user.id, call.message, message, page=page, page_size=page_size
     )
 
 
 @with_db
-async def get_subitem_list(bot, bot_id, position_key, username, message: types.Message, text, db):
-    subitems = db.child(f'bots/{username}/{bot_id}/positions/{position_key}/subitems').get() or {}
+async def get_subitem_list(bot, bot_id, position_key, user_id, message: types.Message, text, db):
+    subitems = db.child(f'bots/{user_id}/{bot_id}/positions/{position_key}/subitems').get() or {}
     markup = subitem_list_markup(bot_id, position_key, subitems)
     await edit_or_resend(bot, message, text or _('Select a sub item to customize or create a new one'), markup)
 
@@ -47,7 +47,7 @@ async def subitem_list(bot: AsyncTeleBot, call: CallbackQuery, data, message: st
     bot_id = data.get('bot_id')
     position_key = data.get('position_key')
 
-    return await get_subitem_list(bot, bot_id, position_key, call.from_user.username, call.message, message)
+    return await get_subitem_list(bot, bot_id, position_key, call.from_user.id, call.message, message)
 
 
 @with_callback_data
@@ -76,15 +76,15 @@ async def position_create_select_category(bot: AsyncTeleBot, call: CallbackQuery
     bot_id = data.get('bot_id')
     category = data.get('category')
     grouped = bool(int(data.get('grouped') or '0'))
-    username = call.from_user.username
+    user_id = call.from_user.id
 
-    categories = db.child(f'bots/{username}/{bot_id}/categories').get() or None
+    categories = db.child(f'bots/{user_id}/{bot_id}/categories').get() or None
 
     if not categories or category is not None:
         return await position_create(bot=bot, call=call, category=category, grouped=grouped)
 
     return await get_category_list(
-        bot, bot_id, call.from_user.username, call.message, _('Select a category for new position.'),
+        bot, bot_id, call.from_user.id, call.message, _('Select a category for new position.'),
         create=1, grouped=int(grouped)
     )
 
@@ -146,12 +146,12 @@ async def position_create(bot: AsyncTeleBot, call: CallbackQuery, data, db, cate
 @with_db
 @with_callback_data
 async def subitem_manage(bot: AsyncTeleBot, call: CallbackQuery, db, data):
-    username = call.from_user.username
+    user_id = call.from_user.id
     bot_id = data.get('bot_id')
     position_key = data.get('position_key')
     subitem_key = data.get('subitem_key')
 
-    subitem = db.child(f'bots/{username}/{bot_id}/positions/{position_key}/subitems/{subitem_key}').get()
+    subitem = db.child(f'bots/{user_id}/{bot_id}/positions/{position_key}/subitems/{subitem_key}').get()
 
     keys_to_edit = (
         ('name', _('name')),
@@ -176,11 +176,11 @@ async def subitem_manage(bot: AsyncTeleBot, call: CallbackQuery, db, data):
 @with_callback_data
 @with_bucket
 async def position_manage(bot: AsyncTeleBot, call: CallbackQuery, db, data, bucket):
-    username = call.from_user.username
+    user_id = call.from_user.id
     bot_id = data.get('bot_id')
     position_key = data.get('position_key')
-    currency = db.child(f'bots/{username}/{bot_id}/currency').get()
-    position = db.child(f'bots/{username}/{bot_id}/positions/{position_key}').get()
+    currency = db.child(f'bots/{user_id}/{bot_id}/currency').get()
+    position = db.child(f'bots/{user_id}/{bot_id}/positions/{position_key}').get()
     img = bucket.blob(position["image"]).download_as_bytes()
 
     grouped = position.get('grouped')
@@ -282,7 +282,7 @@ async def position_freeze(bot: AsyncTeleBot, call: CallbackQuery, data):
         'position_key': position_key,
         'edit': True,
         'bot_id': bot_id,
-        'path': f'bots/{call.from_user.username}/{bot_id}/positions/{position_key}',
+        'path': f'bots/{call.from_user.id}/{bot_id}/positions/{position_key}',
         'frozen': not is_frozen
     }
     return await position_save(
@@ -311,7 +311,7 @@ async def subitem_freeze(bot: AsyncTeleBot, call: CallbackQuery, data):
         'position_key': position_key,
         'edit': True,
         'bot_id': bot_id,
-        'path': f'bots/{call.from_user.username}/{bot_id}/positions/{position_key}/subitems/{subitem_key}',
+        'path': f'bots/{call.from_user.id}/{bot_id}/positions/{position_key}/subitems/{subitem_key}',
         'frozen': not is_frozen
     }
     return await subitem_save(
@@ -324,13 +324,13 @@ async def subitem_freeze(bot: AsyncTeleBot, call: CallbackQuery, data):
 
 @with_callback_data
 async def subitem_edit(bot: AsyncTeleBot, call: CallbackQuery, data):
-    username = call.from_user.username
+    user_id = call.from_user.id
     bot_id = data.get('bot_id')
     position_key = data.get('position_key')
     subitem_key = data.get('subitem_key')
     key_to_edit = data.get('edit_action')
 
-    path = f'bots/{username}/{bot_id}/positions/{position_key}/subitems/{subitem_key}'
+    path = f'bots/{user_id}/{bot_id}/positions/{position_key}/subitems/{subitem_key}'
 
     state = None
     match key_to_edit:
@@ -353,13 +353,13 @@ async def subitem_edit(bot: AsyncTeleBot, call: CallbackQuery, data):
 
 @with_callback_data
 async def position_edit(bot: AsyncTeleBot, call: CallbackQuery, data):
-    username = call.from_user.username
+    user_id = call.from_user.id
     bot_id = data.get('bot_id')
     position_key = data.get('position_key')
     key_to_edit = data.get('edit_action')
     category = data.get('category')
 
-    path = f'bots/{username}/{bot_id}/positions/{position_key}'
+    path = f'bots/{user_id}/{bot_id}/positions/{position_key}'
 
     state = None
     match key_to_edit:
@@ -389,7 +389,7 @@ async def position_edit(bot: AsyncTeleBot, call: CallbackQuery, data):
             return await get_category_list(
                 bot,
                 bot_id,
-                call.from_user.username,
+                call.from_user.id,
                 call.message,
                 _('Select a category for position.'),
                 create=0,
@@ -408,10 +408,10 @@ async def position_delete(bot: AsyncTeleBot, call: CallbackQuery, db, data):
     position_key = data.get('position_key')
     page = data.get('page', 0)
     page_size = data.get('page_size', PAGE_SIZE)
-    username = call.from_user.username
-    db.child(f'bots/{username}/{bot_id}/positions/{position_key}').delete()
+    user_id = call.from_user.id
+    db.child(f'bots/{user_id}/{bot_id}/positions/{position_key}').delete()
     await get_position_list(
-        bot, bot_id, call.message.chat.username, call.message, text=_('Position was deleted successfully. What\'s next?'),
+        bot, bot_id, user_id, call.message, text=_('Position was deleted successfully. What\'s next?'),
         page=page, page_size=page_size
     )
 
@@ -422,8 +422,8 @@ async def subitem_delete(bot: AsyncTeleBot, call: CallbackQuery, db, data):
     bot_id = data.get('bot_id')
     position_key = data.get('position_key')
     subitem_key = data.get('subitem_key')
-    username = call.from_user.username
-    subitems = db.child(f'bots/{username}/{bot_id}/positions/{position_key}/subitems').get()
+    user_id = call.from_user.id
+    subitems = db.child(f'bots/{user_id}/{bot_id}/positions/{position_key}/subitems').get()
 
     if len(subitems) <= 1:
         return await bot.send_message(
@@ -431,10 +431,10 @@ async def subitem_delete(bot: AsyncTeleBot, call: CallbackQuery, db, data):
             _('Oops. Grouped good must contain at least 1 sub item.')
         )
 
-    db.child(f'bots/{username}/{bot_id}/positions/{position_key}/subitems/{subitem_key}').delete()
+    db.child(f'bots/{user_id}/{bot_id}/positions/{position_key}/subitems/{subitem_key}').delete()
     await get_subitem_list(
         bot, bot_id, position_key,
-        call.message.chat.username, call.message, text=_('Sub item was deleted successfully. What\'s next?')
+        call.message.chat.id, call.message, text=_('Sub item was deleted successfully. What\'s next?')
     )
 
 
@@ -461,7 +461,7 @@ async def position_full_create_step(message, bot, bucket):
         )
         return
 
-    price_pattern = '\*(\d+\.?\d{1,2}?)\*'
+    price_pattern = '\*([\d\s]+(\.\d{1,2})?)\*'
 
     price_res = re.findall(price_pattern, message.caption)
 
@@ -472,9 +472,9 @@ async def position_full_create_step(message, bot, bucket):
         )
         return
 
-    price = float(price_res[0])
+    price = float(price_res[0][0])
 
-    name = message.caption.split(f'*{price_res[0]}*')[0].strip().capitalize()
+    name = message.caption.split(f'*{price_res[0][0]}*')[0].strip().capitalize()
 
     if not name:
         await bot.send_message(
@@ -543,7 +543,7 @@ async def position_full_create_step(message, bot, bucket):
     compressed_photo = byte_arr.getvalue()
 
     format = file_info.file_path.split('.')[-1]
-    bucket_path = f'{message.chat.username}/{str(uuid.uuid4())}.{format}'
+    bucket_path = f'{message.from_user.id}/{str(uuid.uuid4())}.{format}'
     blob = bucket.blob(bucket_path)
     blob.upload_from_string(compressed_photo, content_type=mime_type)
 
@@ -661,7 +661,7 @@ async def position_image_step(message, db, bot, bucket):
             name = str(uuid.uuid4())
 
         format = file_info.file_path.split('.')[-1]
-        bucket_path = f'{message.chat.username}/{name}.{format}'
+        bucket_path = f'{message.from_user.id}/{name}.{format}'
         blob = bucket.blob(bucket_path)
         blob.upload_from_string(compressed_photo, content_type=mime_type)
         data['image'] = bucket_path
@@ -695,15 +695,15 @@ async def subitem_save(
 
         return await get_subitem_list(
             bot, bot_id, position_key,
-            message.chat.username, message, text=update_text
+            message.from_user.id, message, text=update_text
         )
 
     data['frozen'] = False
 
-    db.child(f'bots/{message.chat.username}/{bot_id}/positions/{position_key}/subitems').push(data)
+    db.child(f'bots/{message.from_user.id}/{bot_id}/positions/{position_key}/subitems').push(data)
     return await get_subitem_list(
         bot, bot_id, position_key,
-        message.chat.username, message, text=_('Sub item was created successfully. What\'s next?')
+        message.from_user.id, message, text=_('Sub item was created successfully. What\'s next?')
     )
 
 
@@ -715,7 +715,7 @@ async def position_save(
         data=None,
         update_text=_('Position was updated successfully. What\'s next?')):
     if not data:
-        async with bot.retrieve_data(message.chat.id, message.chat.id) as position_data:
+        async with bot.retrieve_data(message.from_user.id, message.chat.id) as position_data:
             data = position_data
 
     edit = data.pop('edit', False)
@@ -727,7 +727,7 @@ async def position_save(
         data['grouped'] = bool(subitems)
 
     if name := data.get('name'):
-        positions = db.child('bots').child(message.chat.username).child(bot_id).child('positions').get()
+        positions = db.child('bots').child(str(message.from_user.id)).child(bot_id).child('positions').get()
         positions = positions.values() if positions else []
         existing_names = [
             p['name']
@@ -745,11 +745,11 @@ async def position_save(
         db.child(path).update(position)
 
         return await get_position_list(
-            bot, bot_id, message.chat.username, message, text=update_text
+            bot, bot_id, message.from_user.id, message, text=update_text
         )
 
     data['frozen'] = False
-    result = db.child(f'bots/{message.chat.username}/{bot_id}/positions').push(data)
+    result = db.child(f'bots/{message.from_user.id}/{bot_id}/positions').push(data)
 
     if result:
         path = result.path[1:] + '/subitems'
@@ -757,7 +757,7 @@ async def position_save(
             subitem['frozen'] = False
             db.child(path).push(subitem)
 
-    db.child(f'bots/{message.chat.username}/{bot_id}').update({'last_updates': str(datetime.datetime.now())})
+    db.child(f'bots/{message.from_user.id}/{bot_id}').update({'last_updates': str(datetime.datetime.now())})
     return await get_position_list(
-        bot, bot_id, message.from_user.username, message, text=_('Position was created successfully. What\'s next?')
+        bot, bot_id, message.from_user.id, message, text=_('Position was created successfully. What\'s next?')
     )

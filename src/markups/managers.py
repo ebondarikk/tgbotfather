@@ -9,7 +9,7 @@ def back_menu_option(back_to, **kwargs):
     return [InlineKeyboardButton('↩️ ' + _('Back'), callback_data=action(back_to, **kwargs))]
 
 
-def manager_list_markup(bot_id: Any, bot_username, managers: dict) -> InlineKeyboardMarkup:
+def manager_list_markup(bot_id: Any, bot_username, user_id, managers: dict) -> InlineKeyboardMarkup:
     manager_btns = [
         InlineKeyboardButton(
             f'{index + 1}. '
@@ -25,7 +25,7 @@ def manager_list_markup(bot_id: Any, bot_username, managers: dict) -> InlineKeyb
     menu = [
         [InlineKeyboardButton(
             '➕' + _('Add manager'),
-            callback_data=manager_action('create', bot_id=bot_id, username=bot_username))
+            callback_data=manager_action('create', bot_id=bot_id, user_id=user_id, username=bot_username))
         ],
         *[[mngr] for mngr in manager_btns],
         back_menu_option('bot/manage', bot_id=bot_id, username=bot_username)
@@ -35,7 +35,7 @@ def manager_list_markup(bot_id: Any, bot_username, managers: dict) -> InlineKeyb
     return markup
 
 
-def manager_manage_markup(bot_id: Any, bot_username, manager_key, manager_data) -> InlineKeyboardMarkup:
+def manager_manage_markup(bot_id: Any, user_id, manager_key, manager_data) -> InlineKeyboardMarkup:
     manager_btns = []
 
     if not manager_data.get('is_active'):

@@ -14,8 +14,8 @@ from src.states import MailStates
 
 
 @with_db
-async def get_mail_list(bot, bot_id, username, message: types.Message, text, db):
-    bot_data = db.child(f'bots/{username}/{bot_id}').get()
+async def get_mail_list(bot, bot_id, user_id, message: types.Message, text, db):
+    bot_data = db.child(f'bots/{user_id}/{bot_id}').get()
     mails = bot_data.get('mailings', {})
     markup = mail_list_markup(bot_id, bot_data.get('username'), mails)
     await edit_or_resend(bot, message, text or _('Select a mail to customize or create a new one'), markup)
@@ -24,7 +24,7 @@ async def get_mail_list(bot, bot_id, username, message: types.Message, text, db)
 @with_callback_data
 async def mail_list(bot: AsyncTeleBot, call: CallbackQuery, data, message: str = None):
     bot_id = data.get('bot_id')
-    return await get_mail_list(bot, bot_id, call.from_user.username, call.message, message)
+    return await get_mail_list(bot, bot_id, call.from_user.id, call.message, message)
 
 
 @with_callback_data
@@ -48,10 +48,10 @@ async def mail_create(bot: AsyncTeleBot, call: CallbackQuery, data):
 @with_callback_data
 @with_bucket
 async def mail_manage(bot: AsyncTeleBot, call: CallbackQuery, db, data, bucket):
-    username = call.from_user.username
+    user_id = call.from_user.id
     bot_id = data.get('bot_id')
     mail_key = data.get('mail_key')
-    mailing = db.child(f'bots/{username}/{bot_id}/mailings/{mail_key}').get()
+    mailing = db.child(f'bots/{user_id}/{bot_id}/mailings/{mail_key}').get()
     images = mailing.get('images')
     content = mailing.get('html_content') or mailing.get('content')
 
@@ -82,17 +82,17 @@ async def mail_manage(bot: AsyncTeleBot, call: CallbackQuery, db, data, bucket):
 @with_db
 @with_bucket
 async def mail_publish(bot: AsyncTeleBot, call: CallbackQuery, data, db, bucket):
-    username = call.from_user.username
+    user_id = call.from_user.id
     bot_id = data.get('bot_id')
     mail_key = data.get('mail_key')
-    user_bot_data = db.child(f'bots/{username}/{bot_id}').get()
+    user_bot_data = db.child(f'bots/{user_id}/{bot_id}').get()
     mailing = user_bot_data['mailings'][mail_key]
     bot_token = user_bot_data['token']
 
     images = mailing.get('images')
     content = mailing.get('html_content') or mailing.get('content')
 
-    last_published_at = db.child(f'bots/{username}/{bot_id}/last_published_at').get()
+    last_published_at = db.child(f'bots/{user_id}/{bot_id}/last_published_at').get()
 
     if last_published_at:
         now = datetime.datetime.now()
@@ -139,12 +139,12 @@ async def mail_publish(bot: AsyncTeleBot, call: CallbackQuery, data, db, bucket)
             continue
 
     db.child(
-        f'bots/{username}/{bot_id}/mailings/{mail_key}'
+        f'bots/{user_id}/{bot_id}/mailings/{mail_key}'
     ).update(
         {'published_at': datetime.datetime.now().timestamp(), 'published': True}
     )
     db.child(
-        f'bots/{username}/{bot_id}'
+        f'bots/{user_id}/{bot_id}'
     ).update({'last_published_at': datetime.datetime.now().timestamp()})
 
     await bot.send_message(call.message.chat.id, _('Success sent to {cnt} users').format(cnt=sent_count))
@@ -204,7 +204,7 @@ async def mail_create_step(message: Message, bot, bucket):
         photo = await bot.download_file(file_info.file_path)
 
         format = file_info.file_path.split('.')[-1]
-        bucket_path = f'{message.chat.username}/{mailing_id}_{uuid.uuid4()}.{format}'
+        bucket_path = f'{message.from_user.id}/{mailing_id}_{uuid.uuid4()}.{format}'
         blob = bucket.blob(bucket_path)
         blob.upload_from_string(photo, content_type=file['type'])
         files.append(bucket_path)
@@ -227,21 +227,21 @@ async def mailing_save(bot: AsyncTeleBot, message: types.Message, mailing_id, db
     await bot.delete_state(message.from_user.id, message.chat.id)
     bot_id = data.pop('bot_id')
 
-    mailings = db.child(f'bots/{message.chat.username}/{bot_id}/mailings').get() or {}
+    mailings = db.child(f'bots/{message.chat.id}/{bot_id}/mailings').get() or {}
 
     mailing = [(key, value) for key, value in mailings.items() if value['mailing_id'] == mailing_id]
 
     if mailing:
         mailing_key, mailing_data = mailing[0]
         mailing_data['images'] = mailing_data.get('images', []) + data.get('images', [])
-        db.child(f'bots/{message.chat.username}/{bot_id}/mailings/{mailing_key}').update(mailing_data)
+        db.child(f'bots/{message.from_user.id}/{bot_id}/mailings/{mailing_key}').update(mailing_data)
     else:
-        db.child(f'bots/{message.chat.username}/{bot_id}/mailings').push(data)
+        db.child(f'bots/{message.from_user.id}/{bot_id}/mailings').push(data)
 
         return await get_mail_list(
             bot,
             bot_id,
-            message.from_user.username,
+            message.from_user.id,
             message,
             text=_('Mailing was created successfully. You can publish it by selecting it below. ')
         )

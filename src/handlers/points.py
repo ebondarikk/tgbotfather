@@ -14,9 +14,9 @@ from src.utils import with_db, gettext as _, edit_or_resend, with_callback_data,
 
 @with_db
 async def get_point_list(
-        bot, bot_id, username, message: types.Message, text, db, **kwargs
+        bot, bot_id, user_id, message: types.Message, text, db, **kwargs
 ):
-    bot_data = db.child(f'bots/{username}/{bot_id}').get()
+    bot_data = db.child(f'bots/{user_id}/{bot_id}').get()
     points = db.child(f'points/{bot_id}').get() or {}
 
     text_to_send = text or _('Select a pick-up point to manage or add a new one')
@@ -29,14 +29,15 @@ async def get_point_list(
 @with_callback_data
 async def point_list(bot: AsyncTeleBot, call: CallbackQuery, data, message: str = None):
     bot_id = data.get('bot_id')
-    return await get_point_list(bot, bot_id, call.from_user.username, call.message, message)
+    return await get_point_list(bot, bot_id, call.from_user.id, call.message, message)
 
 
 @with_callback_data
 @with_db
 async def point_create(bot: AsyncTeleBot, call: CallbackQuery, data, db):
     bot_id = data.get('bot_id')
-    username = data.get('username')
+    username = data.get('bot_username')
+    user_id = data.get('user_id')
     managers = db.child(f'managers/{bot_id}').get()
     manager_key = data.get('manager_key')
 
@@ -50,7 +51,7 @@ async def point_create(bot: AsyncTeleBot, call: CallbackQuery, data, db):
 
     if len(managers) > 1 and not manager_key:
         managers_markup = manager_list_markup(
-            bot_id, username, managers, action=point_action, action_name='create', create=False
+            bot_id, user_id, username, managers, action=point_action, action_name='create', create=False
         )
 
         await edit_or_resend(
@@ -121,7 +122,7 @@ async def point_create_step(message, bot: AsyncTeleBot, db):
 
     msg_text = _('Pick-up point was added successfully. What\'s next?')
 
-    return await get_point_list(bot, bot_id, message.from_user.username, message, msg_text)
+    return await get_point_list(bot, bot_id, message.from_user.id, message, msg_text)
 
 
 @with_db
@@ -171,7 +172,7 @@ async def manager_activate(bot: AsyncTeleBot, call: CallbackQuery, db, data):
     return await get_manager_list(
         bot,
         bot_id,
-        call.from_user.username,
+        call.from_user.id,
         call.message,
         _('Now @{username} accept orders. What\'s next?').format(username=manager_username)
     )
@@ -202,7 +203,7 @@ async def manager_delete(bot: AsyncTeleBot, call: CallbackQuery, db, data):
     return await get_manager_list(
         bot,
         bot_id,
-        call.from_user.username,
+        call.from_user.id,
         call.message,
         _('Manager @{username} was deleted. What\'s next?').format(username=manager_username)
     )

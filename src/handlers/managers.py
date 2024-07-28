@@ -12,14 +12,14 @@ from src.utils import with_db, gettext as _, edit_or_resend, with_callback_data,
 
 @with_db
 async def get_manager_list(
-        bot, bot_id, username, message: types.Message, text, db, **kwargs
+        bot, bot_id, user_id, message: types.Message, text, db, **kwargs
 ):
-    bot_data = db.child(f'bots/{username}/{bot_id}').get()
+    bot_data = db.child(f'bots/{user_id}/{bot_id}').get()
     managers = db.child(f'managers/{bot_id}').get() or {}
 
     text_to_send = text or _('Select a manager to manage or add a new one')
 
-    markup = manager_list_markup(bot_id, bot_username=bot_data['username'], managers=managers)
+    markup = manager_list_markup(bot_id, user_id=user_id, bot_username=bot_data['username'], managers=managers)
 
     await edit_or_resend(bot, message, text_to_send, markup)
 
@@ -27,18 +27,20 @@ async def get_manager_list(
 @with_callback_data
 async def manager_list(bot: AsyncTeleBot, call: CallbackQuery, data, message: str = None):
     bot_id = data.get('bot_id')
-    return await get_manager_list(bot, bot_id, call.from_user.username, call.message, message)
+    return await get_manager_list(bot, bot_id, call.from_user.id, call.message, message)
 
 
 @with_callback_data
 async def manager_create(bot: AsyncTeleBot, call: CallbackQuery, data):
     bot_id = data.get('bot_id')
+    user_id = data.get('user_id')
     username = data.get('username')
 
     await bot.set_state(call.from_user.id, ManagerStates.create, call.message.chat.id)
 
     async with bot.retrieve_data(call.from_user.id, call.message.chat.id) as data:
         data['bot_id'] = bot_id
+        data['user_id'] = user_id
         data['bot_username'] = username
         data['edit'] = False
 
@@ -114,7 +116,7 @@ async def manager_create_step(message, bot: AsyncTeleBot, db):
         username=manager_data['username']
     )
 
-    return await get_manager_list(bot, bot_id, message.from_user.username, message, msg_text)
+    return await get_manager_list(bot, bot_id, message.from_user.id, message, msg_text)
 
 
 @with_db
@@ -164,7 +166,7 @@ async def manager_activate(bot: AsyncTeleBot, call: CallbackQuery, db, data):
     return await get_manager_list(
         bot,
         bot_id,
-        call.from_user.username,
+        call.from_user.id,
         call.message,
         _('Now @{username} accept orders. What\'s next?').format(username=manager_username)
     )
@@ -195,7 +197,7 @@ async def manager_delete(bot: AsyncTeleBot, call: CallbackQuery, db, data):
     return await get_manager_list(
         bot,
         bot_id,
-        call.from_user.username,
+        call.from_user.id,
         call.message,
         _('Manager @{username} was deleted. What\'s next?').format(username=manager_username)
     )

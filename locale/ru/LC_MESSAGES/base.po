@@ -752,7 +752,7 @@ msgstr "Ой, Некорректное имя пользователя."
 
 #: src/handlers/managers.py:85
 msgid "Oops. Could not find this user in users of your bot. Ask him to run the bot @{bot_username} and try again."
-msgstr "Ой, не удалось найти указанного пользователя среди пользователей вашего бота. Попросите его запустить бота @{bot_username} и повторите попытку."
+msgstr "Ой, не удалось найти указанного пользователя среди пользователей вашего бота. Попросите его запустить команду /start в боте @{bot_username} и повторите попытку."
 
 #: src/handlers/managers.py:94
 msgid "Oops. Seems like it is a bot. Bot can not be a manager."

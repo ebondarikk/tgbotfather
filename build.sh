@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# shellcheck disable=SC2164
 cd ~/tg-bot
 #cd /Users/evgenybondarik/Downloads/botly/tg-bot
 
@@ -11,7 +12,7 @@ TG_TOKEN=$1
 TG_OWNER_CHAT_ID=$2
 TG_BOT_NAME=$3
 TG_BOT_ID=$4
-TG_BOT_OWNER_USERNAME=$5
+TG_BOT_OWNER_USER_ID=$5
 FIREBASE_TOKEN=$6
 FIREBASE_PROJECT=$7
 
@@ -19,7 +20,7 @@ FIREBASE_PROJECT=$7
 firebase --project=${FIREBASE_PROJECT} --token ${FIREBASE_TOKEN} functions:config:set telegram.token="${TG_TOKEN}"
 firebase --project=${FIREBASE_PROJECT} --token ${FIREBASE_TOKEN} functions:config:set telegram.owner_chat_id="${TG_OWNER_CHAT_ID}"
 firebase --project=${FIREBASE_PROJECT} --token ${FIREBASE_TOKEN} functions:config:set telegram.name="${TG_BOT_NAME}"
-firebase --project=${FIREBASE_PROJECT} --token ${FIREBASE_TOKEN} functions:config:set telegram.bot_owner_username="${TG_BOT_OWNER_USERNAME}"
+firebase --project=${FIREBASE_PROJECT} --token ${FIREBASE_TOKEN} functions:config:set telegram.bot_owner_user_id="${TG_BOT_OWNER_USER_ID}"
 firebase --project=${FIREBASE_PROJECT} --token ${FIREBASE_TOKEN} functions:config:set telegram.bot_id="${TG_BOT_ID}"
 
 # Получите конфигурацию firebase

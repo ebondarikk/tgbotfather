@@ -21,11 +21,11 @@ DEFAULT_DELIVERY_DATA = {
 
 
 @with_db
-async def get_delivery_manage(bot: AsyncTeleBot, bot_id, username, message, db, delivery_data=None,):
+async def get_delivery_manage(bot: AsyncTeleBot, bot_id, user_id, message, db, delivery_data=None,):
     if not delivery_data:
-        delivery_data = db.child(f'bots/{username}/{bot_id}/delivery').get()
+        delivery_data = db.child(f'bots/{user_id}/{bot_id}/delivery').get()
 
-    currency = db.child(f'bots/{username}/{bot_id}/currency').get()
+    currency = db.child(f'bots/{user_id}/{bot_id}/currency').get()
 
     is_active = delivery_data.get('is_active', False)
     delivery_cost = delivery_data.get('cost', 0)
@@ -45,7 +45,7 @@ async def get_delivery_manage(bot: AsyncTeleBot, bot_id, username, message, db, 
         is_active=_('Yes') if is_active else _('No')
     )
 
-    markup = delivery_manage_markup(bot_id, username, delivery_data)
+    markup = delivery_manage_markup(bot_id, user_id, delivery_data)
     return await edit_or_resend(bot, message, caption, markup, parse_mode="Markdown")
 
 
@@ -53,23 +53,23 @@ async def get_delivery_manage(bot: AsyncTeleBot, bot_id, username, message, db, 
 @with_db
 @with_callback_data
 async def delivery_manage(bot: AsyncTeleBot, call: CallbackQuery, db, data):
-    username = call.from_user.username
+    user_id = call.from_user.id
     bot_id = data.get('bot_id')
-    delivery_data = db.child(f'bots/{username}/{bot_id}/delivery').get()
+    delivery_data = db.child(f'bots/{user_id}/{bot_id}/delivery').get()
 
     if not delivery_data:
-        db.child(f'bots/{username}/{bot_id}/delivery').update(DEFAULT_DELIVERY_DATA)
+        db.child(f'bots/{user_id}/{bot_id}/delivery').update(DEFAULT_DELIVERY_DATA)
         delivery_data = DEFAULT_DELIVERY_DATA
 
-    return await get_delivery_manage(bot, bot_id, username, call.message, delivery_data=delivery_data)
+    return await get_delivery_manage(bot, bot_id, user_id, call.message, delivery_data=delivery_data)
 
 
 @with_db
 @with_callback_data
 async def delivery_condition_manage(bot: AsyncTeleBot, call: CallbackQuery, db, data):
-    username = call.from_user.username
+    user_id = call.from_user.id
     bot_id = data.get('bot_id')
-    delivery_data = db.child(f'bots/{username}/{bot_id}/delivery').get() or {}
+    delivery_data = db.child(f'bots/{user_id}/{bot_id}/delivery').get() or {}
     condition = DELIVERY_CONDITIONS[delivery_data.get('condition', 'always_paid')]
 
     conditions_desc = '\n\t'.join(
@@ -92,34 +92,34 @@ async def delivery_condition_manage(bot: AsyncTeleBot, call: CallbackQuery, db, 
 @with_db
 @with_callback_data
 async def delivery_condition(bot: AsyncTeleBot, call: CallbackQuery, db, data):
-    username = call.from_user.username
+    user_id = call.from_user.id
     bot_id = data.get('bot_id')
     condition_key = data.get('selected_condition')
 
-    db.child(f'bots/{username}/{bot_id}/delivery').update({'condition': condition_key})
+    db.child(f'bots/{user_id}/{bot_id}/delivery').update({'condition': condition_key})
 
-    return await get_delivery_manage(bot, bot_id, username, call.message)
+    return await get_delivery_manage(bot, bot_id, user_id, call.message)
 
 
 @with_db
 @with_callback_data
 async def delivery_activate(bot: AsyncTeleBot, call: CallbackQuery, db, data):
-    username = call.from_user.username
+    user_id = call.from_user.id
     bot_id = data.get('bot_id')
-    delivery_data = db.child(f'bots/{username}/{bot_id}/delivery').get() or {}
+    delivery_data = db.child(f'bots/{user_id}/{bot_id}/delivery').get() or {}
 
-    db.child(f'bots/{username}/{bot_id}/delivery').update({'is_active': not delivery_data.get('is_active')})
+    db.child(f'bots/{user_id}/{bot_id}/delivery').update({'is_active': not delivery_data.get('is_active')})
 
-    return await get_delivery_manage(bot, bot_id, username, call.message)
+    return await get_delivery_manage(bot, bot_id, user_id, call.message)
 
 
 @with_db
 @with_callback_data
 async def delivery_cost(bot: AsyncTeleBot, call: CallbackQuery, db, data):
-    username = call.from_user.username
+    user_id = call.from_user.id
     bot_id = data.get('bot_id')
-    cost = db.child(f'bots/{username}/{bot_id}/delivery/cost').get() or 0
-    currency = db.child(f'bots/{username}/{bot_id}/currency').get()
+    cost = db.child(f'bots/{user_id}/{bot_id}/delivery/cost').get() or 0
+    currency = db.child(f'bots/{user_id}/{bot_id}/currency').get()
 
     caption = _(
         'Current cost of delivery: {cost} {currency}\n'
@@ -130,7 +130,7 @@ async def delivery_cost(bot: AsyncTeleBot, call: CallbackQuery, db, data):
 
     async with bot.retrieve_data(call.from_user.id, call.message.chat.id) as data:
         data['bot_id'] = bot_id
-        data['username'] = username
+        data['user_id'] = user_id
 
     await bot.send_message(call.from_user.id, caption)
 
@@ -138,10 +138,10 @@ async def delivery_cost(bot: AsyncTeleBot, call: CallbackQuery, db, data):
 @with_db
 @with_callback_data
 async def delivery_min_check(bot: AsyncTeleBot, call: CallbackQuery, db, data):
-    username = call.from_user.username
+    user_id = call.from_user.id
     bot_id = data.get('bot_id')
-    min_check = db.child(f'bots/{username}/{bot_id}/delivery/min_check').get() or 0
-    currency = db.child(f'bots/{username}/{bot_id}/currency').get()
+    min_check = db.child(f'bots/{user_id}/{bot_id}/delivery/min_check').get() or 0
+    currency = db.child(f'bots/{user_id}/{bot_id}/currency').get()
 
     caption = _(
         'Current minimum receipt: {min_check} {currency}\n'
@@ -152,7 +152,7 @@ async def delivery_min_check(bot: AsyncTeleBot, call: CallbackQuery, db, data):
 
     async with bot.retrieve_data(call.from_user.id, call.message.chat.id) as data:
         data['bot_id'] = bot_id
-        data['username'] = username
+        data['user_id'] = user_id
 
     await bot.send_message(call.from_user.id, caption)
 
@@ -171,13 +171,13 @@ async def delivery_cost_step(message, bot, db):
 
     async with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
         bot_id = data.get('bot_id')
-        username = data.get('username')
+        user_id = data.get('user_id')
 
-    db.child(f'bots/{username}/{bot_id}/delivery').update({'cost': cost})
+    db.child(f'bots/{user_id}/{bot_id}/delivery').update({'cost': cost})
 
     await bot.delete_state(message.from_user.id, message.chat.id)
 
-    return await get_delivery_manage(bot, bot_id, username, message)
+    return await get_delivery_manage(bot, bot_id, user_id, message)
 
 
 @with_db
@@ -194,10 +194,10 @@ async def delivery_min_check_step(message, bot, db):
 
     async with bot.retrieve_data(message.from_user.id, message.chat.id) as data:
         bot_id = data.get('bot_id')
-        username = data.get('username')
+        user_id = data.get('user_id')
 
-    db.child(f'bots/{username}/{bot_id}/delivery').update({'min_check': min_check})
+    db.child(f'bots/{user_id}/{bot_id}/delivery').update({'min_check': min_check})
 
     await bot.delete_state(message.from_user.id, message.chat.id)
 
-    return await get_delivery_manage(bot, bot_id, username, message)
+    return await get_delivery_manage(bot, bot_id, user_id, message)
