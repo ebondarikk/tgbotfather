@@ -745,7 +745,7 @@ async def position_save(
         db.child(path).update(position)
 
         return await get_position_list(
-            bot, bot_id, message.from_user.id, message, text=update_text
+            bot, bot_id, message.chat.id, message, text=update_text
         )
 
     data['frozen'] = False
