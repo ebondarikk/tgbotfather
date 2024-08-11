@@ -47,7 +47,7 @@ async def subitem_list(bot: AsyncTeleBot, call: CallbackQuery, data, message: st
     bot_id = data.get('bot_id')
     position_key = data.get('position_key')
 
-    return await get_subitem_list(bot, bot_id, position_key, call.from_user.id, call.message, message)
+    return await get_subitem_list(bot, bot_id, position_key, call.message.chat.id, call.message, message)
 
 
 @with_callback_data
@@ -695,7 +695,7 @@ async def subitem_save(
 
         return await get_subitem_list(
             bot, bot_id, position_key,
-            message.from_user.id, message, text=update_text
+            message.chat.id, message, text=update_text
         )
 
     data['frozen'] = False
@@ -703,7 +703,7 @@ async def subitem_save(
     db.child(f'bots/{message.from_user.id}/{bot_id}/positions/{position_key}/subitems').push(data)
     return await get_subitem_list(
         bot, bot_id, position_key,
-        message.from_user.id, message, text=_('Sub item was created successfully. What\'s next?')
+        message.chat.id, message, text=_('Sub item was created successfully. What\'s next?')
     )
 
 
