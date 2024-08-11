@@ -7,7 +7,8 @@ from src.handlers.bots import (
     bot_schedule_get,
     bot_welcome_text,
     bot_currency_update,
-    bot_welcome_text_update
+    bot_welcome_text_update,
+    bot_communication
 )
 
 from src.handlers.categories import (
@@ -76,6 +77,7 @@ ACTIONS = {
         'manage': bot_manage,
         'welcome_text': bot_welcome_text,
         'welcome_text_update': bot_welcome_text_update,
+        'communication': bot_communication,
         'currency': bot_currency_update,
         'schedule': bot_schedule_get,
         'deploy': bot_deploy,

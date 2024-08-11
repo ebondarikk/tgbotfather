@@ -41,6 +41,7 @@ def bot_manage_markup(bot_id: Any, bot_username: any = None) -> InlineKeyboardMa
         [InlineKeyboardButton('📣 ' + _('Mailings'), callback_data=mail_action('list', bot_id=bot_id))],
         [InlineKeyboardButton('🚚 ' + _('Delivery'), callback_data=delivery_action('manage', bot_id=bot_id))],
         [InlineKeyboardButton('👨‍💼 ' + _('Managers'), callback_data=manager_action('list', bot_id=bot_id))],
+        [InlineKeyboardButton('💬 ' + _('Communication'), callback_data=bot_action('communication', bot_id=bot_id))],
         [InlineKeyboardButton(
             '📈 ' + _('Statistic'),
             callback_data=statistic_action('list', bot_id=bot_id, bot_username=bot_username)
@@ -64,6 +65,26 @@ def bot_currency_markup(bot_id: Any, bot_username: str, text='', with_cancel=Tru
 
     if with_cancel:
         menu.append(back_menu_option('bot/manage', bot_id=bot_id, username=bot_username))
+
+    markup = InlineKeyboardMarkup(menu)
+    return markup
+
+
+def bot_communication_markup(bot_id: Any, bot_username: str, is_active: bool) -> InlineKeyboardMarkup:
+
+    if is_active:
+        btn = InlineKeyboardButton(
+            '🔇 ' + _('Disable'), callback_data=bot_action('communication', bot_id=bot_id, is_active=0)
+        )
+    else:
+        btn = InlineKeyboardButton(
+            '🔊 ' + _('Enable'), callback_data=bot_action('communication', bot_id=bot_id, is_active=1)
+        )
+
+    menu = [
+        [btn],
+        back_menu_option('bot/manage', bot_id=bot_id, username=bot_username)
+    ]
 
     markup = InlineKeyboardMarkup(menu)
     return markup

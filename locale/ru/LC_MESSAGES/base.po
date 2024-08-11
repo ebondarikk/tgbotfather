@@ -963,3 +963,44 @@ msgstr "Пред."
 #: src/markups/positions.py:50 src/markups/positions.py:65
 msgid "Next"
 msgstr "След."
+
+
+#: src/markups/bots.py:77 src/markups/commands.py:18
+msgid "Disable"
+msgstr "Отключить"
+
+#: src/markups/bots.py:81 src/markups/commands.py:18
+msgid "Enable"
+msgstr "Включить"
+
+#: src/markups/bots.py:44
+msgid "Communication"
+msgstr "Связь с менеджером"
+
+#: src/handlers/bots.py:403
+msgid "Bot with this token already exists. Try to input another token"
+msgstr "Бот с таким токеном уже зарегистрирован. Попробуйте ввести другой токен"
+
+#: src/handlers/bots.py:349
+msgid "Start deploying your bot. Please, wait..."
+msgstr "Начинаю сборку вашего бота. Пожалуйста, подождите..."
+
+#: src/handlers/bots.py:363
+msgid "Ooops. Something went wrong. Try again later"
+msgstr "Ой, что-то пошло не так. Попробуйте позже"
+
+#: src/handlers/bots.py:188
+msgid "Communication is {status}. Disable communication with managers if you want to stop receiving and sending messages between managers and clients"
+msgstr "Общение {status}. Отключите общение с менеджерами, если хотите прекратить отправку и получение сообщений между менеджерами и клиентами"
+
+#: src/handlers/bots.py:190
+msgid "disabled"
+msgstr "отключена"
+
+#: src/handlers/bots.py:190
+msgid "enabled"
+msgstr "включена"
+
+msgid "Communication is {status}. Disable communication with managers if you want to stop receiving messages from clients"
+msgstr "Связь с менеджером {status}. Отключите функцию, чтобы у клиента не было возможности связаться с менеджером"
+

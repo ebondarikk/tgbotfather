@@ -14,7 +14,8 @@ from src.utils import (
     with_bucket, make_function_public, gettext as _, edit_or_resend, get_default_schedule, get_default_welcome_text,
     deploy_script
 )
-from src.markups.bots import bots_list_markup, bot_manage_markup, bot_currency_markup, bot_welcome_text_markup
+from src.markups.bots import bots_list_markup, bot_manage_markup, bot_currency_markup, bot_welcome_text_markup, \
+    bot_communication_markup
 from src.states import BotStates
 
 
@@ -163,6 +164,31 @@ async def bot_welcome_text_update(bot: AsyncTeleBot, call: types.CallbackQuery, 
         data['bot_id'] = bot_id
 
     await bot.send_message(call.message.chat.id, _('Send me a new welcome message'))
+
+
+@with_callback_data
+@with_db
+async def bot_communication(bot: AsyncTeleBot, call: types.CallbackQuery, data, db):
+    bot_id = data.get('bot_id')
+    bot_username = db.child(f'bots/{call.message.chat.id}/{bot_id}/username').get()
+
+    if data.get('is_active') is not None:
+        db.child(f'bots/{call.message.chat.id}/{bot_id}/communication').set(bool(int(data['is_active'])))
+
+    is_active = db.child(f'bots/{call.message.chat.id}/{bot_id}/communication').get()
+
+    if is_active is None:
+        is_active = True
+
+    markup = bot_communication_markup(bot_id, bot_username, is_active)
+    await edit_or_resend(
+        bot,
+        message=call.message,
+        markup=markup,
+        text=_(
+            'Communication is {status}. Disable communication with managers if you want to stop receiving messages from clients'
+        ).format(status=_('enabled') if is_active else _('disabled')),
+    )
 
 
 @step_handler
