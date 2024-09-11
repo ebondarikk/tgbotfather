@@ -187,17 +187,17 @@ async def position_manage(bot: AsyncTeleBot, call: CallbackQuery, db, data, buck
     frozen = bool(position.get('frozen'))
 
     caption = _(
-        "*Name:* _{name}"
+        "<b>Name:</b> <i>{name}</i>"
         "\n"
-        "_*Price:* _{price} {currency}_"
+        "<b>Price:</b> <i>{price} {currency}</i>"
         "\n"
-        "*Description:* _{description}_"
+        "<b>Description:</b> <i>{description}</i>"
         "\n"
-        "*Category:* _{category}_"
+        "<b>Category:</b> <i>{category}</i>"
         "\n"
-        "*Type:* _{type}_"
+        "<b>Type:</b> <i>{type}</i>"
         "\n"
-        "*Frozen:* _{frozen}_"
+        "<b>Frozen:</b> <i>{frozen}</i>"
     ).format(
         name=position['name'],
         price=position['price'],
@@ -226,7 +226,7 @@ async def position_manage(bot: AsyncTeleBot, call: CallbackQuery, db, data, buck
     subitems_caption = ''
     if grouped:
         subitems_caption = _(
-            "\n*Sub items:* _{subitems}_"
+            "\n<b>Sub items:</b> <i>{subitems}</i>"
         ).format(subitems='\n\t\t- ' + '\n\t\t- '.join(sub['name'] for sub in position.get('subitems', {}).values()))
 
         inner_callbacks += [
@@ -259,7 +259,7 @@ async def position_manage(bot: AsyncTeleBot, call: CallbackQuery, db, data, buck
         call.message.chat.id,
         img,
         caption=caption,
-        parse_mode="Markdown",
+        parse_mode="HTML",
         reply_markup=markup
     )
     if call.message.from_user.id == bot.user.id:
