@@ -20,6 +20,7 @@ class PositionStates(StatesGroup):
     image = State()
     description = State()
     category = State()
+    warehouse_update = State()
 
     def __str__(self):
         return _('Position creating')
@@ -27,6 +28,7 @@ class PositionStates(StatesGroup):
 
 class SubItemStates(StatesGroup):
     name = State()
+    warehouse_update = State()
 
     def __str__(self):
         return _('Sub item creating')

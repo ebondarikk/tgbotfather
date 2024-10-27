@@ -1004,3 +1004,89 @@ msgstr "включена"
 msgid "Communication is {status}. Disable communication with managers if you want to stop receiving messages from clients"
 msgstr "Связь с менеджером {status}. Отключите функцию, чтобы у клиента не было возможности связаться с менеджером"
 
+#: src/markups/positions.py:135 src/markups/positions.py:167
+msgid "Update quantity"
+msgstr "Установить количество"
+
+#: src/markups/positions.py:139 src/markups/positions.py:173
+msgid "Increase quantity"
+msgstr "Увеличить количество"
+
+
+#: src/handlers/positions.py:536
+msgid "Please indicate the total quantity of the subitem"
+msgstr "Укажите общее количество подтовара"
+
+#: src/handlers/positions.py:538
+msgid "Please specify how much the quantity of the subitem should be increased by"
+msgstr "Укажите, на сколько следует увеличить количество подтовара"
+
+#: src/handlers/positions.py:321 src/handlers/positions.py:348
+msgid "When customers buy this product, its quantity will be automatically reduced. When the product is finished, it will automatically disappear from sale."
+msgstr "При покупке этого товара, его количество автоматически будет уменьшаться. Когда товар закончится, купить его будет невозможно."
+
+#: src/handlers/positions.py:323 src/handlers/positions.py:350
+#: src/handlers/positions.py:451 src/handlers/positions.py:519
+msgid "Warehouse enabled: "
+msgstr "Склад активен: "
+
+#: src/handlers/positions.py:326 src/handlers/positions.py:522
+msgid "Position quantity: {}"
+msgstr "Количество товара: {}"
+
+#: src/handlers/positions.py:342 src/handlers/positions.py:443
+msgid "Warehouse option was enabled"
+msgstr "Функция \"Склад\" активирована"
+
+#: src/handlers/positions.py:344 src/handlers/positions.py:445
+msgid "Warehouse option was disabled"
+msgstr "Функция \"Склад\" отключена"
+
+#: src/handlers/positions.py:381
+msgid "Please indicate the total quantity of the product"
+msgstr "Укажите общее количество товара"
+
+#: src/handlers/positions.py:383
+msgid "Please specify how much the quantity of the product should be increased by"
+msgstr "Укажите, на сколько следует увеличить количество товара."
+
+#: src/handlers/positions.py:429 src/handlers/positions.py:585
+msgid "Quantity successfully updated. What's next?"
+msgstr "Количество успешно обновлено. Что дальше?"
+
+#: src/handlers/positions.py:449 src/handlers/positions.py:517
+msgid "When customers buy this subitem, its quantity will be automatically reduced. When the product is finished, it will automatically disappear from sale."
+msgstr "При покупке этого подтовара, его количество автоматически будет уменьшаться. Когда подтовар закончится, купить его будет невозможно."
+
+
+#: src/handlers/positions.py:234 src/markups/positions.py:212
+msgid "Warehouse"
+msgstr "Склад"
+
+#: src/handlers/positions.py:161
+msgid ""
+"*Name:* _{name}_\n"
+"*Frozen:* _{frozen}_\n"
+"*Warehouse:* _{warehouse}_"
+msgstr ""
+"*Название:* _{name}_\n"
+"*Заморожен:* _{frozen}_\n"
+"*Склад:* _{warehouse}_"
+
+#: src/handlers/positions.py:195
+msgid ""
+"<b>Name:</b> <i>{name}</i>\n"
+"<b>Price:</b> <i>{price} {currency}</i>\n"
+"<b>Description:</b> <i>{description}</i>\n"
+"<b>Category:</b> <i>{category}</i>\n"
+"<b>Type:</b> <i>{type}</i>\n"
+"<b>Frozen:</b> <i>{frozen}</i>\n"
+"<b>Warehouse:</b> <i>{warehouse}</i>"
+msgstr ""
+"<b>Название:</b> <i>{name}</i>\n"
+"<b>Стоимость:</b> <i>{price} {currency}</i>\n"
+"<b>Описание:</b> <i>{description}</i>\n"
+"<b>Категория:</b> <i>{category}</i>\n"
+"<b>Тип:</b> <i>{type}</i>\n"
+"<b>Заморожен:</b> <i>{frozen}</i>\n"
+"<b>Склад:</b> <i>{warehouse}</i>"

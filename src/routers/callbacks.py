@@ -27,12 +27,18 @@ from src.handlers.positions import (
     position_edit,
     position_delete,
     position_freeze,
+    position_warehouse,
+    position_warehouse_enable,
+    position_warehouse_update,
     subitem_list,
     subitem_create,
     subitem_manage,
     subitem_edit,
     subitem_delete,
     subitem_freeze,
+    subitem_warehouse,
+    subitem_warehouse_enable,
+    subitem_warehouse_update
 )
 
 from src.handlers.statistic import (
@@ -98,6 +104,9 @@ ACTIONS = {
         'edit': position_edit,
         'delete': position_delete,
         'freeze': position_freeze,
+        'warehouse': position_warehouse,
+        'warehouse_enable': position_warehouse_enable,
+        'warehouse_actualize': position_warehouse_update,
     },
     'subitem': {
         'list': subitem_list,
@@ -105,7 +114,10 @@ ACTIONS = {
         'manage': subitem_manage,
         'edit': subitem_edit,
         'delete': subitem_delete,
-        'freeze': subitem_freeze
+        'freeze': subitem_freeze,
+        'warehouse': subitem_warehouse,
+        'warehouse_enable': subitem_warehouse_enable,
+        'warehouse_actualize': subitem_warehouse_update,
     },
     'category': {
         'list': category_list,

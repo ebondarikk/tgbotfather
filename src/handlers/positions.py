@@ -13,9 +13,10 @@ from src.states import PositionStates, SubItemStates
 from src.utils import with_callback_data, with_db, with_bucket, edit_or_resend, step_handler, \
     send_message_with_cancel_markup, gettext as _, subitem_action, position_action
 from src.markups.positions import positions_list_markup, position_manage_markup, positions_create_markup, \
-    subitem_list_markup, subitem_manage_markup
+    subitem_list_markup, subitem_manage_markup, position_warehouse_markup, subitem_warehouse_markup
 
 PAGE_SIZE = 20
+
 
 @with_db
 async def get_position_list(bot, bot_id, user_id, message: types.Message, text, db, page=0, page_size=PAGE_SIZE):
@@ -161,9 +162,12 @@ async def subitem_manage(bot: AsyncTeleBot, call: CallbackQuery, db, data):
         "*Name:* _{name}_"
         "\n"
         "*Frozen:* _{frozen}_"
+        "\n"
+        "*Warehouse:* _{warehouse}_"
     ).format(
         name=subitem['name'],
-        frozen=_('Yes') if subitem.get('frozen') else _('No')
+        frozen=_('Yes') if subitem.get('frozen') else _('No'),
+        warehouse=subitem.get('warehouse_count') if subitem.get('warehouse') else _('Disabled')
     )
 
     markup = subitem_manage_markup(
@@ -185,6 +189,8 @@ async def position_manage(bot: AsyncTeleBot, call: CallbackQuery, db, data, buck
 
     grouped = position.get('grouped')
     frozen = bool(position.get('frozen'))
+    warehouse_count = position.get('warehouse_count')
+    warehouse = position.get('warehouse')
 
     caption = _(
         "<b>Name:</b> <i>{name}</i>"
@@ -198,6 +204,8 @@ async def position_manage(bot: AsyncTeleBot, call: CallbackQuery, db, data, buck
         "<b>Type:</b> <i>{type}</i>"
         "\n"
         "<b>Frozen:</b> <i>{frozen}</i>"
+        "\n"
+        "<b>Warehouse:</b> <i>{warehouse}</i>"
     ).format(
         name=position['name'],
         price=position['price'],
@@ -205,7 +213,8 @@ async def position_manage(bot: AsyncTeleBot, call: CallbackQuery, db, data, buck
         currency=currency,
         category=position.get('category') or _('Other'),
         type=_('Grouped') if grouped else _('Simple'),
-        frozen=_('Yes') if frozen else _('No')
+        frozen=_('Yes') if frozen else _('No'),
+        warehouse=warehouse_count if warehouse else _('Disabled'),
     )
 
     keys_to_edit = [
@@ -221,6 +230,10 @@ async def position_manage(bot: AsyncTeleBot, call: CallbackQuery, db, data, buck
             _('Defrost') if position.get('frozen') else '🛑 ' + _('Freeze'),
             position_action('freeze', bot_id=bot_id, position_key=position_key, frozen=int(frozen))
         ),
+        (
+            '📦 ' + (_('Warehouse') + f': {warehouse_count}' if warehouse_count else _('Warehouse')),
+            position_action('warehouse', bot_id=bot_id, position_key=position_key)
+        )
     ]
 
     subitems_caption = ''
@@ -294,6 +307,172 @@ async def position_freeze(bot: AsyncTeleBot, call: CallbackQuery, data):
 
 
 @with_callback_data
+@with_db
+async def position_warehouse(bot: AsyncTeleBot, call: CallbackQuery, data, db):
+    user_id = call.from_user.id
+    bot_id = data.get('bot_id')
+    position_key = data.get('position_key')
+
+    position = db.child(f'bots/{user_id}/{bot_id}/positions/{position_key}').get()
+    warehouse = bool(position.get('warehouse'))
+    warehouse_count = position.get('warehouse_count')
+
+    text = (
+            _('When customers buy this product, its quantity will be automatically reduced. '
+              'When the product is finished, it will automatically disappear from sale.')
+            + "\n" + '<b>' + _('Warehouse enabled: ') + (_('Yes') if warehouse else _('No')) + '</b>'
+    )
+    if warehouse:
+        text += '\n' + _('Position quantity: {}').format(warehouse_count)
+
+    markup = position_warehouse_markup(bot_id, position_key, warehouse)
+
+    await edit_or_resend(bot, call.message, text, markup, parse_mode='HTML')
+
+
+@with_callback_data
+@with_db
+async def position_warehouse_enable(bot: AsyncTeleBot, call: CallbackQuery, data, db):
+    user_id = call.from_user.id
+    bot_id = data.get('bot_id')
+    position_key = data.get('position_key')
+    enable = bool(int(data.get('warehouse')))
+
+    text = (
+        _('Warehouse option was enabled')
+        if enable else
+        _('Warehouse option was disabled')
+    )
+
+    text += '\n' + (
+            _('When customers buy this product, its quantity will be automatically reduced. '
+              'When the product is finished, it will automatically disappear from sale.')
+            + "\n" + '<b>' + _('Warehouse enabled: ') + (_('Yes') if enable else _('No')) + '</b>'
+    )
+
+    data = {
+        'position_key': position_key,
+        'edit': True,
+        'bot_id': bot_id,
+        'path': f'bots/{user_id}/{bot_id}/positions/{position_key}',
+        'warehouse': enable,
+        'warehouse_count': 0
+    }
+
+    markup = position_warehouse_markup(bot_id, position_key, enable)
+
+    return await position_save(
+        bot,
+        message=call.message,
+        data=data,
+        update_text=text,
+        markup=markup,
+        parse_mode='HTML'
+    )
+
+
+@with_callback_data
+async def position_warehouse_update(bot: AsyncTeleBot, call: CallbackQuery, data):
+    update = bool(int(data.get('update')))
+
+    state = PositionStates.warehouse_update
+
+    text = (
+        _('Please indicate the total quantity of the product')
+        if update else
+        _('Please specify how much the quantity of the product should be increased by')
+    )
+
+    await bot.set_state(call.from_user.id, state, call.message.chat.id)
+    async with bot.retrieve_data(call.message.chat.id, call.message.chat.id) as state_data:
+        state_data.update(**data)
+    await bot.send_message(call.message.chat.id, text)
+
+
+@step_handler
+@with_db
+async def position_warehouse_update_step(message: types.Message, bot, db):
+    count = message.text
+
+    try:
+        count = int(count)
+    except ValueError:
+        await bot.send_message(message.chat.id, 'Invalid input. Please enter a number.')
+        return
+
+    async with bot.retrieve_data(message.chat.id, message.chat.id) as state_data:
+        data = state_data
+
+    bot_id = data['bot_id']
+    position_key = data['position_key']
+    update = bool(int(data['update']))
+    user_id = message.from_user.id
+
+    if not update:
+        position = db.child(f'bots/{user_id}/{bot_id}/positions/{position_key}').get()
+        warehouse_count = (position.get('warehouse_count') or 0) + count
+    else:
+        warehouse_count = count
+
+    data = {
+        'position_key': position_key,
+        'edit': True,
+        'bot_id': bot_id,
+        'path': f'bots/{user_id}/{bot_id}/positions/{position_key}',
+        'warehouse_count': warehouse_count
+    }
+
+    return await position_save(
+        bot,
+        message=message,
+        data=data,
+        update_text=_('Quantity successfully updated. What\'s next?'),
+    )
+
+
+@with_callback_data
+@with_db
+async def subitem_warehouse_enable(bot: AsyncTeleBot, call: CallbackQuery, data, db):
+    user_id = call.from_user.id
+    bot_id = data.get('bot_id')
+    position_key = data.get('position_key')
+    subitem_key = data.get('subitem_key')
+    enable = bool(int(data.get('warehouse')))
+
+    text = (
+        _('Warehouse option was enabled')
+        if enable else
+        _('Warehouse option was disabled')
+    )
+
+    text += '\n' + (
+            _('When customers buy this subitem, its quantity will be automatically reduced. '
+              'When the product is finished, it will automatically disappear from sale.')
+            + "\n" + '<b>' + _('Warehouse enabled: ') + (_('Yes') if enable else _('No')) + '</b>'
+    )
+
+    data = {
+        'position_key': position_key,
+        'edit': True,
+        'bot_id': bot_id,
+        'path': f'bots/{user_id}/{bot_id}/positions/{position_key}/subitems/{subitem_key}',
+        'warehouse': enable,
+        'warehouse_count': 0
+    }
+
+    markup = subitem_warehouse_markup(bot_id, position_key, subitem_key, enable)
+
+    return await subitem_save(
+        bot,
+        message=call.message,
+        data=data,
+        update_text=text,
+        markup=markup,
+        parse_mode='HTML'
+    )
+
+
+@with_callback_data
 async def subitem_freeze(bot: AsyncTeleBot, call: CallbackQuery, data):
     bot_id = data.get('bot_id')
     position_key = data.get('position_key')
@@ -319,6 +498,91 @@ async def subitem_freeze(bot: AsyncTeleBot, call: CallbackQuery, data):
         message=call.message,
         data=data,
         update_text=text
+    )
+
+
+@with_callback_data
+@with_db
+async def subitem_warehouse(bot: AsyncTeleBot, call: CallbackQuery, data, db):
+    user_id = call.from_user.id
+    bot_id = data.get('bot_id')
+    position_key = data.get('position_key')
+    subitem_key = data.get('subitem_key')
+
+    subitem = db.child(f'bots/{user_id}/{bot_id}/positions/{position_key}/subitems/{subitem_key}').get()
+    warehouse = bool(subitem.get('warehouse'))
+    warehouse_count = subitem.get('warehouse_count')
+
+    text = (
+            _('When customers buy this subitem, its quantity will be automatically reduced. '
+              'When the product is finished, it will automatically disappear from sale.')
+            + "\n" + '<b>' + _('Warehouse enabled: ') + (_('Yes') if warehouse else _('No')) + '</b>'
+    )
+    if warehouse:
+        text += '\n' + _('Position quantity: {}').format(warehouse_count)
+
+    markup = subitem_warehouse_markup(bot_id, position_key, subitem_key, warehouse)
+
+    await edit_or_resend(bot, call.message, text, markup, parse_mode='HTML')
+
+
+@with_callback_data
+async def subitem_warehouse_update(bot: AsyncTeleBot, call: CallbackQuery, data):
+    update = bool(int(data.get('update')))
+
+    state = SubItemStates.warehouse_update
+
+    text = (
+        _('Please indicate the total quantity of the subitem')
+        if update else
+        _('Please specify how much the quantity of the subitem should be increased by')
+    )
+
+    await bot.set_state(call.from_user.id, state, call.message.chat.id)
+    async with bot.retrieve_data(call.message.chat.id, call.message.chat.id) as state_data:
+        state_data.update(**data)
+    await bot.send_message(call.message.chat.id, text)
+
+
+@step_handler
+@with_db
+async def subitem_warehouse_update_step(message: types.Message, bot, db):
+    count = message.text
+
+    try:
+        count = int(count)
+    except ValueError:
+        await bot.send_message(message.chat.id, 'Invalid input. Please enter a number.')
+        return
+
+    async with bot.retrieve_data(message.chat.id, message.chat.id) as state_data:
+        data = state_data
+
+    bot_id = data['bot_id']
+    position_key = data['position_key']
+    subitem_key = data['subitem_key']
+    update = bool(int(data['update']))
+    user_id = message.from_user.id
+
+    if not update:
+        subitem = db.child(f'bots/{user_id}/{bot_id}/positions/{position_key}/subitems/{subitem_key}').get()
+        warehouse_count = (subitem.get('warehouse_count') or 0) + count
+    else:
+        warehouse_count = count
+
+    data = {
+        'position_key': position_key,
+        'edit': True,
+        'bot_id': bot_id,
+        'path': f'bots/{user_id}/{bot_id}/positions/{position_key}/subitems/{subitem_key}',
+        'warehouse_count': warehouse_count
+    }
+
+    return await subitem_save(
+        bot,
+        message=message,
+        data=data,
+        update_text=_('Quantity successfully updated. What\'s next?'),
     )
 
 
@@ -675,7 +939,9 @@ async def subitem_save(
         message: types.Message,
         db,
         data=None,
-        update_text=_('Sub item was updated successfully. What\'s next?')
+        update_text=_('Sub item was updated successfully. What\'s next?'),
+        markup=None,
+        parse_mode=None,
 ):
     if not data:
         async with bot.retrieve_data(message.chat.id, message.chat.id) as subitem_data:
@@ -693,10 +959,13 @@ async def subitem_save(
         subitem.update(data)
         db.child(path).update(subitem)
 
-        return await get_subitem_list(
-            bot, bot_id, position_key,
-            message.chat.id, message, text=update_text
-        )
+        if not markup:
+            return await get_subitem_list(
+                bot, bot_id, position_key,
+                message.chat.id, message, text=update_text
+            )
+        else:
+            return await edit_or_resend(bot, message, update_text, markup, parse_mode=parse_mode)
 
     data['frozen'] = False
 
@@ -713,7 +982,10 @@ async def position_save(
         message: types.Message,
         db,
         data=None,
-        update_text=_('Position was updated successfully. What\'s next?')):
+        update_text=_('Position was updated successfully. What\'s next?'),
+        markup=None,
+        parse_mode=None
+):
     if not data:
         async with bot.retrieve_data(message.from_user.id, message.chat.id) as position_data:
             data = position_data
@@ -744,9 +1016,12 @@ async def position_save(
         position.update(**data)
         db.child(path).update(position)
 
-        return await get_position_list(
-            bot, bot_id, message.chat.id, message, text=update_text
-        )
+        if not markup:
+            return await get_position_list(
+                bot, bot_id, message.chat.id, message, text=update_text
+            )
+        else:
+            return await edit_or_resend(bot, message, update_text, markup, parse_mode=parse_mode)
 
     data['frozen'] = False
     result = db.child(f'bots/{message.from_user.id}/{bot_id}/positions').push(data)

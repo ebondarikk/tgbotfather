@@ -114,8 +114,76 @@ def positions_create_markup(bot_id: Any):
     return markup
 
 
+def position_warehouse_markup(bot_id: Any, position_key: str, warehouse_enabled: bool) -> InlineKeyboardMarkup:
+    menu = [
+        [
+            InlineKeyboardButton(
+                '' + _('Enable'), callback_data=position_action(
+                    'warehouse_enable', bot_id=bot_id, position_key=position_key, warehouse=1
+                )
+            ) if not warehouse_enabled else InlineKeyboardButton(
+                '' + _('Disable'), callback_data=position_action(
+                    'warehouse_enable', bot_id=bot_id, position_key=position_key, warehouse=0
+                )
+            ),
+        ],
+    ]
+
+    if warehouse_enabled:
+        menu += [
+            [InlineKeyboardButton(
+                _('Update quantity'),
+                callback_data=position_action('warehouse_actualize', bot_id=bot_id, position_key=position_key, update=1)
+            )],
+            [InlineKeyboardButton(
+                _('Increase quantity'),
+                callback_data=position_action('warehouse_actualize', bot_id=bot_id, position_key=position_key, update=0)
+            )]
+        ]
+
+    menu += [back_menu_option('position/manage', bot_id=bot_id, position_key=position_key)]
+    markup = InlineKeyboardMarkup(menu)
+    return markup
+
+
+def subitem_warehouse_markup(bot_id: Any, position_key: str, subitem_key: str, warehouse_enabled: bool) -> InlineKeyboardMarkup:
+    menu = [
+        [
+            InlineKeyboardButton(
+                '' + _('Enable'), callback_data=subitem_action(
+                    'warehouse_enable', bot_id=bot_id, position_key=position_key, subitem_key=subitem_key, warehouse=1
+                )
+            ) if not warehouse_enabled else InlineKeyboardButton(
+                '' + _('Disable'), callback_data=subitem_action(
+                    'warehouse_enable', bot_id=bot_id, position_key=position_key, subitem_key=subitem_key, warehouse=0
+                )
+            ),
+        ],
+    ]
+
+    if warehouse_enabled:
+        menu += [
+            [InlineKeyboardButton(
+                _('Update quantity'),
+                callback_data=subitem_action(
+                    'warehouse_actualize', bot_id=bot_id, position_key=position_key, subitem_key=subitem_key, update=1
+                )
+            )],
+            [InlineKeyboardButton(
+                _('Increase quantity'),
+                callback_data=subitem_action(
+                    'warehouse_actualize', bot_id=bot_id, position_key=position_key, subitem_key=subitem_key, update=0
+                )
+            )]
+        ]
+
+    menu += [back_menu_option('subitem/list', bot_id=bot_id, position_key=position_key)]
+    markup = InlineKeyboardMarkup(menu)
+    return markup
+
+
 def subitem_manage_markup(
-        bot_id: Any, position_key: str, subitem: dict, subitem_key: str, keys_to_edit: Iterable
+        bot_id: Any, position_key: str, subitem: dict, subitem_key: str, keys_to_edit: Iterable, count=None
 ) -> InlineKeyboardMarkup:
     menu = [
         *[[
@@ -140,6 +208,15 @@ def subitem_manage_markup(
                     frozen=int(subitem.get('frozen', False))
                 )
             ),
+            InlineKeyboardButton(
+                '📦 ' + (_('Warehouse') + f': {count}' if count else _('Warehouse')),
+                callback_data=subitem_action(
+                    'warehouse',
+                    bot_id=bot_id,
+                    position_key=position_key,
+                    subitem_key=subitem_key
+                )
+            )
         ],
         [
             InlineKeyboardButton(
