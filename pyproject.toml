@@ -97,6 +97,8 @@ python-dateutil = "^2.8.2"
 aiodocker = "^0.21.0"
 telebot = "^0.0.5"
 pillow = "^10.3.0"
+fastapi = "^0.115.4"
+uvicorn = {extras = ["standard"], version = "^0.32.0"}
 
 
 [build-system]
