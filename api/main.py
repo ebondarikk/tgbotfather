@@ -35,6 +35,6 @@ async def create_positions_from_web_app(payload: PositionPayload):
         await create_positions(BOT, payload.bot_id, payload.user_id, message, payload.data)
     except Exception as e:
         traceback.print_exc()
-        BOT.send_message(payload.user_id, _('Something went wrong. Please try again later.'))
+        await BOT.send_message(payload.user_id, _('Something went wrong. Please try again later.'))
 
     return Response(status_code=201)
