@@ -22,7 +22,6 @@ from src.handlers.categories import (
 from src.handlers.positions import (
     position_list,
     position_create_select_category,
-    position_pre_create,
     position_manage,
     position_edit,
     position_delete,
@@ -99,7 +98,7 @@ ACTIONS = {
     'position': {
         'list': position_list,
         'create': position_create_select_category,
-        'pre_create': position_pre_create,
+        # 'pre_create': position_pre_create,
         'manage': position_manage,
         'edit': position_edit,
         'delete': position_delete,

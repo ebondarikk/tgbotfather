@@ -3,7 +3,8 @@ import json
 from src.handlers.bots import bot_schedule_save
 
 ACTIONS = {
-    'schedule': bot_schedule_save
+    'schedule': bot_schedule_save,
+    # 'position_create': position_create_web_app
 }
 
 

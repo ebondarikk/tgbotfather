@@ -389,7 +389,7 @@ async def bot_token_step(message: types.Message, bot: AsyncTeleBot):
             data['token'] = token
             data['username'] = username
             data['fullname'] = fullname
-            data['currency'] = 'RUB'
+            data['currency'] = 'BYN'
             data['welcome_text'] = get_default_welcome_text()
             data['paid'] = False
             data['last_updates'] = None
@@ -411,12 +411,8 @@ async def bot_token_step(message: types.Message, bot: AsyncTeleBot):
             await edit_or_resend(
                 bot,
                 message,
-                _('Bot {fullname} was created successfully. '
-                  'Default currency is {default_currency}. '
-                  'You can change it by clicking on "Currency" button'
-                  ).format(
+                _('Bot {fullname} was created successfully.').format(
                     fullname=data.get('fullname'),
-                    default_currency='RUB'
                 ),
                 markup=bot_manage_markup(bot_id, username)
             )

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-10-27 19:44+0300\n"
+"POT-Creation-Date: 2024-11-19 20:15+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -63,7 +63,7 @@ msgstr ""
 msgid "Uploading video-instruction. Please, wait"
 msgstr ""
 
-#: src/handlers/bots.py:42 src/handlers/positions.py:137
+#: src/handlers/bots.py:42 src/handlers/positions.py:120
 msgid "Video instruction available. To get it, go to the Instructions section and activate them."
 msgstr ""
 
@@ -199,7 +199,7 @@ msgid "Ooops. {e}. Try to input another token"
 msgstr ""
 
 #: src/handlers/bots.py:414
-msgid "Bot {fullname} was created successfully. Default currency is {default_currency}. You can change it by clicking on \"Currency\" button"
+msgid "Bot {fullname} was created successfully."
 msgstr ""
 
 #: src/handlers/categories.py:18
@@ -214,8 +214,8 @@ msgstr ""
 msgid "*Name:* _{name}_"
 msgstr ""
 
-#: src/handlers/categories.py:86 src/handlers/positions.py:615
-#: src/handlers/positions.py:665
+#: src/handlers/categories.py:86 src/handlers/positions.py:598
+#: src/handlers/positions.py:648
 msgid "Send me new {key_to_edit}"
 msgstr ""
 
@@ -249,8 +249,8 @@ msgstr ""
 msgid "Enabled"
 msgstr ""
 
-#: src/handlers/commands.py:77 src/handlers/positions.py:170
-#: src/handlers/positions.py:217
+#: src/handlers/commands.py:77 src/handlers/positions.py:153
+#: src/handlers/positions.py:200
 msgid "Disabled"
 msgstr ""
 
@@ -286,17 +286,17 @@ msgid ""
 "*Delivery condition:* {condition_desc}\n"
 msgstr ""
 
-#: src/handlers/delivery.py:45 src/handlers/positions.py:169
-#: src/handlers/positions.py:216 src/handlers/positions.py:323
-#: src/handlers/positions.py:350 src/handlers/positions.py:451
-#: src/handlers/positions.py:519
+#: src/handlers/delivery.py:45 src/handlers/positions.py:152
+#: src/handlers/positions.py:199 src/handlers/positions.py:306
+#: src/handlers/positions.py:333 src/handlers/positions.py:434
+#: src/handlers/positions.py:502
 msgid "No"
 msgstr ""
 
-#: src/handlers/delivery.py:45 src/handlers/positions.py:169
-#: src/handlers/positions.py:216 src/handlers/positions.py:323
-#: src/handlers/positions.py:350 src/handlers/positions.py:451
-#: src/handlers/positions.py:519
+#: src/handlers/delivery.py:45 src/handlers/positions.py:152
+#: src/handlers/positions.py:199 src/handlers/positions.py:306
+#: src/handlers/positions.py:333 src/handlers/positions.py:434
+#: src/handlers/positions.py:502
 msgid "Yes"
 msgstr ""
 
@@ -444,27 +444,19 @@ msgstr ""
 msgid "Pick-up point was added successfully. What's next?"
 msgstr ""
 
-#: src/handlers/positions.py:26
-msgid "Select a good to customize or create a new one"
-msgstr ""
-
-#: src/handlers/positions.py:43
+#: src/handlers/positions.py:35
 msgid "Select a sub item to customize or create a new one"
 msgstr ""
 
-#: src/handlers/positions.py:69
+#: src/handlers/positions.py:61
 msgid "Send me new a name of sub item"
 msgstr ""
 
-#: src/handlers/positions.py:88
+#: src/handlers/positions.py:80
 msgid "Select a category for new position."
 msgstr ""
 
 #: src/handlers/positions.py:99
-msgid "Which type of good do you want to create?"
-msgstr ""
-
-#: src/handlers/positions.py:116
 msgid ""
 "Send me a new good with image in next format:\n"
 "Name\n"
@@ -473,7 +465,7 @@ msgid ""
 "_Sub item 1; Sub item 2: Sub item 3_"
 msgstr ""
 
-#: src/handlers/positions.py:121
+#: src/handlers/positions.py:104
 msgid ""
 "Send me a new good with image in next format:\n"
 "Name\n"
@@ -481,22 +473,22 @@ msgid ""
 "#Description#"
 msgstr ""
 
-#: src/handlers/positions.py:127
+#: src/handlers/positions.py:110
 msgid "Uploading video-instruction. Please, wait. You can disable instructions on Instructions sections"
 msgstr ""
 
-#: src/handlers/positions.py:158 src/handlers/positions.py:221
+#: src/handlers/positions.py:141 src/handlers/positions.py:204
 msgid "name"
 msgstr ""
 
-#: src/handlers/positions.py:161
+#: src/handlers/positions.py:144
 msgid ""
 "*Name:* _{name}_\n"
 "*Frozen:* _{frozen}_\n"
 "*Warehouse:* _{warehouse}_"
 msgstr ""
 
-#: src/handlers/positions.py:195
+#: src/handlers/positions.py:178
 msgid ""
 "<b>Name:</b> <i>{name}</i>\n"
 "<b>Price:</b> <i>{price} {currency}</i>\n"
@@ -507,190 +499,190 @@ msgid ""
 "<b>Warehouse:</b> <i>{warehouse}</i>"
 msgstr ""
 
-#: src/handlers/positions.py:214 src/markups/categories.py:35
+#: src/handlers/positions.py:197 src/markups/categories.py:35
 msgid "Other"
 msgstr ""
 
-#: src/handlers/positions.py:215
+#: src/handlers/positions.py:198
 msgid "Grouped"
 msgstr ""
 
-#: src/handlers/positions.py:215
+#: src/handlers/positions.py:198
 msgid "Simple"
 msgstr ""
 
-#: src/handlers/positions.py:222
+#: src/handlers/positions.py:205
 msgid "price"
 msgstr ""
 
-#: src/handlers/positions.py:223
+#: src/handlers/positions.py:206
 msgid "description"
 msgstr ""
 
-#: src/handlers/positions.py:224
+#: src/handlers/positions.py:207
 msgid "image"
 msgstr ""
 
-#: src/handlers/positions.py:225
+#: src/handlers/positions.py:208
 msgid "category"
 msgstr ""
 
-#: src/handlers/positions.py:230 src/markups/positions.py:202
+#: src/handlers/positions.py:213 src/markups/positions.py:196
 msgid "Defrost"
 msgstr ""
 
-#: src/handlers/positions.py:230 src/markups/positions.py:202
+#: src/handlers/positions.py:213 src/markups/positions.py:196
 msgid "Freeze"
 msgstr ""
 
-#: src/handlers/positions.py:234 src/markups/positions.py:212
+#: src/handlers/positions.py:217 src/markups/positions.py:206
 msgid "Warehouse"
 msgstr ""
 
-#: src/handlers/positions.py:241
+#: src/handlers/positions.py:224
 msgid ""
 "\n"
 "<b>Sub items:</b> <i>{subitems}</i>"
 msgstr ""
 
-#: src/handlers/positions.py:247
+#: src/handlers/positions.py:230
 msgid "sub items"
 msgstr ""
 
-#: src/handlers/positions.py:288
+#: src/handlers/positions.py:271
 msgid "Position was successfully defrosted and will begin to appear in the store. What's next?"
 msgstr ""
 
-#: src/handlers/positions.py:291
+#: src/handlers/positions.py:274
 msgid "Position was successfully frozen and will no longer appear in the store. What's next?"
 msgstr ""
 
-#: src/handlers/positions.py:321 src/handlers/positions.py:348
+#: src/handlers/positions.py:304 src/handlers/positions.py:331
 msgid "When customers buy this product, its quantity will be automatically reduced. When the product is finished, it will automatically disappear from sale."
 msgstr ""
 
-#: src/handlers/positions.py:323 src/handlers/positions.py:350
-#: src/handlers/positions.py:451 src/handlers/positions.py:519
+#: src/handlers/positions.py:306 src/handlers/positions.py:333
+#: src/handlers/positions.py:434 src/handlers/positions.py:502
 msgid "Warehouse enabled: "
 msgstr ""
 
-#: src/handlers/positions.py:326 src/handlers/positions.py:522
+#: src/handlers/positions.py:309 src/handlers/positions.py:505
 msgid "Position quantity: {}"
 msgstr ""
 
-#: src/handlers/positions.py:342 src/handlers/positions.py:443
+#: src/handlers/positions.py:325 src/handlers/positions.py:426
 msgid "Warehouse option was enabled"
 msgstr ""
 
-#: src/handlers/positions.py:344 src/handlers/positions.py:445
+#: src/handlers/positions.py:327 src/handlers/positions.py:428
 msgid "Warehouse option was disabled"
 msgstr ""
 
-#: src/handlers/positions.py:381
+#: src/handlers/positions.py:364
 msgid "Please indicate the total quantity of the product"
 msgstr ""
 
-#: src/handlers/positions.py:383
+#: src/handlers/positions.py:366
 msgid "Please specify how much the quantity of the product should be increased by"
 msgstr ""
 
-#: src/handlers/positions.py:429 src/handlers/positions.py:585
+#: src/handlers/positions.py:412 src/handlers/positions.py:568
 msgid "Quantity successfully updated. What's next?"
 msgstr ""
 
-#: src/handlers/positions.py:449 src/handlers/positions.py:517
+#: src/handlers/positions.py:432 src/handlers/positions.py:500
 msgid "When customers buy this subitem, its quantity will be automatically reduced. When the product is finished, it will automatically disappear from sale."
 msgstr ""
 
-#: src/handlers/positions.py:483
+#: src/handlers/positions.py:466
 msgid "Sub item was successfully defrosted and will begin to appear in the store. What's next?"
 msgstr ""
 
-#: src/handlers/positions.py:486
+#: src/handlers/positions.py:469
 msgid "Sub item was successfully frozen and will no longer appear in the store. What's next?"
 msgstr ""
 
-#: src/handlers/positions.py:536
+#: src/handlers/positions.py:519
 msgid "Please indicate the total quantity of the subitem"
 msgstr ""
 
-#: src/handlers/positions.py:538
+#: src/handlers/positions.py:521
 msgid "Please specify how much the quantity of the subitem should be increased by"
 msgstr ""
 
-#: src/handlers/positions.py:658
+#: src/handlers/positions.py:641
 msgid "Select a category for position."
 msgstr ""
 
-#: src/handlers/positions.py:678
+#: src/handlers/positions.py:661
 msgid "Position was deleted successfully. What's next?"
 msgstr ""
 
-#: src/handlers/positions.py:695
+#: src/handlers/positions.py:678
 msgid "Oops. Grouped good must contain at least 1 sub item."
 msgstr ""
 
-#: src/handlers/positions.py:701
+#: src/handlers/positions.py:684
 msgid "Sub item was deleted successfully. What's next?"
 msgstr ""
 
-#: src/handlers/positions.py:717
+#: src/handlers/positions.py:700
 msgid "Seems like you forgot attach an image. Try again"
 msgstr ""
 
-#: src/handlers/positions.py:724
+#: src/handlers/positions.py:707
 msgid "Seems like you forgot send name and price in description. Try again"
 msgstr ""
 
-#: src/handlers/positions.py:735
+#: src/handlers/positions.py:718
 msgid "Seems like price is absent or incorrect. Try like this: *15* or *7.90*"
 msgstr ""
 
-#: src/handlers/positions.py:746
+#: src/handlers/positions.py:729
 msgid "Seems like you forgot send a name. Try again"
 msgstr ""
 
-#: src/handlers/positions.py:760
+#: src/handlers/positions.py:743
 msgid "Description is too large. Max size is 256 symbols"
 msgstr ""
 
-#: src/handlers/positions.py:779 src/handlers/positions.py:792
+#: src/handlers/positions.py:762 src/handlers/positions.py:775
 msgid "Seems like subitems are incorrect. Try like this: _raspberry flavor; chocolate flavor_"
 msgstr ""
 
-#: src/handlers/positions.py:849
+#: src/handlers/positions.py:832
 msgid "Now set the price"
 msgstr ""
 
-#: src/handlers/positions.py:860
+#: src/handlers/positions.py:843
 msgid "please, send me a valid price"
 msgstr ""
 
-#: src/handlers/positions.py:871
+#: src/handlers/positions.py:854
 msgid "Now send me position image"
 msgstr ""
 
-#: src/handlers/positions.py:902
+#: src/handlers/positions.py:885
 msgid "This is not an image"
 msgstr ""
 
-#: src/handlers/positions.py:942
+#: src/handlers/positions.py:925
 msgid "Sub item was updated successfully. What's next?"
 msgstr ""
 
-#: src/handlers/positions.py:975
+#: src/handlers/positions.py:958
 msgid "Sub item was created successfully. What's next?"
 msgstr ""
 
-#: src/handlers/positions.py:985
+#: src/handlers/positions.py:968
 msgid "Position was updated successfully. What's next?"
 msgstr ""
 
-#: src/handlers/positions.py:1009
+#: src/handlers/positions.py:993
 msgid "Ooops. Position with this name is already exists"
 msgstr ""
 
-#: src/handlers/positions.py:1037
+#: src/handlers/positions.py:1022
 msgid "Position was created successfully. What's next?"
 msgstr ""
 
@@ -745,61 +737,57 @@ msgstr ""
 msgid "Create new TeBot"
 msgstr ""
 
-#: src/markups/bots.py:39
+#: src/markups/bots.py:42
 msgid "Positions"
 msgstr ""
 
-#: src/markups/bots.py:40
+#: src/markups/bots.py:43
 msgid "Categories"
 msgstr ""
 
-#: src/markups/bots.py:41
+#: src/markups/bots.py:46
 msgid "Mailings"
 msgstr ""
 
-#: src/markups/bots.py:42
+#: src/markups/bots.py:47
 msgid "Delivery"
 msgstr ""
 
-#: src/markups/bots.py:43
+#: src/markups/bots.py:50
 msgid "Managers"
 msgstr ""
 
-#: src/markups/bots.py:44
-msgid "Communication"
-msgstr ""
-
-#: src/markups/bots.py:46
+#: src/markups/bots.py:52
 msgid "Statistic"
 msgstr ""
 
-#: src/markups/bots.py:49
+#: src/markups/bots.py:57
+msgid "Communication"
+msgstr ""
+
+#: src/markups/bots.py:59
 msgid "Welcome message"
 msgstr ""
 
-#: src/markups/bots.py:50
-msgid "Currency"
-msgstr ""
-
-#: src/markups/bots.py:51
+#: src/markups/bots.py:60
 msgid "Schedule"
 msgstr ""
 
-#: src/markups/bots.py:52
+#: src/markups/bots.py:63
 msgid "Deploy"
 msgstr ""
 
-#: src/markups/bots.py:53
+#: src/markups/bots.py:64
 msgid "Remove TeBot"
 msgstr ""
 
-#: src/markups/bots.py:77 src/markups/commands.py:18
-#: src/markups/positions.py:125 src/markups/positions.py:157
+#: src/markups/bots.py:88 src/markups/commands.py:18
+#: src/markups/positions.py:119 src/markups/positions.py:151
 msgid "Disable"
 msgstr ""
 
-#: src/markups/bots.py:81 src/markups/commands.py:18
-#: src/markups/positions.py:121 src/markups/positions.py:153
+#: src/markups/bots.py:92 src/markups/commands.py:18
+#: src/markups/positions.py:115 src/markups/positions.py:147
 msgid "Enable"
 msgstr ""
 
@@ -807,8 +795,8 @@ msgstr ""
 msgid "Create a new category"
 msgstr ""
 
-#: src/markups/categories.py:79 src/markups/positions.py:191
-#: src/markups/positions.py:243
+#: src/markups/categories.py:79 src/markups/positions.py:185
+#: src/markups/positions.py:237
 msgid "{index}. Edit {key}"
 msgstr ""
 
@@ -872,43 +860,43 @@ msgstr ""
 msgid "Add pick-up point"
 msgstr ""
 
-#: src/markups/positions.py:37
+#: src/markups/positions.py:33
 msgid "Create a new position"
 msgstr ""
 
-#: src/markups/positions.py:46 src/markups/positions.py:58
+#: src/markups/positions.py:40 src/markups/positions.py:52
 msgid "Previous"
 msgstr ""
 
-#: src/markups/positions.py:50 src/markups/positions.py:65
+#: src/markups/positions.py:44 src/markups/positions.py:59
 msgid "Next"
 msgstr ""
 
-#: src/markups/positions.py:91
+#: src/markups/positions.py:85
 msgid "Create a new sub item"
 msgstr ""
 
-#: src/markups/positions.py:105
+#: src/markups/positions.py:99
 msgid "Simple good"
 msgstr ""
 
-#: src/markups/positions.py:108
+#: src/markups/positions.py:102
 msgid "Grouped good"
 msgstr ""
 
-#: src/markups/positions.py:135 src/markups/positions.py:167
+#: src/markups/positions.py:129 src/markups/positions.py:161
 msgid "Update quantity"
 msgstr ""
 
-#: src/markups/positions.py:139 src/markups/positions.py:173
+#: src/markups/positions.py:133 src/markups/positions.py:167
 msgid "Increase quantity"
 msgstr ""
 
-#: src/markups/positions.py:223
+#: src/markups/positions.py:217
 msgid "Remove sub item"
 msgstr ""
 
-#: src/markups/positions.py:257
+#: src/markups/positions.py:251
 msgid "Remove position"
 msgstr ""
 
@@ -950,5 +938,9 @@ msgstr ""
 
 #: src/states.py:65
 msgid "Delivery updating"
+msgstr ""
+
+#: src/utils.py:509
+msgid "Created positions quantity: {}. What's next?"
 msgstr ""
 

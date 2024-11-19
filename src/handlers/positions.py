@@ -9,21 +9,13 @@ from telebot.types import CallbackQuery
 
 from PIL import Image
 
+import settings
 from src.states import PositionStates, SubItemStates
 from src.utils import with_callback_data, with_db, with_bucket, edit_or_resend, step_handler, \
-    send_message_with_cancel_markup, gettext as _, subitem_action, position_action
+    send_message_with_cancel_markup, gettext as _, subitem_action, position_action, create_password, save_message, \
+    PAGE_SIZE, get_position_list, position_save
 from src.markups.positions import positions_list_markup, position_manage_markup, positions_create_markup, \
     subitem_list_markup, subitem_manage_markup, position_warehouse_markup, subitem_warehouse_markup
-
-PAGE_SIZE = 20
-
-
-@with_db
-async def get_position_list(bot, bot_id, user_id, message: types.Message, text, db, page=0, page_size=PAGE_SIZE):
-    bot_data = db.child(f'bots/{user_id}/{bot_id}').get()
-    positions = bot_data.get('positions', {})
-    markup = positions_list_markup(bot_id, bot_data.get('username'), positions, page=page, page_size=page_size)
-    await edit_or_resend(bot, message, text or _('Select a good to customize or create a new one'), markup)
 
 
 @with_callback_data
@@ -88,15 +80,6 @@ async def position_create_select_category(bot: AsyncTeleBot, call: CallbackQuery
         bot, bot_id, call.from_user.id, call.message, _('Select a category for new position.'),
         create=1, grouped=int(grouped)
     )
-
-
-@with_callback_data
-async def position_pre_create(bot: AsyncTeleBot, call: CallbackQuery, data):
-    bot_id = data.get('bot_id')
-
-    create_markup = positions_create_markup(bot_id)
-
-    return await edit_or_resend(bot, call.message, _('Which type of good do you want to create?'), create_markup)
 
 
 @with_callback_data
@@ -984,7 +967,8 @@ async def position_save(
         data=None,
         update_text=_('Position was updated successfully. What\'s next?'),
         markup=None,
-        parse_mode=None
+        parse_mode=None,
+        no_return=False
 ):
     if not data:
         async with bot.retrieve_data(message.from_user.id, message.chat.id) as position_data:
@@ -1006,7 +990,7 @@ async def position_save(
             for p in positions
         ]
         if name in existing_names:
-            return await bot.send_message(message.chat.id, _('Ooops. Position with this name is already exists'))
+            return await bot.send_message(message.chat.id, _('Ooops. Position with this name is already exists') + f': {name}')
 
     await bot.delete_state(message.from_user.id, message.chat.id)
 
@@ -1033,6 +1017,7 @@ async def position_save(
             db.child(path).push(subitem)
 
     db.child(f'bots/{message.from_user.id}/{bot_id}').update({'last_updates': str(datetime.datetime.now())})
-    return await get_position_list(
-        bot, bot_id, message.from_user.id, message, text=_('Position was created successfully. What\'s next?')
-    )
+    if not no_return:
+        return await get_position_list(
+            bot, bot_id, message.from_user.id, message, text=_('Position was created successfully. What\'s next?')
+        )

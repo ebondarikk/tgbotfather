@@ -1,14 +1,16 @@
 import asyncio
+import io
 import datetime
 import json
 import urllib.parse
 import gettext as gtext
+import uuid
 from functools import wraps
 from typing import Any
 
 import subprocess
 
-
+import requests
 from dateutil.relativedelta import relativedelta
 from google.cloud import api_keys_v2
 from google.cloud.functions_v1 import CloudFunctionsServiceClient
@@ -17,6 +19,7 @@ from google.iam.v1.policy_pb2 import Policy, Binding
 from google.oauth2 import service_account
 from telebot.async_telebot import AsyncTeleBot, types
 from telebot.types import KeyboardButton
+from PIL import Image
 
 import settings
 from settings import redis, db, bucket
@@ -25,6 +28,8 @@ ru = gtext.translation('base', localedir='locale', languages=['ru'])
 ru.install()
 
 gettext = ru.gettext
+
+PAGE_SIZE = 20
 
 
 def action(action_name, **kwargs):
@@ -160,7 +165,7 @@ async def edit_or_resend(
             reply_markup=markup,
             parse_mode=parse_mode
         )
-        if message.from_user.id == bot.user.id:
+        if bot.user and message.from_user.id == bot.user.id:
             try:
                 await bot.delete_message(message.chat.id, message_id=message.id)
             except Exception:
@@ -341,3 +346,165 @@ async def deploy_script(
         raise Exception(str(process.stderr))
 
     return status
+
+
+PASSWORD = lambda bot_id: f'PASSWORD_{bot_id}'
+MESSAGE = lambda user_id, message_id: f'MESSAGE_{user_id}_{message_id}'
+
+
+def create_password(bot_id):
+    password = str(uuid.uuid4())
+    redis.set(PASSWORD(bot_id), password, ex=60*60)
+
+    return password
+
+
+def check_password(bot_id, password):
+    _password = redis.get(PASSWORD(bot_id))
+    if _password and password == _password:
+        return True
+    return False
+
+
+def save_message(user_id, message: types.Message):
+    message_json = json.dumps(message.json)
+    redis.set(MESSAGE(user_id, message.id), message_json, ex=60*60)
+
+
+def restore_message(user_id: int, message_id: int):
+    message_json = redis.get(MESSAGE(user_id, message_id))
+    if message_json:
+        return types.Message.de_json(json.loads(message_json))
+    return None
+
+
+def create_positions_web_app(bot_id, user_id, message, categories):
+    categories = urllib.parse.quote(json.dumps(categories))
+    password = create_password(bot_id)
+    save_message(user_id, message)
+
+    web_app = types.WebAppInfo(
+        f"https://amazing-douhua-ff1bd2.netlify.app/?categories={categories}"
+        f"&bot_id={bot_id}&host={settings.HOST}&password={password}&user_id={user_id}&message_id={message.id}",
+    )
+
+    return web_app
+
+
+@with_db
+async def get_position_list(bot, bot_id, user_id, message: types.Message, text, db, page=0, page_size=PAGE_SIZE):
+    from src.markups.positions import positions_list_markup
+
+    bot_data = db.child(f'bots/{user_id}/{bot_id}').get()
+    positions = bot_data.get('positions', {})
+    categories = bot_data.get('categories') or {}
+    categories = [c['name'] for c in categories.values()]
+    markup = positions_list_markup(
+        bot_id,
+        bot_data.get('username') or '',
+        positions,
+        web_app=create_positions_web_app(bot_id, user_id, message, categories),
+        page=page,
+        page_size=page_size
+    )
+    await edit_or_resend(bot, message, text or gettext('Select a good to customize or create a new one'), markup)
+
+
+
+@with_db
+async def position_save(
+        bot: AsyncTeleBot,
+        message: types.Message,
+        db,
+        data=None,
+        update_text=gettext('Position was updated successfully. What\'s next?'),
+        markup=None,
+        parse_mode=None,
+        no_return=False
+):
+    if not data:
+        async with bot.retrieve_data(message.from_user.id, message.chat.id) as position_data:
+            data = position_data
+
+    edit = data.pop('edit', False)
+    bot_id = data.pop('bot_id', None)
+    path = data.pop('path', None)
+    subitems = data.pop('subitems', [])
+
+    if not edit:
+        data['grouped'] = bool(subitems)
+
+    # if name := data.get('name'):
+    #     positions = db.child('bots').child(str(message.chat.id)).child(bot_id).child('positions').get()
+    #     positions = positions.values() if positions else []
+    #     existing_names = [
+    #         p['name']
+    #         for p in positions
+    #     ]
+    #     if name in existing_names:
+    #         return await bot.send_message(message.chat.id, gettext('Ooops. Position with this name is already exists') + f': {name}')
+
+    # await bot.delete_state(message.chat.id, message.chat.id)
+
+    if edit:
+        position: dict = db.child(path).get()
+        data['grouped'] = bool(position.get('subitems'))
+        position.update(**data)
+        db.child(path).update(position)
+
+        if not markup:
+            return await get_position_list(
+                bot, bot_id, message.chat.id, message, text=update_text
+            )
+        else:
+            return await edit_or_resend(bot, message, update_text, markup, parse_mode=parse_mode)
+
+    data['frozen'] = False
+    result = db.child(f'bots/{message.chat.id}/{bot_id}/positions').push(data)
+
+    if result:
+        path = result.path[1:] + '/subitems'
+        for subitem in subitems:
+            subitem['frozen'] = False
+            db.child(path).push(subitem)
+
+    db.child(f'bots/{message.chat.id}/{bot_id}').update({'last_updates': str(datetime.datetime.now())})
+    if not no_return:
+        return await get_position_list(
+            bot, bot_id, message.chat.id, message, text=gettext('Position was created successfully. What\'s next?')
+        )
+
+
+async def create_positions(bot, bot_id, user_id, message, positions):
+    for position in positions:
+        file_path = position['image'].replace('tmpfiles.org', 'tmpfiles.org/dl')
+
+        file = requests.get(file_path)
+        mime_type = file.headers['Content-Type']
+
+        image = Image.open(io.BytesIO(file.content))
+
+        max_size = (600, 600)
+        image.thumbnail(max_size)
+
+        byte_arr = io.BytesIO()
+        image.save(byte_arr, mime_type.split('/')[-1].upper())
+        compressed_photo = byte_arr.getvalue()
+
+        bucket_path = f'{message.from_user.id}/{str(uuid.uuid4())}'
+        blob = bucket.blob(bucket_path)
+        blob.upload_from_string(compressed_photo, content_type=mime_type)
+        position['image'] = bucket_path
+        position['warehouse_count'] = position.pop('warehouseCount', None)
+        for subitem in position.get('subitems', []):
+            subitem['warehouse_count'] = subitem.pop('warehouseCount', None)
+        data = {
+            'bot_id': str(bot_id), **position
+        }
+
+        await position_save(bot, message, data=data, no_return=True)
+
+    _ = gettext
+    return await get_position_list(
+        bot, bot_id, user_id, message, text=_('Created positions quantity: {}. What\'s next?').format(len(positions)),
+    )

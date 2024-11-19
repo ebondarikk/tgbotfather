@@ -24,9 +24,11 @@ def bots_list_markup(bots: dict) -> InlineKeyboardMarkup:
     menu = [
         [InlineKeyboardButton('➕' + _('Create new TeBot'), callback_data=bot_action('create'))],
         *[
-            [InlineKeyboardButton(f'{index + 1}. {bot_data["fullname"]} {"✅" if bot_data.get("paid") else ""}',
-                                  callback_data=bot_action('manage', bot_id=bot_id, username=bot_data['username']))
-             for index, (bot_id, bot_data) in enumerate(bots.items())]
+            [InlineKeyboardButton(
+                f'{index + 1}. {bot_data["fullname"]} {"✅" if bot_data.get("paid") else ""}',
+                callback_data=bot_action('manage', bot_id=bot_id, username=bot_data['username'])
+            )]
+             for index, (bot_id, bot_data) in enumerate(bots.items())
         ],
         back_menu_option('command/start')
     ]
@@ -36,19 +38,28 @@ def bots_list_markup(bots: dict) -> InlineKeyboardMarkup:
 
 def bot_manage_markup(bot_id: Any, bot_username: any = None) -> InlineKeyboardMarkup:
     menu = [
-        [InlineKeyboardButton('🛒 ' + _('Positions'), callback_data=position_action('list', bot_id=bot_id))],
-        [InlineKeyboardButton('🏷 ' + _('Categories'), callback_data=category_action('list', bot_id=bot_id))],
-        [InlineKeyboardButton('📣 ' + _('Mailings'), callback_data=mail_action('list', bot_id=bot_id))],
-        [InlineKeyboardButton('🚚 ' + _('Delivery'), callback_data=delivery_action('manage', bot_id=bot_id))],
-        [InlineKeyboardButton('👨‍💼 ' + _('Managers'), callback_data=manager_action('list', bot_id=bot_id))],
-        [InlineKeyboardButton('💬 ' + _('Communication'), callback_data=bot_action('communication', bot_id=bot_id))],
-        [InlineKeyboardButton(
-            '📈 ' + _('Statistic'),
-            callback_data=statistic_action('list', bot_id=bot_id, bot_username=bot_username)
-        )],
+        [
+            InlineKeyboardButton('🛒 ' + _('Positions'), callback_data=position_action('list', bot_id=bot_id)),
+            InlineKeyboardButton('🏷 ' + _('Categories'), callback_data=category_action('list', bot_id=bot_id))
+        ],
+        [
+            InlineKeyboardButton('📣 ' + _('Mailings'), callback_data=mail_action('list', bot_id=bot_id)),
+            InlineKeyboardButton('🚚 ' + _('Delivery'), callback_data=delivery_action('manage', bot_id=bot_id))
+        ],
+        [
+            InlineKeyboardButton('👨‍💼 ' + _('Managers'), callback_data=manager_action('list', bot_id=bot_id)),
+            InlineKeyboardButton(
+                '📈 ' + _('Statistic'),
+                callback_data=statistic_action('list', bot_id=bot_id, bot_username=bot_username)
+            )
+        ],
+        [
+            InlineKeyboardButton('💬 ' + _('Communication'), callback_data=bot_action('communication', bot_id=bot_id))
+        ],
         [InlineKeyboardButton('👋 ' + _('Welcome message'), callback_data=bot_action('welcome_text', bot_id=bot_id))],
-        [InlineKeyboardButton('💱 ' + _('Currency'), callback_data=bot_action('currency', bot_id=bot_id))],
         [InlineKeyboardButton('📆 ' + _('Schedule'), callback_data=bot_action('schedule', bot_id=bot_id))],
+            # InlineKeyboardButton('💱 ' + _('Currency'), callback_data=bot_action('currency', bot_id=bot_id))
+        # ],
         [InlineKeyboardButton('🛠 ' + _('Deploy'), callback_data=bot_action('deploy', bot_id=bot_id))],
         [InlineKeyboardButton('🗑 ' + _('Remove TeBot'), callback_data=bot_action('delete', bot_id=bot_id))],
         back_menu_option('bot/list')

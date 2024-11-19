@@ -10,7 +10,9 @@ def back_menu_option(back_to, **kwargs):
     return [InlineKeyboardButton('↩️ ' + _('Back'), callback_data=action(back_to, **kwargs))]
 
 
-def positions_list_markup(bot_id: Any, bot_username, positions: dict, page=0, page_size=20) -> InlineKeyboardMarkup:
+def positions_list_markup(
+        bot_id: Any, bot_username, positions: dict, web_app: Any, page=0, page_size=20
+) -> InlineKeyboardMarkup:
     if page:
         page = int(page)
     if page_size:
@@ -27,17 +29,9 @@ def positions_list_markup(bot_id: Any, bot_username, positions: dict, page=0, pa
     has_previous = page > 0
     has_next = len(positions) > (page + 1) * page_size
 
-    columns = max(len(position_btns), 2)
-    positions_array = numpy.array_split(
-        position_btns,
-        columns // 2
-    )
-
     menu = [
-        [InlineKeyboardButton('➕' + _('Create a new position'), callback_data=position_action(
-            'pre_create', bot_id=bot_id))
-         ],
-        *[list(btns) for btns in positions_array],
+        [InlineKeyboardButton('➕' + _('Create a new position'), web_app=web_app)],
+        *[[pos] for pos in position_btns],
     ]
     if has_previous and has_next:
         menu += [
