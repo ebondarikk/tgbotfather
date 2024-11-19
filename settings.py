@@ -14,7 +14,7 @@ REDIS_PORT = config('REDIS_PORT')
 STORAGE_BUCKET = config('STORAGE_BUCKET')
 GITHUB_ACCESS = config('GITHUB_ACCESS')
 PROJECT_ID = 'telegram-bot-1-c1cfe'
-HOST = config('HOST', 'https://34.32.40.27')
+HOST = config('HOST', 'https://botlyapi.work.gd')
 
 prices = [LabeledPrice(label='Working Time Machine', amount=5750), LabeledPrice('Gift wrapping', 500)]
 
