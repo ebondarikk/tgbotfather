@@ -3,6 +3,7 @@ import traceback
 import uuid
 
 from PIL import Image
+from pillow_heif import register_heif_opener
 
 from fastapi import FastAPI, HTTPException, Response, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
@@ -12,6 +13,7 @@ from settings import bucket, BOT
 from src.utils import check_password, create_positions, restore_message, gettext as _
 
 app = FastAPI()
+register_heif_opener()
 
 app.add_middleware(
     CORSMiddleware,
