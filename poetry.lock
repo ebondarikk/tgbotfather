@@ -2576,6 +2576,18 @@ files = [
 ]
 
 [[package]]
+name = "python-multipart"
+version = "0.0.17"
+description = "A streaming multipart parser for Python"
+category = "main"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "python_multipart-0.0.17-py3-none-any.whl", hash = "sha256:15dc4f487e0a9476cc1201261188ee0940165cffc94429b6fc565c4d3045cb5d"},
+    {file = "python_multipart-0.0.17.tar.gz", hash = "sha256:41330d831cae6e2f22902704ead2826ea038d0419530eadff3ea80175aec5538"},
+]
+
+[[package]]
 name = "pywin32"
 version = "306"
 description = "Python for Window Extensions"
@@ -2970,18 +2982,6 @@ python-versions = "*"
 files = [
     {file = "trove-classifiers-2023.4.18.tar.gz", hash = "sha256:9f892a83ccbdf9e669861a947c6b03d5b91a87f449aefef1d76fc4169f78ddba"},
     {file = "trove_classifiers-2023.4.18-py3-none-any.whl", hash = "sha256:d4a085bdc3a926fd8ad79ea58e01024208ede41d63cb39594bd9ae23345c3d2b"},
-]
-
-[[package]]
-name = "typing-extensions"
-version = "4.9.0"
-description = "Backported and Experimental Type Hints for Python 3.8+"
-category = "main"
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "typing_extensions-4.9.0-py3-none-any.whl", hash = "sha256:af72aea155e91adfc61c3ae9e0e342dbc0cba726d6cba4b6c72c1f34e47291cd"},
-    {file = "typing_extensions-4.9.0.tar.gz", hash = "sha256:23478f88c37f27d76ac8aee6c905017a143b0b1b886c3c9f66bc2fd94f9f5783"},
 ]
 
 [[package]]
@@ -3537,4 +3537,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "4cf816014a70378583df349dfb75e1685aca330da7b72d8eb71d2226b1c06cc1"
+content-hash = "2beb810cbb712d77b6170786e74fb6369dcb09d9a8ed86a231272b11bbfcb363"

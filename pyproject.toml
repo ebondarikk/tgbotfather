@@ -99,6 +99,7 @@ telebot = "^0.0.5"
 pillow = "^10.3.0"
 fastapi = "^0.115.4"
 uvicorn = {extras = ["standard"], version = "^0.32.0"}
+python-multipart = "^0.0.17"
 
 
 [build-system]

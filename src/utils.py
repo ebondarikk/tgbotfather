@@ -477,24 +477,6 @@ async def position_save(
 
 async def create_positions(bot, bot_id, user_id, message, positions):
     for position in positions:
-        file_path = position['image'].replace('tmpfiles.org', 'tmpfiles.org/dl')
-
-        file = requests.get(file_path)
-        mime_type = file.headers['Content-Type']
-
-        image = Image.open(io.BytesIO(file.content))
-
-        max_size = (600, 600)
-        image.thumbnail(max_size)
-
-        byte_arr = io.BytesIO()
-        image.save(byte_arr, mime_type.split('/')[-1].upper())
-        compressed_photo = byte_arr.getvalue()
-
-        bucket_path = f'{message.from_user.id}/{str(uuid.uuid4())}'
-        blob = bucket.blob(bucket_path)
-        blob.upload_from_string(compressed_photo, content_type=mime_type)
-        position['image'] = bucket_path
         position['warehouse_count'] = position.pop('warehouseCount', None)
         for subitem in position.get('subitems', []):
             subitem['warehouse_count'] = subitem.pop('warehouseCount', None)
