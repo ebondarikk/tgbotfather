@@ -2,8 +2,7 @@ import io
 import traceback
 import uuid
 
-from PIL import Image
-from pillow_heif import register_heif_opener
+from wand.image import Image
 
 from fastapi import FastAPI, HTTPException, Response, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
@@ -13,7 +12,6 @@ from settings import bucket, BOT
 from src.utils import check_password, create_positions, restore_message, gettext as _
 
 app = FastAPI()
-register_heif_opener()
 
 app.add_middleware(
     CORSMiddleware,
@@ -48,23 +46,15 @@ async def create_positions_from_web_app(payload: PositionPayload):
 @app.post("/upload/{user_id}")
 async def upload_file(user_id: int, file: UploadFile = File(...)):
     try:
-        image = Image.open(io.BytesIO(await file.read()))
+        with Image(file=io.BytesIO(await file.read())) as img:
+            img.transform(resize='800x800>')  # Устанавливаем максимальные размеры
+
+            img.format = 'jpeg'
+
+            compressed_photo = img.make_blob('jpeg')
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Invalid image file.\n{e.message}")
+        raise HTTPException(status_code=400, detail=f"Error processing image: {str(e)}")
 
-    max_size = (800, 800)
-    image.thumbnail(max_size)
-
-    original_format = image.format
-
-    if original_format == "JPEG" and image.mode in ("RGBA", "P"):
-        image = image.convert("RGB")
-
-    byte_arr = io.BytesIO()
-    image.save(byte_arr, format=original_format)
-    compressed_photo = byte_arr.getvalue()
-
-    file_extension = file.filename.split('.')[-1]
     bucket_path = f'{user_id}/{str(uuid.uuid4())}'
 
     blob = bucket.blob(bucket_path)

@@ -101,6 +101,7 @@ fastapi = "^0.115.4"
 uvicorn = {extras = ["standard"], version = "^0.32.0"}
 python-multipart = "^0.0.17"
 pillow-heif = "^0.20.0"
+wand = "^0.6.13"
 
 
 [build-system]
