@@ -47,13 +47,10 @@ async def create_positions_from_web_app(payload: PositionPayload):
 
 @app.post("/upload/{user_id}")
 async def upload_file(user_id: int, file: UploadFile = File(...)):
-    if file.content_type not in ["image/jpeg", "image/png"]:
-        raise HTTPException(status_code=400, detail="Invalid file type. Only JPEG and PNG are allowed.")
-
     try:
         image = Image.open(io.BytesIO(await file.read()))
     except Exception as e:
-        raise HTTPException(status_code=400, detail="Invalid image file")
+        raise HTTPException(status_code=400, detail=f"Invalid image file.\n{e.message}")
 
     max_size = (800, 800)
     image.thumbnail(max_size)
