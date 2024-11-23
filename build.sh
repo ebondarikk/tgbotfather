@@ -5,6 +5,7 @@ cd ~/tg-bot
 #cd /Users/evgenybondarik/Downloads/botly/tg-bot
 
 git checkout master
+git stash
 git pull
 
 # Получите аргументы командной строки
