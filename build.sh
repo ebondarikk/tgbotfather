@@ -26,7 +26,7 @@ firebase --project=${FIREBASE_PROJECT} --token ${FIREBASE_TOKEN} functions:confi
 firebase --project=${FIREBASE_PROJECT} --token ${FIREBASE_TOKEN} functions:config:set telegram.name="${TG_BOT_NAME}"
 firebase --project=${FIREBASE_PROJECT} --token ${FIREBASE_TOKEN} functions:config:set telegram.bot_owner_user_id="${TG_BOT_OWNER_USER_ID}"
 firebase --project=${FIREBASE_PROJECT} --token ${FIREBASE_TOKEN} functions:config:set telegram.bot_id="${TG_BOT_ID}"
-firebase --project=${FIREBASE_PROJECT} --token ${FIREBASE_TOKEN} functions:config:set host="${HOST}"
+firebase --project=${FIREBASE_PROJECT} --token ${FIREBASE_TOKEN} functions:config:set telegram.host="${HOST}"
 
 # Получите конфигурацию firebase
 firebase functions:config:get > .runtimeconfig.json
