@@ -175,6 +175,13 @@ async def position_manage(bot: AsyncTeleBot, call: CallbackQuery, db, data, buck
     warehouse_count = position.get('warehouse_count')
     warehouse = position.get('warehouse')
 
+    def get_warehouse_display():
+        if grouped:
+            return '-'
+        if warehouse:
+            return warehouse_count
+        return _('Disabled')
+
     caption = _(
         "<b>Name:</b> <i>{name}</i>"
         "\n"
@@ -197,7 +204,7 @@ async def position_manage(bot: AsyncTeleBot, call: CallbackQuery, db, data, buck
         category=position.get('category') or _('Other'),
         type=_('Grouped') if grouped else _('Simple'),
         frozen=_('Yes') if frozen else _('No'),
-        warehouse=warehouse_count if warehouse else _('Disabled'),
+        warehouse=get_warehouse_display()
     )
 
     keys_to_edit = [
@@ -219,11 +226,25 @@ async def position_manage(bot: AsyncTeleBot, call: CallbackQuery, db, data, buck
         )
     ]
 
+    def get_subitems_display():
+        subitems = position.get('subitems', {})
+        result = ''
+
+        for subitem in subitems.values():
+            subitem_text = f'\n\t\t- <b>{subitem["name"]}</b>'
+            if subitem.get("warehouse"):
+                subitem_text += '<i>, ' + _('Warehouse').lower() + ': ' + f'{subitem["warehouse_count"]}' + '</i>'
+            if subitem.get('frozen'):
+                subitem_text += ' 🛑'
+            result += subitem_text
+        return result
+
     subitems_caption = ''
+
     if grouped:
         subitems_caption = _(
-            "\n<b>Sub items:</b> <i>{subitems}</i>"
-        ).format(subitems='\n\t\t- ' + '\n\t\t- '.join(sub['name'] for sub in position.get('subitems', {}).values()))
+            "\n<b>Sub items:</b> {subitems}"
+        ).format(subitems=get_subitems_display())
 
         inner_callbacks += [
             (
@@ -299,16 +320,22 @@ async def position_warehouse(bot: AsyncTeleBot, call: CallbackQuery, data, db):
     position = db.child(f'bots/{user_id}/{bot_id}/positions/{position_key}').get()
     warehouse = bool(position.get('warehouse'))
     warehouse_count = position.get('warehouse_count')
+    grouped = position.get('grouped')
 
-    text = (
-            _('When customers buy this product, its quantity will be automatically reduced. '
-              'When the product is finished, it will automatically disappear from sale.')
-            + "\n" + '<b>' + _('Warehouse enabled: ') + (_('Yes') if warehouse else _('No')) + '</b>'
-    )
-    if warehouse:
-        text += '\n' + _('Position quantity: {}').format(warehouse_count)
+    if not grouped:
+        text = (
+                _('When customers buy this product, its quantity will be automatically reduced. '
+                  'When the product is finished, it will automatically disappear from sale.')
+                + "\n" + '<b>' + _('Warehouse enabled: ') + (_('Yes') if warehouse else _('No')) + '</b>'
+        )
+        if warehouse:
+            text += '\n' + _('Position quantity: {}').format(warehouse_count)
+    else:
+        text = (
+            _("To manage a warehouse of grouped products, go to the subproduct settings")
+        )
 
-    markup = position_warehouse_markup(bot_id, position_key, warehouse)
+    markup = position_warehouse_markup(bot_id, position_key, warehouse, grouped)
 
     await edit_or_resend(bot, call.message, text, markup, parse_mode='HTML')
 
@@ -342,7 +369,7 @@ async def position_warehouse_enable(bot: AsyncTeleBot, call: CallbackQuery, data
         'warehouse_count': 0
     }
 
-    markup = position_warehouse_markup(bot_id, position_key, enable)
+    markup = position_warehouse_markup(bot_id, position_key, enable, None)
 
     return await position_save(
         bot,

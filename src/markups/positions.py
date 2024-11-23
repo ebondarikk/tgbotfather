@@ -108,7 +108,9 @@ def positions_create_markup(bot_id: Any):
     return markup
 
 
-def position_warehouse_markup(bot_id: Any, position_key: str, warehouse_enabled: bool) -> InlineKeyboardMarkup:
+def position_warehouse_markup(
+        bot_id: Any, position_key: str, warehouse_enabled: bool, grouped: bool
+) -> InlineKeyboardMarkup:
     menu = [
         [
             InlineKeyboardButton(
@@ -134,6 +136,9 @@ def position_warehouse_markup(bot_id: Any, position_key: str, warehouse_enabled:
                 callback_data=position_action('warehouse_actualize', bot_id=bot_id, position_key=position_key, update=0)
             )]
         ]
+
+    if grouped:
+        menu = []
 
     menu += [back_menu_option('position/manage', bot_id=bot_id, position_key=position_key)]
     markup = InlineKeyboardMarkup(menu)

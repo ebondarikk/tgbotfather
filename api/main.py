@@ -1,3 +1,4 @@
+import asyncio
 import io
 import traceback
 import uuid
@@ -7,9 +8,9 @@ from wand.image import Image
 from fastapi import FastAPI, HTTPException, Response, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 
-from api.schemas.positions import PositionPayload
+from api.schemas.positions import PositionPayload, PositionFreezePayload
 from settings import bucket, BOT
-from src.utils import check_password, create_positions, restore_message, gettext as _
+from src.utils import check_password, create_positions, restore_message, gettext as _, freeze_positions
 
 app = FastAPI()
 
@@ -61,4 +62,11 @@ async def upload_file(user_id: int, file: UploadFile = File(...)):
     blob.upload_from_string(compressed_photo, content_type="image/jpeg")
 
     return {"path": bucket_path}
+
+
+@app.post("/positions/freeze")
+async def freeze_positions_post(payload: PositionFreezePayload):
+    asyncio.create_task(freeze_positions(BOT, payload.bot_id, payload.user_id, payload.data))
+
+    return Response(status_code=200)
 

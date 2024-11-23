@@ -1103,3 +1103,11 @@ msgstr "Количество созданных товаров: {}"
 
 msgid "Something went wrong. Please try again later"
 msgstr "Что-то пошло не так. Пожалуйста, повторите попытку позже или свяжитесь с поддержкой."
+
+#: src/utils.py:520
+msgid "<b>{}</b>: The following positions have expired and have been frozen"
+msgstr "<b>{}</b>: Следующие товары закончились и были заморожены"
+
+#: src/handlers/positions.py:335
+msgid "To manage a warehouse of grouped products, go to the subproduct settings"
+msgstr "Чтобы управлять складом сгруппированных товаров, перейдите в настройки подтоваров"

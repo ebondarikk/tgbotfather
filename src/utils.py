@@ -6,7 +6,7 @@ import urllib.parse
 import gettext as gtext
 import uuid
 from functools import wraps
-from typing import Any
+from typing import Any, List
 
 import subprocess
 
@@ -333,7 +333,8 @@ async def deploy_script(
         tg_bot_id,
         str(tg_bot_owner_user_id),
         firebase_token,
-        firebase_project
+        firebase_project,
+        settings.HOST
     ])
 
     status = process.poll()
@@ -490,3 +491,44 @@ async def create_positions(bot, bot_id, user_id, message, positions):
     return await get_position_list(
         bot, bot_id, user_id, message, text=_('Created positions quantity: {}. What\'s next?').format(len(positions)),
     )
+
+
+@with_db
+async def freeze_positions(bot, bot_id, user_id, positions: List, db):
+    positions_updated = []
+    for position_data in positions:
+        pk = position_data.position_key
+        position = db.child(f'bots/{user_id}/{bot_id}/positions/{pk}').get()
+        if subitems_data := position_data.subitems:
+            for subitem_key in subitems_data:
+                db.child(
+                    f'bots/{user_id}/{bot_id}/positions/{pk}/subitems/{subitem_key}'
+                ).update({'frozen': True})
+            positions_updated.append((
+                position['name'],
+                [s['name'] for key, s in position.get('subitems', {}).items() if key in subitems_data]
+            ))
+        else:
+            db.child(f'bots/{user_id}/{bot_id}/positions/{pk}').update({'frozen': True})
+            positions_updated.append((position['name'], None))
+
+    if not positions_updated:
+        return
+
+    bot_name = db.child(f'bots/{user_id}/{bot_id}/fullname').get()
+
+    _ = gettext
+    msg = _('<b>{}</b>: The following positions have expired and have been frozen').format(bot_name) + ':\n'
+    for position_name, subitems_names in positions_updated:
+        msg += f'- <b>{position_name}</b>'
+        if subitems_names:
+            msg += ": "
+            msg += ', '.join(subitems_names)
+        msg += '\n'
+
+    await bot.send_message(
+        user_id,
+        msg,
+        parse_mode='HTML'
+    )
+
