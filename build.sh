@@ -8,6 +8,8 @@ git checkout master
 git stash
 git pull
 
+nvm use 18.17.0
+
 # Получите аргументы командной строки
 TG_TOKEN=$1
 TG_OWNER_CHAT_ID=$2
