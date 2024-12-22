@@ -21,6 +21,7 @@ from src.handlers.categories import (
 
 from src.handlers.positions import (
     position_list,
+    position_list_search,
     position_create_select_category,
     position_manage,
     position_edit,
@@ -106,6 +107,7 @@ ACTIONS = {
         'warehouse': position_warehouse,
         'warehouse_enable': position_warehouse_enable,
         'warehouse_actualize': position_warehouse_update,
+        'search': position_list_search,
     },
     'subitem': {
         'list': subitem_list,

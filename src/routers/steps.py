@@ -5,7 +5,7 @@ from src.handlers.mail import mail_create_step
 from src.handlers.managers import manager_create_step
 from src.handlers.positions import position_name_step, position_price_step, position_image_step, \
     position_full_create_step, position_description_step, subitem_name_step, position_warehouse_update_step, \
-    subitem_warehouse_update_step
+    subitem_warehouse_update_step, position_list_search_step
 from src.handlers.delivery import delivery_cost_step, delivery_min_check_step
 
 STEPS = {
@@ -19,7 +19,8 @@ STEPS = {
         'price': position_price_step,
         'image': position_image_step,
         'description': position_description_step,
-        'warehouse_update': position_warehouse_update_step
+        'warehouse_update': position_warehouse_update_step,
+        'search': position_list_search_step
     },
     'SubItemStates': {
         'name': subitem_name_step,

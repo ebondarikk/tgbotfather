@@ -23,9 +23,49 @@ async def position_list(bot: AsyncTeleBot, call: CallbackQuery, data, message: s
     bot_id = data.get('bot_id')
     page = data.get('page', 0)
     page_size = data.get('page_size', PAGE_SIZE)
+    search = data.get('search', '')
+
+    if not search:
+        await bot.delete_state(call.message.chat.id, call.message.chat.id)
+
     return await get_position_list(
-        bot, bot_id, call.from_user.id, call.message, message, page=page, page_size=page_size
+        bot, bot_id, call.from_user.id, call.message, message, page=page, page_size=page_size, search=search
     )
+
+
+@with_callback_data
+async def position_list_search(bot: AsyncTeleBot, call: CallbackQuery, data):
+    bot_id = data.get('bot_id')
+    page = data.get('page', 0)
+    page_size = data.get('page_size', PAGE_SIZE)
+    message = data.get('message')
+
+    state = PositionStates.search
+
+    await bot.set_state(call.from_user.id, state, call.message.chat.id)
+    async with bot.retrieve_data(call.from_user.id, call.message.chat.id) as state_data:
+        state_data.update({'message': message, 'bot_id': bot_id})
+
+    return await get_position_list(
+        bot, bot_id, call.from_user.id, call.message, 'Введите текст для поиска', page=page, page_size=page_size,
+        is_search=True
+    )
+
+
+@step_handler
+async def position_list_search_step(message: types.Message, bot: AsyncTeleBot):
+    search = message.text
+
+    async with bot.retrieve_data(message.from_user.id, message.chat.id) as state_data:
+        data = state_data
+
+    callback_message = types.Message.de_json(data['message'])
+
+    return await get_position_list(
+        bot, data['bot_id'], message.from_user.id,
+        callback_message, 'Найдено {} товаров по запросу {}', page=0, page_size=PAGE_SIZE, search=search
+    )
+
 
 
 @with_db

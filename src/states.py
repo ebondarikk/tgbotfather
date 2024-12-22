@@ -21,6 +21,7 @@ class PositionStates(StatesGroup):
     description = State()
     category = State()
     warehouse_update = State()
+    search = State()
 
     def __str__(self):
         return _('Position creating')

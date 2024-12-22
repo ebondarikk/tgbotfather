@@ -1,7 +1,9 @@
+import json
+
 import numpy
 from typing import Any, Iterable
 
-from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
+from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 
 from src.utils import action, position_action, subitem_action, gettext as _
 
@@ -11,7 +13,15 @@ def back_menu_option(back_to, **kwargs):
 
 
 def positions_list_markup(
-        bot_id: Any, bot_username, positions: dict, web_app: Any, page=0, page_size=20
+        bot_id: Any,
+        bot_username,
+        positions: dict,
+        web_app: Any,
+        page=0,
+        page_size=20,
+        search: str = '',
+        message: Message = None,
+        is_search: bool = False
 ) -> InlineKeyboardMarkup:
     if page:
         page = int(page)
@@ -58,6 +68,23 @@ def positions_list_markup(
             InlineKeyboardButton(
                 _('Next') + ' ➡️',
                 callback_data=position_action('list', bot_id=bot_id, page=page + 1, page_size=page_size)
+            )
+        ]]
+
+    if search or is_search:
+        menu += [[
+            InlineKeyboardButton(
+                _('🔎 Сбросить поиск [{}]').format(search),
+                callback_data=position_action('list', bot_id=bot_id, page=0, page_size=page_size)
+            )
+        ]]
+    elif message:
+        menu += [[
+            InlineKeyboardButton(
+                _('🔎 Найти товар'),
+                callback_data=position_action(
+                    'search', bot_id=bot_id, page=0, page_size=page_size, message=json.dumps(message.json)
+                )
             )
         ]]
 

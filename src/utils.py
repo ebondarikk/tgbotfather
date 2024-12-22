@@ -29,7 +29,7 @@ ru.install()
 
 gettext = ru.gettext
 
-PAGE_SIZE = 20
+PAGE_SIZE = 10
 
 
 def action(action_name, **kwargs):
@@ -393,11 +393,31 @@ def create_positions_web_app(bot_id, user_id, message, categories):
 
 
 @with_db
-async def get_position_list(bot, bot_id, user_id, message: types.Message, text, db, page=0, page_size=PAGE_SIZE):
+async def get_position_list(
+        bot: AsyncTeleBot,
+        bot_id,
+        user_id,
+        message: types.Message,
+        text,
+        db,
+        page=0,
+        page_size=PAGE_SIZE,
+        search: str = '',
+        is_search: bool = False
+):
     from src.markups.positions import positions_list_markup
 
     bot_data = db.child(f'bots/{user_id}/{bot_id}').get()
     positions = bot_data.get('positions', {})
+
+    if not is_search:
+        await bot.delete_state(message.from_user.id, message.chat.id)
+
+    if search:
+        positions = {k: v for k, v in positions.items() if search.lower().strip() in v['name'].lower()}
+        if text:
+            text = text.format(len(positions), search)
+
     categories = bot_data.get('categories') or {}
     categories = [c['name'] for c in categories.values()]
     markup = positions_list_markup(
@@ -406,7 +426,10 @@ async def get_position_list(bot, bot_id, user_id, message: types.Message, text, 
         positions,
         web_app=create_positions_web_app(bot_id, user_id, message, categories),
         page=page,
-        page_size=page_size
+        page_size=page_size,
+        search=search,
+        message=message,
+        is_search=is_search
     )
     await edit_or_resend(bot, message, text or gettext('Select a good to customize or create a new one'), markup)
 
