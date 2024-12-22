@@ -60,7 +60,7 @@ def bot_manage_markup(bot_id: Any, bot_username: any = None) -> InlineKeyboardMa
         [InlineKeyboardButton('📆 ' + _('Schedule'), callback_data=bot_action('schedule', bot_id=bot_id))],
             # InlineKeyboardButton('💱 ' + _('Currency'), callback_data=bot_action('currency', bot_id=bot_id))
         # ],
-        [InlineKeyboardButton('🛠 ' + _('Deploy'), callback_data=bot_action('deploy', bot_id=bot_id))],
+        # [InlineKeyboardButton('🛠 ' + _('Deploy'), callback_data=bot_action('deploy', bot_id=bot_id))],
         [InlineKeyboardButton('🗑 ' + _('Remove TeBot'), callback_data=bot_action('delete', bot_id=bot_id))],
         back_menu_option('bot/list')
     ]

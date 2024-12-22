@@ -85,7 +85,7 @@ ACTIONS = {
         'communication': bot_communication,
         'currency': bot_currency_update,
         'schedule': bot_schedule_get,
-        'deploy': bot_deploy,
+        # 'deploy': bot_deploy,
         'delete': bot_delete
     },
     'manager': {

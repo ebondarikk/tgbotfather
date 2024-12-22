@@ -328,49 +328,69 @@ async def bot_deploy2(bot: AsyncTeleBot, call: types.CallbackQuery, db, data, bu
     await bot.send_message(call.message.chat.id, msg)
 
 
+async def set_webhook(bot_id, user_id, token):
+
+    url = f'https://botly-shop-oqwwiafbbq-uc.a.run.app/{user_id}/{bot_id}/webhook'
+    resp = requests.get(f'https://api.telegram.org/bot{token}/setWebhook?url={url}')
+    return resp.ok
+
+
 @with_db
 @with_callback_data
 @with_bucket
 async def bot_deploy(bot: AsyncTeleBot, call: types.CallbackQuery, db, data, bucket):
     bot_id = data.get('bot_id')
     user_id = call.from_user.id
-    positions = db.child(f'bots/{user_id}/{bot_id}/positions').get()
 
-    if not positions:
-        return await bot.send_message(
-            call.message.chat.id,
-            _('The bot doesn\'t have any position yet. Create positions, then launch deploy')
-        )
-
+    url = f'https://botly-shop-oqwwiafbbq-uc.a.run.app/{user_id}/{bot_id}/webhook'
     bot_data = db.child(f'bots/{user_id}/{bot_id}').get()
-    function_name = bot_data['username']
-    msg = _('Success. Try your bot @{bot_username}').format(bot_username=bot_data["username"])
+    # msg = 'success'
+    resp = requests.get(f'https://api.telegram.org/bot{bot_data["token"]}/setWebhook?url={url}')
+    if not resp.ok:
+        msg = _('Ooops. Something went wrong ({error})').format(error=resp.text)
+        print(resp.text)
 
-    await bot.send_message(call.message.chat.id, _('Start deploying your bot. Please, wait...'))
-    print('...deploying...')
+        await bot.send_message(call.message.chat.id, msg)
 
-    try:
-        await deploy_script(
-            tg_token=bot_data['token'],
-            tg_owner_chat_id=str(call.message.chat.id),
-            tg_bot_name=function_name,
-            tg_bot_id=str(bot_id),
-            tg_bot_owner_user_id=user_id,
-            firebase_project='telegram-bot-1-c1cfe',
-            firebase_token='1//0cbja13u4muayCgYIARAAGAwSNwF-L9IrYdBKdOTcj-1kLNF3tBwbQceG_Rx4laIPFYh8v325IzrVLv81H6k9Me7pXht5blvdvZk',
-        )
-    except Exception as e:
-        msg = _('Ooops. Something went wrong. Try again later')
-        print(e)
-    else:
-        make_function_public(function_name)
-        function_path = f'https://us-central1-telegram-bot-1-c1cfe.cloudfunctions.net/{function_name}'
-        resp = requests.get(f'https://api.telegram.org/bot{bot_data["token"]}/setWebhook?url={function_path}')
-        if not resp.ok:
-            msg = _('Ooops. Something went wrong ({error})').format(error=resp.text)
-            print(resp.text)
+    #TODO: end expirement
+    # positions = db.child(f'bots/{user_id}/{bot_id}/positions').get()
 
-    await bot.send_message(call.message.chat.id, msg)
+
+    # if not positions:
+    #     return await bot.send_message(
+    #         call.message.chat.id,
+    #         _('The bot doesn\'t have any position yet. Create positions, then launch deploy')
+    #     )
+    #
+    # bot_data = db.child(f'bots/{user_id}/{bot_id}').get()
+    # function_name = bot_data['username']
+    # msg = _('Success. Try your bot @{bot_username}').format(bot_username=bot_data["username"])
+    #
+    # await bot.send_message(call.message.chat.id, _('Start deploying your bot. Please, wait...'))
+    # print('...deploying...')
+    #
+    # try:
+    #     await deploy_script(
+    #         tg_token=bot_data['token'],
+    #         tg_owner_chat_id=str(call.message.chat.id),
+    #         tg_bot_name=function_name,
+    #         tg_bot_id=str(bot_id),
+    #         tg_bot_owner_user_id=user_id,
+    #         firebase_project='telegram-bot-1-c1cfe',
+    #         firebase_token='1//0cbja13u4muayCgYIARAAGAwSNwF-L9IrYdBKdOTcj-1kLNF3tBwbQceG_Rx4laIPFYh8v325IzrVLv81H6k9Me7pXht5blvdvZk',
+    #     )
+    # except Exception as e:
+    #     msg = _('Ooops. Something went wrong. Try again later')
+    #     print(e)
+    # else:
+    #     make_function_public(function_name)
+    #     function_path = f'https://us-central1-telegram-bot-1-c1cfe.cloudfunctions.net/{function_name}'
+    #     resp = requests.get(f'https://api.telegram.org/bot{bot_data["token"]}/setWebhook?url={function_path}')
+    #     if not resp.ok:
+    #         msg = _('Ooops. Something went wrong ({error})').format(error=resp.text)
+    #         print(resp.text)
+    #
+    # await bot.send_message(call.message.chat.id, 'success')
 
 
 @step_handler
@@ -408,6 +428,12 @@ async def bot_token_step(message: types.Message, bot: AsyncTeleBot):
                 _('Ooops. {e}. Try to input another token').format(e=e)
             )
         else:
+            result = await set_webhook(bot_id, message.from_user.id, token)
+
+            if not result:
+                msg = _('Не удалось установить вебхук. Пожалуйста, обратитесь в поддержку')
+                await bot.send_message(message.chat.id, msg)
+
             await edit_or_resend(
                 bot,
                 message,
